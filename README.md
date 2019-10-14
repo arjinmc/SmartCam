@@ -1,0 +1,2 @@
+# SmartCam
+Android Camera Library
