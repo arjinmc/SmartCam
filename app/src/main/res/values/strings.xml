@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">SmartCam</string>
+
+    <string name="permission_setting">Permission Setting</string>
+    <string name="permission_setting_tips">Some permissions denied by System.\nWould you manually set them?</string>
+    <string name="permission_setting_yes">Yes</string>
+    <string name="permission_setting_no">No</string>
 </resources>
