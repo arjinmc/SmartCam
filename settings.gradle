@@ -1,0 +1,2 @@
+include ':app', ':core', ':ui', ':filter', ':face'
+rootProject.name='SmartCam'
