@@ -24,8 +24,13 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:' + rootProject.ext.appcompatVersion
     implementation 'androidx.constraintlayout:constraintlayout:' + rootProject.ext.constraintlayoutVersion
+
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'com.arjinmc.android:expandrecyclerview:2.1'
+
     implementation project(":core")
     implementation project(":ui")
+
 
     testImplementation 'junit:junit:' + rootProject.ext.jUnitVersion
     androidTestImplementation 'androidx.test.ext:junit:' + rootProject.ext.extJunitVersion

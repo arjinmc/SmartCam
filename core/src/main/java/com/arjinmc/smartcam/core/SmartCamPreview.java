@@ -11,12 +11,20 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.arjinmc.smartcam.core.camera1.Camera1Preview;
+import com.arjinmc.smartcam.core.camera1.Camera1Wrapper;
+import com.arjinmc.smartcam.core.model.CameraVersion;
 
 /**
+ * SmartCamPreview
+ * Preview for SmartCam
  * Created by Eminem Lo on 2019-10-14.
  * email: arjinmc@hotmail.com
  */
 public class SmartCamPreview extends FrameLayout {
+
+    private int mCurrentCameraVersion;
+    private Camera1Preview mCamera1Preview;
+//    private Camera2Preview mCamera2Preview;
 
     public SmartCamPreview(@NonNull Context context) {
         super(context);
@@ -52,10 +60,40 @@ public class SmartCamPreview extends FrameLayout {
         }
 
         //        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
+//        mCurrentCameraVersion = CameraVersion.VERSION_2;
+//
 //
 //        }else{
-        Camera1Preview camera1Preview = new Camera1Preview(getContext(), (Camera) smartCam.getCamera());
-        addView(camera1Preview);
+        mCurrentCameraVersion = CameraVersion.VERSION_1;
+        mCamera1Preview = new Camera1Preview(getContext(), (Camera1Wrapper) smartCam.getCameraWrapper());
+        addView(mCamera1Preview);
 //        }
     }
+
+    /**
+     * set fixed size for preview
+     *
+     * @param width
+     * @param height
+     */
+    public void setFixedSize(int width, int height) {
+        if (mCurrentCameraVersion == CameraVersion.VERSION_1) {
+            mCamera1Preview.getHolder().setFixedSize(width, height);
+        }
+    }
+
+    /**
+     * keep screen on
+     *
+     * @param screenOn
+     */
+    @Override
+    public void setKeepScreenOn(boolean screenOn) {
+        super.setKeepScreenOn(screenOn);
+        if (mCurrentCameraVersion == CameraVersion.VERSION_1) {
+            mCamera1Preview.getHolder().setKeepScreenOn(screenOn);
+        }
+    }
 }
+
+

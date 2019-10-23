@@ -1,19 +1,35 @@
 package com.arjinmc.smartcam;
 
 import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.FrameLayout;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.arjinmc.smartcam.core.SmartCam;
-import com.arjinmc.smartcam.core.SmartCamPreview;
+import com.arjinmc.expandrecyclerview.adapter.RecyclerViewAdapter;
+import com.arjinmc.expandrecyclerview.adapter.RecyclerViewSingleTypeProcessor;
+import com.arjinmc.expandrecyclerview.adapter.RecyclerViewViewHolder;
+import com.arjinmc.expandrecyclerview.style.RecyclerViewStyleHelper;
+import com.arjinmc.recyclerviewdecoration.RecyclerViewItemDecoration;
 import com.arjinmc.smartcam.permission.PermissionAssistant;
+import com.arjinmc.smartcam.ui.SmartCamActivity;
+
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
     private String[] mPermissions = new String[]{Manifest.permission.CAMERA};
+    private Integer[] mTitles = new Integer[]{
+            R.string.default_ui
+            , R.string.prieview_from_new_object
+            , R.string.prieview_from_xml};
+
+    private RecyclerView mRecyclerView;
+    private RecyclerViewAdapter mAdapter;
 
 
     @Override
@@ -21,18 +37,41 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SmartCam smartCam = new SmartCam();
-        smartCam.open();
-        Log.i("tag", smartCam.getCameraCount() + "/" + smartCam.getOrientation());
-        smartCam.logFeatures();
+        mRecyclerView = findViewById(R.id.rv_list);
+        mRecyclerView.addItemDecoration(new RecyclerViewItemDecoration.Builder(this)
+                .color(ContextCompat.getColor(this, android.R.color.darker_gray))
+                .thickness(2).create());
+        RecyclerViewStyleHelper.toLinearLayout(mRecyclerView, RecyclerView.VERTICAL);
+        mAdapter = new RecyclerViewAdapter<>(this, Arrays.asList(mTitles)
+                , R.layout.item_main_list, new RecyclerViewSingleTypeProcessor<Integer>() {
+            @Override
+            public void onBindViewHolder(RecyclerViewViewHolder holder, int position, final Integer integer) {
+                ((TextView) holder.itemView).setText(getString(integer));
 
-        // Create our Preview view and set it as the content of our activity.
-        SmartCamPreview smartCamPreview = new SmartCamPreview(this, smartCam);
-        FrameLayout preview = findViewById(R.id.camera_preview);
-        preview.addView(smartCamPreview);
-//        SmartCamPreview smartCamPreview = findViewById(R.id.camera_preview);
-//        smartCamPreview.setCamera(smartCam);
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        switch (integer) {
+                            case R.string.default_ui:
+                                startActivity(SmartCamActivity.class);
+                                break;
+                            case R.string.prieview_from_new_object:
+                                startActivity(PreviewFromNewActivity.class);
+                                break;
+                            case R.string.prieview_from_xml:
+                                startActivity(PreviewFromXMLActivity.class);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                });
+            }
+        });
+        mRecyclerView.setAdapter(mAdapter);
     }
+
 
     @Override
     protected void onResume() {
@@ -40,5 +79,9 @@ public class MainActivity extends AppCompatActivity {
         if (!PermissionAssistant.isGrantedAllPermissions(this, mPermissions)) {
             PermissionAssistant.requestPermissions(this, mPermissions, false);
         }
+    }
+
+    private void startActivity(Class clz) {
+        startActivity(new Intent(this, clz));
     }
 }

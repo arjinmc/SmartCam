@@ -24,6 +24,10 @@ public class Camera1Wrapper extends AbsCameraWrapper {
 
     private Camera mCamera;
 
+    @Override
+    public Camera1Wrapper getCameraWrapper() {
+        return this;
+    }
 
     @Override
     public Camera getCamera() {
@@ -63,6 +67,7 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     @Override
     public void close() {
         if (mCamera != null) {
+            mCamera.stopPreview();
             mCamera.release();
             mCamera = null;
         }
@@ -163,6 +168,20 @@ public class Camera1Wrapper extends AbsCameraWrapper {
         Camera.CameraInfo info = new Camera.CameraInfo();
         getCameraInfo(mCurrentCameraId, info);
         return info.orientation;
+    }
+
+    @Override
+    public void pause() {
+        if (mCamera != null) {
+            mCamera.stopPreview();
+        }
+    }
+
+    @Override
+    public void resume() {
+        if (mCamera != null) {
+            mCamera.startPreview();
+        }
     }
 
     @Override

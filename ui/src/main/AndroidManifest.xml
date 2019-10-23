@@ -1,2 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.arjinmc.smartcam.ui" />
+    package="com.arjinmc.smartcam.ui">
+
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION"></uses-permission>
+
+    <application>
+        <activity
+            android:name=".SmartCamActivity"
+            android:configChanges="orientation" />
+    </application>
+</manifest>

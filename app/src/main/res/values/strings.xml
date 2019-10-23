@@ -5,4 +5,8 @@
     <string name="permission_setting_tips">Some permissions denied by System.\nWould you manually set them?</string>
     <string name="permission_setting_yes">Yes</string>
     <string name="permission_setting_no">No</string>
+
+    <string name="default_ui">Default UI</string>
+    <string name="prieview_from_new_object">Preview from new object</string>
+    <string name="prieview_from_xml">Preview from xml</string>
 </resources>

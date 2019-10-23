@@ -21,6 +21,11 @@ public interface ICameraWrapper {
     boolean hasCamera(Context context);
 
     /**
+     * get camera wrapper
+     * @return
+     */
+    Object getCameraWrapper();
+    /**
      * get camera object
      *
      * @return

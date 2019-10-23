@@ -38,6 +38,11 @@ public class AbsCameraWrapper implements ICameraWrapper {
     }
 
     @Override
+    public Object getCameraWrapper() {
+        return null;
+    }
+
+    @Override
     public Object getCamera() {
         return null;
     }
@@ -121,4 +126,5 @@ public class AbsCameraWrapper implements ICameraWrapper {
     public int getOrientation() {
         return 0;
     }
+
 }

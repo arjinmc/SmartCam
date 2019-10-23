@@ -11,12 +11,11 @@ import android.view.WindowManager;
  */
 public final class SmartCamUtils {
 
-    public static int getDeviceOrientation(Context context) {
+    public static int getWindowDisplayRotation(Context context) {
 
         if (context == null) {
-            return 0;
+            return -1;
         }
-
         int angle = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
         switch (angle) {
             case Surface.ROTATION_0:
@@ -28,8 +27,32 @@ public final class SmartCamUtils {
             case Surface.ROTATION_270:
                 return 270;
             default:
+                return -1;
+        }
+    }
+
+    public static int getShouldRotateDegree(Context context, int angle) {
+        if (context == null) {
+            return 0;
+        }
+
+        if (angle == -1) {
+            angle = getWindowDisplayRotation(context);
+        }
+
+        switch (angle) {
+            case 0:
+                return 90;
+            case 90:
+                return 0;
+            case 180:
+                return 270;
+            case 270:
+                return 180;
+            default:
                 return 0;
         }
     }
+
 }
 

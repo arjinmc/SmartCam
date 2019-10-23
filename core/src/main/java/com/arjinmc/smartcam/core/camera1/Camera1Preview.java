@@ -3,8 +3,11 @@ package com.arjinmc.smartcam.core.camera1;
 import android.content.Context;
 import android.hardware.Camera;
 import android.util.Log;
+import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import com.arjinmc.smartcam.core.SmartCamUtils;
 
 import java.io.IOException;
 
@@ -18,15 +21,20 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     private final String TAG = "Camera1Preview";
 
     private SurfaceHolder mHolder;
+    private Camera1Wrapper mCameraWrapper;
     private Camera mCamera;
 
-    public Camera1Preview(Context context, Camera camera) {
+    private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
+
+    public Camera1Preview(Context context, Camera1Wrapper camera1Wrapper) {
         super(context);
-        mCamera = camera;
+        mCameraWrapper = camera1Wrapper;
+        mCamera = camera1Wrapper.getCamera();
         init();
     }
 
     private void init() {
+
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
         mHolder = getHolder();
@@ -37,13 +45,47 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        // The Surface has been created, now tell the camera where to draw the preview.
+        Log.i(TAG, "surfaceCreated");
+        startPreview();
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        Log.i(TAG, "surfaceChanged:" + width + "/" + height);
+        startPreview();
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        Log.i(TAG, "surfaceDestroyed");
+
+        if (mHolder.getSurface() == null) {
+            return;
+        }
+
         try {
             if (mCamera != null) {
-//                mCamera.setDisplayOrientation(90);
-                mCamera.setPreviewDisplay(holder);
-                mCamera.startPreview();
+                mCamera.stopPreview();
+                getHolder().removeCallback(this);
+                mCamera.release();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    private void startPreview() {
+
+        try {
+            if (mCamera == null) {
+                mCameraWrapper.open();
+            }
+            if (mCamera != null) {
+                mOrientation = SmartCamUtils.getWindowDisplayRotation(getContext());
+                Log.i("startPreview", mOrientation + "/should rotate:" + SmartCamUtils.getShouldRotateDegree(getContext(), mOrientation));
+                mCamera.setDisplayOrientation(SmartCamUtils.getShouldRotateDegree(getContext(), mOrientation));
+                mCamera.setPreviewDisplay(getHolder());
+                mCamera.startPreview();
             }
         } catch (IOException e) {
             Log.d(TAG, "Error setting camera preview: " + e.getMessage());
@@ -52,41 +94,15 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        Log.e("onAttachedToWindow", "onAttachedToWindow");
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        Log.e("onDetachedFromWindow", "onDetachedFromWindow");
 
-        // If your preview can change or rotate, take care of those events here.
-        // Make sure to stop the preview before resizing or reformatting it.
-
-        if (mHolder.getSurface() == null) {
-            // preview surface does not exist
-            return;
-        }
-
-        // stop preview before making changes
-        try {
-            if (mCamera != null) {
-                mCamera.stopPreview();
-            }
-        } catch (Exception e) {
-            // ignore: tried to stop a non-existent preview
-        }
-
-        // set preview size and make any resize, rotate or
-        // reformatting changes here
-
-        // start preview with new settings
-        try {
-            if (mCamera != null) {
-                mCamera.setPreviewDisplay(mHolder);
-                mCamera.startPreview();
-            }
-        } catch (Exception e) {
-            Log.d(TAG, "Error starting camera preview: " + e.getMessage());
-        }
     }
 }

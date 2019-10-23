@@ -25,6 +25,16 @@ public class SmartCam extends AbsCameraWrapper {
     }
 
     @Override
+    public void close() {
+        mCameraWrapper.close();
+    }
+
+    @Override
+    public Object getCameraWrapper() {
+        return mCameraWrapper;
+    }
+
+    @Override
     public Object getCamera() {
         return mCameraWrapper.getCamera();
     }
