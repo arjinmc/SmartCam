@@ -97,24 +97,13 @@ public class SmartCamPreview extends FrameLayout {
         }
     }
 
-    /**
-     * if SmartCamOrientationListener has callback that orientation has changed
-     *
-     * @param orientation
-     */
-    public void onOrientationChanged(int orientation) {
-        if (mCurrentCameraVersion == CameraVersion.VERSION_1) {
-            mCamera1Preview.onOrientationChanged(orientation);
-        }
-    }
-
     public void resume() {
         init(mSmartCam);
     }
 
     public void pause() {
         if (mCurrentCameraVersion == CameraVersion.VERSION_1) {
-            mCamera1Preview.destory();
+            mCamera1Preview.destroy();
         }
     }
 }

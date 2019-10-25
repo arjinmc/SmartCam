@@ -15,8 +15,6 @@ import com.arjinmc.smartcam.core.model.CameraType;
  */
 public final class SmartCamUtils {
 
-    private static final int OFFSET_DEGREE = 10;
-
     /**
      * get window display rotatrion
      *
@@ -73,35 +71,6 @@ public final class SmartCamUtils {
             result = (info.orientation - degrees + 360) % 360;
         }
         return result;
-    }
-
-    /**
-     * get should roate camera degree
-     *
-     * @param degree
-     * @return
-     */
-    public static int getWindowDisplayShouldRotationDegree(int degree) {
-        if (isShouldRotate(CameraRotateType.TYPE_0, degree)) {
-            return CameraRotateType.TYPE_0;
-        } else if (isShouldRotate(CameraRotateType.TYPE_90, degree)) {
-            return CameraRotateType.TYPE_270;
-        } else if (isShouldRotate(CameraRotateType.TYPE_270, degree)) {
-            return CameraRotateType.TYPE_90;
-        } else {
-            return CameraRotateType.TYPE_UNKNOWN;
-        }
-    }
-
-    /**
-     * check if should rotate camera
-     *
-     * @param keyDegree
-     * @param degree
-     * @return
-     */
-    private static boolean isShouldRotate(int keyDegree, int degree) {
-        return Math.abs(keyDegree - degree) <= OFFSET_DEGREE;
     }
 }
 
