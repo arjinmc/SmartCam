@@ -1,7 +1,6 @@
 package com.arjinmc.smartcam.core;
 
 import android.content.Context;
-import android.hardware.Camera;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
@@ -23,6 +22,7 @@ import com.arjinmc.smartcam.core.model.CameraVersion;
 public class SmartCamPreview extends FrameLayout {
 
     private int mCurrentCameraVersion;
+    private SmartCam mSmartCam;
     private Camera1Preview mCamera1Preview;
 //    private Camera2Preview mCamera2Preview;
 
@@ -54,6 +54,8 @@ public class SmartCamPreview extends FrameLayout {
     }
 
     private void init(SmartCam smartCam) {
+
+        mSmartCam = smartCam;
 
         if (getChildCount() != 0) {
             removeAllViews();
@@ -93,6 +95,21 @@ public class SmartCamPreview extends FrameLayout {
         if (mCurrentCameraVersion == CameraVersion.VERSION_1) {
             mCamera1Preview.getHolder().setKeepScreenOn(screenOn);
         }
+    }
+
+    /**
+     * if SmartCamOrientationListener has callback that orientation has changed
+     *
+     * @param orientation
+     */
+    public void onOrientationChanged(int orientation) {
+        if (mCurrentCameraVersion == CameraVersion.VERSION_1) {
+            mCamera1Preview.onOrientationChanged(orientation);
+        }
+    }
+
+    public void resume() {
+        init(mSmartCam);
     }
 }
 

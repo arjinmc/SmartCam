@@ -8,6 +8,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.arjinmc.smartcam.core.SmartCamUtils;
+import com.arjinmc.smartcam.core.model.CameraRotateType;
 
 import java.io.IOException;
 
@@ -46,7 +47,6 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         Log.i(TAG, "surfaceCreated");
-        startPreview();
     }
 
     @Override
@@ -67,7 +67,6 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
             if (mCamera != null) {
                 mCamera.stopPreview();
                 getHolder().removeCallback(this);
-                mCamera.release();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,8 +81,11 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
             }
             if (mCamera != null) {
                 mOrientation = SmartCamUtils.getWindowDisplayRotation(getContext());
-                Log.i("startPreview", mOrientation + "/should rotate:" + SmartCamUtils.getShouldRotateDegree(getContext(), mOrientation));
-                mCamera.setDisplayOrientation(SmartCamUtils.getShouldRotateDegree(getContext(), mOrientation));
+                Log.i("startPreview", mOrientation + "");
+                mCamera.setDisplayOrientation(SmartCamUtils.getShouldRotateDegree(getContext()
+                        , mCameraWrapper.getCurrentCameraType()
+                        , mCameraWrapper.getCurrentCameraId()
+                        , mOrientation));
                 mCamera.setPreviewDisplay(getHolder());
                 mCamera.startPreview();
             }
@@ -93,16 +95,14 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
 
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        Log.e("onAttachedToWindow", "onAttachedToWindow");
-    }
+    public void onOrientationChanged(int orientation) {
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        Log.e("onDetachedFromWindow", "onDetachedFromWindow");
+        int shouldRotateDegree = SmartCamUtils.getWindowDisplayShouldRotationDegree(orientation);
+        if (shouldRotateDegree != CameraRotateType.TYPE_UNKNOWN
+                && mOrientation != shouldRotateDegree) {
+            startPreview();
+        }
 
     }
+
 }

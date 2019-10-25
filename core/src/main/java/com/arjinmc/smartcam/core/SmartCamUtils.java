@@ -1,8 +1,12 @@
 package com.arjinmc.smartcam.core;
 
 import android.content.Context;
+import android.hardware.Camera;
 import android.view.Surface;
 import android.view.WindowManager;
+
+import com.arjinmc.smartcam.core.model.CameraRotateType;
+import com.arjinmc.smartcam.core.model.CameraType;
 
 /**
  * Utils for SmartCam
@@ -10,6 +14,8 @@ import android.view.WindowManager;
  * email: arjinmc@hotmail.com
  */
 public final class SmartCamUtils {
+
+    private static final int OFFSET_DEGREE = 10;
 
     public static int getWindowDisplayRotation(Context context) {
 
@@ -31,28 +37,43 @@ public final class SmartCamUtils {
         }
     }
 
-    public static int getShouldRotateDegree(Context context, int angle) {
+    public static int getShouldRotateDegree(Context context, @CameraType.Type int type, int cameraId, int degrees) {
         if (context == null) {
             return 0;
         }
 
-        if (angle == -1) {
-            angle = getWindowDisplayRotation(context);
+        if (degrees == -1) {
+            degrees = getWindowDisplayRotation(context);
         }
 
-        switch (angle) {
-            case 0:
-                return 90;
-            case 90:
-                return 0;
-            case 180:
-                return 270;
-            case 270:
-                return 180;
-            default:
-                return 0;
+        Camera.CameraInfo info = new Camera.CameraInfo();
+        Camera.getCameraInfo(cameraId, info);
+        int result;
+        if (type == CameraType.CAMERA_FRONT) {
+            result = (info.orientation + degrees) % 360;
+            // compensate the mirror
+            result = (360 - result) % 360;
+            // back-facing
+        } else {
+            result = (info.orientation - degrees + 360) % 360;
+        }
+        return result;
+    }
+
+    public static int getWindowDisplayShouldRotationDegree(int degree) {
+        if (isShoulRotate(CameraRotateType.TYPE_0, degree)) {
+            return CameraRotateType.TYPE_0;
+        } else if (isShoulRotate(CameraRotateType.TYPE_90, degree)) {
+            return CameraRotateType.TYPE_270;
+        } else if (isShoulRotate(CameraRotateType.TYPE_270, degree)) {
+            return CameraRotateType.TYPE_90;
+        } else {
+            return CameraRotateType.TYPE_UNKNOWN;
         }
     }
 
+    private static boolean isShoulRotate(int keyDegree, int degree) {
+        return Math.abs(keyDegree - degree) <= OFFSET_DEGREE;
+    }
 }
 

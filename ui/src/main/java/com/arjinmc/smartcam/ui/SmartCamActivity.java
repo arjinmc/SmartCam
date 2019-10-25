@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.arjinmc.smartcam.core.SmartCam;
+import com.arjinmc.smartcam.core.SmartCamOrientationListener;
 import com.arjinmc.smartcam.core.SmartCamPreview;
 
 /**
@@ -22,6 +23,7 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
     private SmartCam mSmartCam;
     private SmartCamPreview mSmartCamPreview;
     private ImageButton mIbCapture;
+    private SmartCamOrientationListener mSmartCamOrientationListener = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,6 +33,9 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
         mSmartCamPreview = findViewById(R.id.smartcam_preview);
         mIbCapture = findViewById(R.id.smartcam_btn_capture);
         mIbCapture.setOnClickListener(this);
+
+        mSmartCamOrientationListener = new SmartCamOrientationListener(this, mSmartCamPreview);
+        mSmartCamOrientationListener.enable();
 
         mSmartCam = new SmartCam();
         boolean isOpen = mSmartCam.open();
@@ -57,16 +62,21 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
     protected void onPause() {
         super.onPause();
         Log.i("onPause", "onPause");
+        mSmartCamOrientationListener.disable();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         Log.i("onResume", "onResume");
+        mSmartCamOrientationListener.enable();
+        mSmartCamPreview.resume();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mSmartCamOrientationListener.disable();
+        mSmartCam.close();
     }
 }

@@ -118,6 +118,12 @@ public class AbsCameraWrapper implements ICameraWrapper {
     }
 
     @Override
+    public int getCurrentCameraId() {
+        return mCurrentCameraId;
+    }
+
+
+    @Override
     public List<CameraSupportPreviewSize> getSupperPrieviewSizes() {
         return null;
     }

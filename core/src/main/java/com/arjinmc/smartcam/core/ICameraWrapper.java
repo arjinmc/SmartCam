@@ -93,6 +93,8 @@ public interface ICameraWrapper {
 
     int getCurrentCameraType();
 
+    int getCurrentCameraId();
+
     List<CameraSupportPreviewSize> getSupperPrieviewSizes();
 
     int getOrientation();
