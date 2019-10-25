@@ -2,6 +2,9 @@
     package="com.arjinmc.smartcam.ui">
 
     <application>
-        <activity android:name=".SmartCamActivity" />
+        <activity
+            android:name=".SmartCamActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>
 </manifest>
