@@ -22,7 +22,6 @@ public class AbsCameraWrapper implements ICameraWrapper {
     protected int mCurrentCameraType = CameraType.CAMERA_NULL;
     protected int mCurrentCameraId = -1;
 
-
     @Override
     public boolean hasCamera(Context context) {
         if (context == null) {
@@ -124,8 +123,45 @@ public class AbsCameraWrapper implements ICameraWrapper {
 
 
     @Override
-    public List<CameraSupportPreviewSize> getSupperPrieviewSizes() {
+    public List<CameraSupportPreviewSize> getSupperPreviewSizes() {
         return null;
+    }
+
+    @Override
+    public CameraSupportPreviewSize getCompatPreviewSize(int width, int height) {
+        List<CameraSupportPreviewSize> supportPreviewSizes = getSupperPreviewSizes();
+        if (supportPreviewSizes == null || supportPreviewSizes.isEmpty()) {
+            return null;
+        }
+
+        if (height == 0) {
+            return null;
+        }
+
+        int postion = -1;
+        double minOffset = 0;
+        int size = supportPreviewSizes.size();
+        for (int i = 0; i < size; i++) {
+            CameraSupportPreviewSize cameraSupportPreviewSize = supportPreviewSizes.get(i);
+            double offset = Math.abs(cameraSupportPreviewSize.getWidth() / cameraSupportPreviewSize.getHeight() - width / height);
+            if (offset == 0) {
+                postion = i;
+                break;
+            }
+
+            if (minOffset == 0) {
+                minOffset = offset;
+                postion = i;
+            }
+            if (minOffset > offset) {
+                minOffset = offset;
+                postion = i;
+            }
+        }
+        if (postion == -1) {
+            return null;
+        }
+        return supportPreviewSizes.get(postion);
     }
 
     @Override

@@ -144,7 +144,7 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     }
 
     @Override
-    public List<CameraSupportPreviewSize> getSupperPrieviewSizes() {
+    public List<CameraSupportPreviewSize> getSupperPreviewSizes() {
 
         if (mCamera == null) {
             return null;
@@ -156,6 +156,8 @@ public class Camera1Wrapper extends AbsCameraWrapper {
             for (Camera.Size previewSize : previewSizes) {
                 cameraSupportPreviewSizes.add(new CameraSupportPreviewSize(previewSize.width, previewSize.height));
             }
+
+            return cameraSupportPreviewSizes;
         }
         return null;
     }
@@ -181,6 +183,34 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     public void resume() {
         if (mCamera != null) {
             mCamera.startPreview();
+        }
+    }
+
+    @Override
+    public void capture() {
+
+        try {
+            mCamera.takePicture(new Camera.ShutterCallback() {
+                @Override
+                public void onShutter() {
+                    Log.i("onShutter", "onShutter");
+
+                }
+            }, new Camera.PictureCallback() {
+                @Override
+                public void onPictureTaken(byte[] data, Camera camera) {
+                    Log.i("onPictureTaken", "raw");
+
+                }
+            }, new Camera.PictureCallback() {
+                @Override
+                public void onPictureTaken(byte[] data, Camera camera) {
+                    Log.i("onPictureTaken2", "jpeg");
+                    mCamera.startPreview();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

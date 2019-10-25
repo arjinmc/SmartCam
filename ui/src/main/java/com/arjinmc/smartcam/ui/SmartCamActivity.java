@@ -1,12 +1,10 @@
 package com.arjinmc.smartcam.ui;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -48,14 +46,8 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         int viewId = v.getId();
         if (viewId == R.id.smartcam_btn_capture) {
-
+            mSmartCam.capture();
         }
-    }
-
-    @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        Log.i("onConfigurationChanged", newConfig.orientation + "");
     }
 
     @Override
@@ -63,6 +55,7 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
         super.onPause();
         Log.i("onPause", "onPause");
         mSmartCamOrientationListener.disable();
+        mSmartCamPreview.pause();
     }
 
     @Override

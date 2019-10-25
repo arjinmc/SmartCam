@@ -111,6 +111,12 @@ public class SmartCamPreview extends FrameLayout {
     public void resume() {
         init(mSmartCam);
     }
+
+    public void pause() {
+        if (mCurrentCameraVersion == CameraVersion.VERSION_1) {
+            mCamera1Preview.destory();
+        }
+    }
 }
 
 

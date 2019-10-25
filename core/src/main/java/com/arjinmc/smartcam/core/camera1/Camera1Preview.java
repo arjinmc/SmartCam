@@ -9,6 +9,7 @@ import android.view.SurfaceView;
 
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.model.CameraRotateType;
+import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
 
 import java.io.IOException;
 
@@ -30,7 +31,6 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     public Camera1Preview(Context context, Camera1Wrapper camera1Wrapper) {
         super(context);
         mCameraWrapper = camera1Wrapper;
-        mCamera = camera1Wrapper.getCamera();
         init();
     }
 
@@ -73,11 +73,13 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
         }
     }
 
+
     private void startPreview() {
 
         try {
-            if (mCamera == null) {
-                mCameraWrapper.open();
+            boolean isOpen = mCameraWrapper.open();
+            if (isOpen) {
+                mCamera = mCameraWrapper.getCamera();
             }
             if (mCamera != null) {
                 mOrientation = SmartCamUtils.getWindowDisplayRotation(getContext());
@@ -86,6 +88,26 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                         , mCameraWrapper.getCurrentCameraType()
                         , mCameraWrapper.getCurrentCameraId()
                         , mOrientation));
+
+                Log.i("startPreview size ", getMeasuredWidth() + "/" + getMeasuredHeight());
+
+                CameraSupportPreviewSize cameraSupportPreviewSize;
+                //is landscape
+                boolean isLandscape = getMeasuredWidth() > getMeasuredHeight();
+                if (isLandscape) {
+                    cameraSupportPreviewSize = mCameraWrapper.getCompatPreviewSize(getMeasuredHeight(), getMeasuredWidth());
+                } else {
+                    cameraSupportPreviewSize = mCameraWrapper.getCompatPreviewSize(getMeasuredWidth(), getMeasuredHeight());
+                }
+
+                if (cameraSupportPreviewSize != null) {
+                    Log.e("final preview size", cameraSupportPreviewSize.getWidth() + "/" + cameraSupportPreviewSize.getHeight());
+                    if (isLandscape) {
+                        getHolder().setFixedSize(cameraSupportPreviewSize.getHeight(), cameraSupportPreviewSize.getWidth());
+                    } else {
+                        getHolder().setFixedSize(cameraSupportPreviewSize.getWidth(), cameraSupportPreviewSize.getHeight());
+                    }
+                }
                 mCamera.setPreviewDisplay(getHolder());
                 mCamera.startPreview();
             }
@@ -103,6 +125,10 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
             startPreview();
         }
 
+    }
+
+    public void destory() {
+        surfaceDestroyed(mHolder);
     }
 
 }

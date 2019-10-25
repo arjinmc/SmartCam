@@ -17,6 +17,12 @@ public final class SmartCamUtils {
 
     private static final int OFFSET_DEGREE = 10;
 
+    /**
+     * get window display rotatrion
+     *
+     * @param context
+     * @return
+     */
     public static int getWindowDisplayRotation(Context context) {
 
         if (context == null) {
@@ -37,6 +43,15 @@ public final class SmartCamUtils {
         }
     }
 
+    /**
+     * get should rotate degree
+     *
+     * @param context
+     * @param type
+     * @param cameraId
+     * @param degrees
+     * @return
+     */
     public static int getShouldRotateDegree(Context context, @CameraType.Type int type, int cameraId, int degrees) {
         if (context == null) {
             return 0;
@@ -60,19 +75,32 @@ public final class SmartCamUtils {
         return result;
     }
 
+    /**
+     * get should roate camera degree
+     *
+     * @param degree
+     * @return
+     */
     public static int getWindowDisplayShouldRotationDegree(int degree) {
-        if (isShoulRotate(CameraRotateType.TYPE_0, degree)) {
+        if (isShouldRotate(CameraRotateType.TYPE_0, degree)) {
             return CameraRotateType.TYPE_0;
-        } else if (isShoulRotate(CameraRotateType.TYPE_90, degree)) {
+        } else if (isShouldRotate(CameraRotateType.TYPE_90, degree)) {
             return CameraRotateType.TYPE_270;
-        } else if (isShoulRotate(CameraRotateType.TYPE_270, degree)) {
+        } else if (isShouldRotate(CameraRotateType.TYPE_270, degree)) {
             return CameraRotateType.TYPE_90;
         } else {
             return CameraRotateType.TYPE_UNKNOWN;
         }
     }
 
-    private static boolean isShoulRotate(int keyDegree, int degree) {
+    /**
+     * check if should rotate camera
+     *
+     * @param keyDegree
+     * @param degree
+     * @return
+     */
+    private static boolean isShouldRotate(int keyDegree, int degree) {
         return Math.abs(keyDegree - degree) <= OFFSET_DEGREE;
     }
 }

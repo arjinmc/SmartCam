@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -15,6 +16,7 @@ import com.arjinmc.expandrecyclerview.adapter.RecyclerViewSingleTypeProcessor;
 import com.arjinmc.expandrecyclerview.adapter.RecyclerViewViewHolder;
 import com.arjinmc.expandrecyclerview.style.RecyclerViewStyleHelper;
 import com.arjinmc.recyclerviewdecoration.RecyclerViewItemDecoration;
+import com.arjinmc.smartcam.core.SmartCam;
 import com.arjinmc.smartcam.permission.PermissionAssistant;
 import com.arjinmc.smartcam.ui.SmartCamActivity;
 
@@ -52,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
 
+                        SmartCam smartCam = new SmartCam();
+                        if (!smartCam.hasCamera(MainActivity.this)) {
+                            Toast.makeText(MainActivity.this, "Your phone has no camera!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         switch (integer) {
                             case R.string.default_ui:
                                 startActivity(SmartCamActivity.class);

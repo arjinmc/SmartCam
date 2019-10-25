@@ -4,6 +4,9 @@ package com.arjinmc.smartcam.core;
 import android.os.Build;
 
 import com.arjinmc.smartcam.core.camera1.Camera1Wrapper;
+import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
+
+import java.util.List;
 
 /**
  * SmartCam
@@ -47,6 +50,16 @@ public class SmartCam extends AbsCameraWrapper {
     @Override
     public int getOrientation() {
         return mCameraWrapper.getOrientation();
+    }
+
+    @Override
+    public void capture() {
+        mCameraWrapper.capture();
+    }
+
+    @Override
+    public List<CameraSupportPreviewSize> getSupperPreviewSizes() {
+        return mCameraWrapper.getSupperPreviewSizes();
     }
 
     @Override

@@ -22,9 +22,11 @@ public interface ICameraWrapper {
 
     /**
      * get camera wrapper
+     *
      * @return
      */
     Object getCameraWrapper();
+
     /**
      * get camera object
      *
@@ -87,15 +89,50 @@ public interface ICameraWrapper {
      */
     boolean hasFocusAuto();
 
+    /**
+     * switch to front camera
+     */
     void switchToFrontCamera();
 
+    /**
+     * switch to back camera
+     */
     void switchToBackCamera();
 
+    /**
+     * get current camera type ：is front or back
+     *
+     * @return {@link com.arjinmc.smartcam.core.model.CameraType}
+     */
     int getCurrentCameraType();
 
+    /**
+     * get current camera id
+     *
+     * @return
+     */
     int getCurrentCameraId();
 
-    List<CameraSupportPreviewSize> getSupperPrieviewSizes();
+    /**
+     * get preview sizes that current camera supported
+     *
+     * @return
+     */
+    List<CameraSupportPreviewSize> getSupperPreviewSizes();
 
+    /**
+     * get the calculate  preview size support destination width and height
+     *
+     * @param width
+     * @param height
+     * @return
+     */
+    CameraSupportPreviewSize getCompatPreviewSize(int width, int height);
+
+    /**
+     * get the orientation rotation
+     *
+     * @return
+     */
     int getOrientation();
 }
