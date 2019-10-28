@@ -3,11 +3,12 @@ package com.arjinmc.smartcam.core.camera1;
 import android.hardware.Camera;
 import android.util.Log;
 
-import com.arjinmc.smartcam.core.AbsCameraWrapper;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.model.CameraFlashMode;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
 import com.arjinmc.smartcam.core.model.CameraType;
+import com.arjinmc.smartcam.core.model.SmartCamOpenError;
+import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     }
 
     @Override
-    public boolean open() {
+    public void open() {
 
         if (mCamera != null) {
             mCamera.stopPreview();
@@ -68,20 +69,34 @@ public class Camera1Wrapper extends AbsCameraWrapper {
             mCamera = Camera.open();
             if (mCamera != null) {
                 mCurrentCameraType = CameraType.CAMERA_BACK;
-                return true;
+
+                if (mSmartCamStateListener != null) {
+                    mSmartCamStateListener.onConnected();
+                }
+                return;
             } else {
                 mCamera = Camera.open(frontCameraId);
                 if (mCamera == null) {
-                    return false;
+                    if (mSmartCamStateListener != null) {
+                        mSmartCamStateListener.onError(new SmartCamOpenError());
+                    }
+                    return;
                 }
                 mCurrentCameraType = CameraType.CAMERA_FRONT;
                 mCurrentCameraId = frontCameraId;
-                return true;
+
+                if (mSmartCamStateListener != null) {
+                    mSmartCamStateListener.onConnected();
+                }
+                return;
             }
         } catch (Exception e) {
             // Camera is not available (in use or does not exist)
             e.printStackTrace();
-            return false;
+            if (mSmartCamStateListener != null) {
+                mSmartCamStateListener.onError(new SmartCamOpenError(e.getMessage()));
+            }
+            return;
         }
     }
 

@@ -1,10 +1,14 @@
 package com.arjinmc.smartcam.core;
 
 
+import android.content.Context;
 import android.os.Build;
 
+import com.arjinmc.smartcam.core.callback.SmartCamStateListener;
 import com.arjinmc.smartcam.core.camera1.Camera1Wrapper;
+import com.arjinmc.smartcam.core.camera2.Camera2Wrapper;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
+import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
 
 import java.util.List;
 
@@ -18,18 +22,20 @@ public class SmartCam extends AbsCameraWrapper {
 
     private AbsCameraWrapper mCameraWrapper;
 
-    @Override
-    public boolean open() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+    public SmartCam(Context context) {
+        setContext(context);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mCameraWrapper = new Camera2Wrapper(getContext());
+        } else {
+            mCameraWrapper = new Camera1Wrapper();
         }
-        mCameraWrapper = new Camera1Wrapper();
-        return mCameraWrapper.open();
     }
 
     @Override
-    public boolean resumeOpen() {
-        return mCameraWrapper.resumeOpen();
+    public void open() {
+//        mCameraWrapper = new Camera1Wrapper();
+        mCameraWrapper.open();
     }
 
     @Override
@@ -115,6 +121,11 @@ public class SmartCam extends AbsCameraWrapper {
     @Override
     public int getFlashMode() {
         return mCameraWrapper.getFlashMode();
+    }
+
+    @Override
+    public void setStateListener(SmartCamStateListener smartCamStateListener) {
+        mCameraWrapper.setStateListener(smartCamStateListener);
     }
 
     @Override

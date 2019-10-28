@@ -1,6 +1,8 @@
-package com.arjinmc.smartcam.core;
+package com.arjinmc.smartcam.core.wrapper;
 
-import com.arjinmc.smartcam.core.model.CameraFlashMode;
+import android.content.Context;
+
+import com.arjinmc.smartcam.core.callback.SmartCamStateListener;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
 import com.arjinmc.smartcam.core.model.CameraType;
 
@@ -14,11 +16,25 @@ import java.util.List;
  */
 public class AbsCameraWrapper implements ICameraWrapper {
 
+    protected Context mContext;
+
     /**
      * mark current camera type
      */
     protected int mCurrentCameraType = CameraType.CAMERA_NULL;
     protected int mCurrentCameraId = -1;
+
+    protected SmartCamStateListener mSmartCamStateListener;
+
+    @Override
+    public Context getContext() {
+        return mContext;
+    }
+
+    @Override
+    public void setContext(Context context) {
+        mContext = context;
+    }
 
     @Override
     public Object getCameraWrapper() {
@@ -31,8 +47,8 @@ public class AbsCameraWrapper implements ICameraWrapper {
     }
 
     @Override
-    public boolean open() {
-        return false;
+    public void open() {
+
     }
 
     @Override
@@ -181,6 +197,11 @@ public class AbsCameraWrapper implements ICameraWrapper {
     @Override
     public void setZoom(int zoomLevel) {
 
+    }
+
+    @Override
+    public void setStateListener(SmartCamStateListener smartCamStateListener) {
+        mSmartCamStateListener = smartCamStateListener;
     }
 
     @Override

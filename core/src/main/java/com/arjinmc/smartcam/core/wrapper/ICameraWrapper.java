@@ -1,5 +1,8 @@
-package com.arjinmc.smartcam.core;
+package com.arjinmc.smartcam.core.wrapper;
 
+import android.content.Context;
+
+import com.arjinmc.smartcam.core.callback.SmartCamStateListener;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
 
 import java.util.List;
@@ -10,6 +13,11 @@ import java.util.List;
  * email: arjinmc@hotmail.com
  */
 public interface ICameraWrapper {
+
+
+    Context getContext();
+
+    void setContext(Context context);
 
     /**
      * get camera wrapper
@@ -28,7 +36,7 @@ public interface ICameraWrapper {
     /**
      * open camera
      */
-    boolean open();
+    void open();
 
     /**
      * resume the open camera
@@ -159,6 +167,13 @@ public interface ICameraWrapper {
      * @param zoomLevel
      */
     void setZoom(int zoomLevel);
+
+    /**
+     * set state listener
+     *
+     * @param smartCamStateListener
+     */
+    void setStateListener(SmartCamStateListener smartCamStateListener);
 
     boolean hasFocusAuto();
 }

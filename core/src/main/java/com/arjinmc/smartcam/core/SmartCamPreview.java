@@ -1,6 +1,7 @@
 package com.arjinmc.smartcam.core;
 
 import android.content.Context;
+import android.hardware.camera2.CameraDevice;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
@@ -11,6 +12,7 @@ import androidx.annotation.RequiresApi;
 
 import com.arjinmc.smartcam.core.camera1.Camera1Preview;
 import com.arjinmc.smartcam.core.camera1.Camera1Wrapper;
+import com.arjinmc.smartcam.core.camera2.Camera2Preview;
 import com.arjinmc.smartcam.core.model.CameraVersion;
 
 /**
@@ -24,7 +26,7 @@ public class SmartCamPreview extends FrameLayout {
     private int mCurrentCameraVersion;
     private SmartCam mSmartCam;
     private Camera1Preview mCamera1Preview;
-//    private Camera2Preview mCamera2Preview;
+    private Camera2Preview mCamera2Preview;
 
     public SmartCamPreview(@NonNull Context context) {
         super(context);
@@ -61,15 +63,15 @@ public class SmartCamPreview extends FrameLayout {
             removeAllViews();
         }
 
-        //        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
-//        mCurrentCameraVersion = CameraVersion.VERSION_2;
-//
-//
-//        }else{
-        mCurrentCameraVersion = CameraVersion.VERSION_1;
-        mCamera1Preview = new Camera1Preview(getContext(), (Camera1Wrapper) smartCam.getCameraWrapper());
-        addView(mCamera1Preview);
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mCurrentCameraVersion = CameraVersion.VERSION_2;
+//            mCamera2Preview = new Camera2Preview(getContext(), (CameraDevice) smartCam.getCamera());
+//            addView(mCamera2Preview);
+        } else {
+            mCurrentCameraVersion = CameraVersion.VERSION_1;
+            mCamera1Preview = new Camera1Preview(getContext(), (Camera1Wrapper) smartCam.getCameraWrapper());
+            addView(mCamera1Preview);
+        }
     }
 
     /**
@@ -104,6 +106,8 @@ public class SmartCamPreview extends FrameLayout {
     public void pause() {
         if (mCurrentCameraVersion == CameraVersion.VERSION_1) {
             mCamera1Preview.destroy();
+        } else if (mCurrentCameraVersion == CameraVersion.VERSION_2) {
+
         }
     }
 }

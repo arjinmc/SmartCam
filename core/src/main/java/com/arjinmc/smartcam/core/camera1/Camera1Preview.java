@@ -7,6 +7,7 @@ import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.arjinmc.smartcam.core.wrapper.ICameraPreviewWrapper;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
 
@@ -17,7 +18,7 @@ import java.io.IOException;
  * Created by Eminem Lo on 2019-10-14.
  * email: arjinmc@hotmail.com
  */
-public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callback {
+public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callback, ICameraPreviewWrapper {
 
     private final String TAG = "Camera1Preview";
 
@@ -103,6 +104,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
 
     }
 
+    @Override
     public void destroy() {
         surfaceDestroyed(mHolder);
     }

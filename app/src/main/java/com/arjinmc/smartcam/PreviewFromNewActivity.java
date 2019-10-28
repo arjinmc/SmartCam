@@ -25,7 +25,7 @@ public class PreviewFromNewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview_from_new);
 
-        mSmartCam = new SmartCam();
+        mSmartCam = new SmartCam(this);
         mSmartCam.open();
         Log.i("tag", mSmartCam.getCameraCount() + "/" + mSmartCam.getOrientation());
         mSmartCam.logFeatures();
