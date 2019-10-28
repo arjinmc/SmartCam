@@ -15,7 +15,8 @@
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="32dp"
-        android:src="@drawable/smartcam_ic_flash_auto" />
+        android:src="@drawable/smartcam_ic_flash_auto"
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/smartcam_iv_switch_camera"

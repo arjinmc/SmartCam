@@ -71,13 +71,6 @@ public interface ICameraWrapper {
     void logFeatures();
 
     /**
-     * check if it has flash light
-     *
-     * @return
-     */
-    boolean hasFlashMode();
-
-    /**
      * open flash mode
      */
     void openFlashMode();
@@ -88,16 +81,16 @@ public interface ICameraWrapper {
     void closeFlashMode();
 
     /**
+     * always on
+     */
+    void torchFlashMode();
+
+    /**
      * auto flahs mode
      */
     void autoFlashMode();
 
-    /**
-     * check if has focus auto mode
-     *
-     * @return
-     */
-    boolean hasFocusAuto();
+    int getFlashMode();
 
     /**
      * check if current camera is back camera
@@ -166,4 +159,6 @@ public interface ICameraWrapper {
      * @param zoomLevel
      */
     void setZoom(int zoomLevel);
+
+    boolean hasFocusAuto();
 }

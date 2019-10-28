@@ -33,6 +33,22 @@ public final class SmartCamUtils {
     }
 
     /**
+     * 判断是否有闪光灯
+     * @param context
+     * @return
+     */
+    public static boolean hasFlashLight(Context context) {
+        if (context == null) {
+            return false;
+        }
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * get window display rotatrion
      *
      * @param context
@@ -88,6 +104,27 @@ public final class SmartCamUtils {
             result = (info.orientation - degrees + 360) % 360;
         }
         return result;
+    }
+
+    /**
+     * switch camera1 flash mode
+     *
+     * @param camera
+     * @param mode
+     */
+    public static void switchCamera1FlashMode(Camera camera, String mode) {
+        if (camera == null) {
+            return;
+        }
+        try {
+            camera.stopPreview();
+            Camera.Parameters parameters = camera.getParameters();
+            parameters.setFlashMode(mode);
+            camera.setParameters(parameters);
+            camera.startPreview();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 

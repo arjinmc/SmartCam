@@ -1,5 +1,6 @@
 package com.arjinmc.smartcam.core;
 
+import com.arjinmc.smartcam.core.model.CameraFlashMode;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
 import com.arjinmc.smartcam.core.model.CameraType;
 
@@ -76,17 +77,16 @@ public class AbsCameraWrapper implements ICameraWrapper {
     }
 
     @Override
-    public boolean hasFlashMode() {
-        return false;
-    }
-
-    @Override
     public void openFlashMode() {
-
     }
 
     @Override
     public void closeFlashMode() {
+
+    }
+
+    @Override
+    public void torchFlashMode() {
 
     }
 
@@ -96,8 +96,8 @@ public class AbsCameraWrapper implements ICameraWrapper {
     }
 
     @Override
-    public boolean hasFocusAuto() {
-        return false;
+    public int getFlashMode() {
+        return 0;
     }
 
     @Override
@@ -181,6 +181,11 @@ public class AbsCameraWrapper implements ICameraWrapper {
     @Override
     public void setZoom(int zoomLevel) {
 
+    }
+
+    @Override
+    public boolean hasFocusAuto() {
+        return false;
     }
 
 }

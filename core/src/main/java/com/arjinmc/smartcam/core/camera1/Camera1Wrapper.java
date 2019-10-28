@@ -4,6 +4,8 @@ import android.hardware.Camera;
 import android.util.Log;
 
 import com.arjinmc.smartcam.core.AbsCameraWrapper;
+import com.arjinmc.smartcam.core.SmartCamUtils;
+import com.arjinmc.smartcam.core.model.CameraFlashMode;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
 import com.arjinmc.smartcam.core.model.CameraType;
 
@@ -270,6 +272,34 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     @Override
     public void setZoom(int zoomLevel) {
         mCamera.getParameters().setZoom(zoomLevel);
+    }
+
+    @Override
+    public int getFlashMode() {
+        if (mCamera != null) {
+            return CameraFlashMode.getMode(mCamera.getParameters().getFlashMode());
+        }
+        return CameraFlashMode.MODE_UNKNOWN;
+    }
+
+    @Override
+    public void openFlashMode() {
+        SmartCamUtils.switchCamera1FlashMode(mCamera, Camera.Parameters.FLASH_MODE_ON);
+    }
+
+    @Override
+    public void closeFlashMode() {
+        SmartCamUtils.switchCamera1FlashMode(mCamera, Camera.Parameters.FLASH_MODE_OFF);
+    }
+
+    @Override
+    public void autoFlashMode() {
+        SmartCamUtils.switchCamera1FlashMode(mCamera, Camera.Parameters.FLASH_MODE_AUTO);
+    }
+
+    @Override
+    public void torchFlashMode() {
+        SmartCamUtils.switchCamera1FlashMode(mCamera, Camera.Parameters.FLASH_MODE_TORCH);
     }
 
     @Override

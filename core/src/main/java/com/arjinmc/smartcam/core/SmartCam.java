@@ -93,6 +93,31 @@ public class SmartCam extends AbsCameraWrapper {
     }
 
     @Override
+    public void openFlashMode() {
+        mCameraWrapper.openFlashMode();
+    }
+
+    @Override
+    public void closeFlashMode() {
+        mCameraWrapper.closeFlashMode();
+    }
+
+    @Override
+    public void autoFlashMode() {
+        mCameraWrapper.autoFlashMode();
+    }
+
+    @Override
+    public void torchFlashMode() {
+        mCameraWrapper.torchFlashMode();
+    }
+
+    @Override
+    public int getFlashMode() {
+        return mCameraWrapper.getFlashMode();
+    }
+
+    @Override
     public void logFeatures() {
         mCameraWrapper.logFeatures();
     }
