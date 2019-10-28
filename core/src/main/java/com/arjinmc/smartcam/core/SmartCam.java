@@ -28,6 +28,11 @@ public class SmartCam extends AbsCameraWrapper {
     }
 
     @Override
+    public boolean resumeOpen() {
+        return mCameraWrapper.resumeOpen();
+    }
+
+    @Override
     public void close() {
         mCameraWrapper.close();
     }
@@ -60,6 +65,31 @@ public class SmartCam extends AbsCameraWrapper {
     @Override
     public List<CameraSupportPreviewSize> getSupperPreviewSizes() {
         return mCameraWrapper.getSupperPreviewSizes();
+    }
+
+    @Override
+    public boolean isBackCamera() {
+        return mCameraWrapper.isBackCamera();
+    }
+
+    @Override
+    public void switchToBackCamera() {
+        mCameraWrapper.switchToBackCamera();
+    }
+
+    @Override
+    public void switchToFrontCamera() {
+        mCameraWrapper.switchToFrontCamera();
+    }
+
+    @Override
+    public int getZoom() {
+        return mCameraWrapper.getZoom();
+    }
+
+    @Override
+    public void setZoom(int zoomLevel) {
+        mCameraWrapper.setZoom(zoomLevel);
     }
 
     @Override

@@ -75,10 +75,8 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     private void startPreview() {
 
         try {
-            boolean isOpen = mCameraWrapper.open();
-            if (isOpen) {
-                mCamera = mCameraWrapper.getCamera();
-            }
+            mCameraWrapper.resumeOpen();
+            mCamera = mCameraWrapper.getCamera();
             if (mCamera != null) {
                 mOrientation = SmartCamUtils.getWindowDisplayRotation(getContext());
                 Log.i("startPreview", mOrientation + "");

@@ -1,11 +1,11 @@
 package com.arjinmc.smartcam.core;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.view.Surface;
 import android.view.WindowManager;
 
-import com.arjinmc.smartcam.core.model.CameraRotateType;
 import com.arjinmc.smartcam.core.model.CameraType;
 
 /**
@@ -14,6 +14,23 @@ import com.arjinmc.smartcam.core.model.CameraType;
  * email: arjinmc@hotmail.com
  */
 public final class SmartCamUtils {
+
+    /**
+     * check device if it has camera
+     *
+     * @param context
+     * @return
+     */
+    public static boolean hasCamera(Context context) {
+        if (context == null) {
+            return false;
+        }
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * get window display rotatrion

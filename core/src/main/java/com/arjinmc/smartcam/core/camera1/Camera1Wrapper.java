@@ -36,18 +36,29 @@ public class Camera1Wrapper extends AbsCameraWrapper {
 
     @Override
     public boolean open() {
+
         if (mCamera != null) {
+            mCamera.stopPreview();
+            mCamera.release();
         }
+
         mCamera = null;
+
         try {
 
+            //if camera is not open before
             int numberOfCameras = getNumberOfCameras();
+            int frontCameraId = 1;
             Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
             for (int i = 0; i < numberOfCameras; i++) {
                 getCameraInfo(i, cameraInfo);
                 if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
                     //default mCurrentCameraId is back camera id
                     mCurrentCameraId = i;
+                }
+
+                if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                    frontCameraId = i;
                 }
             }
 
@@ -56,9 +67,32 @@ public class Camera1Wrapper extends AbsCameraWrapper {
             if (mCamera != null) {
                 mCurrentCameraType = CameraType.CAMERA_BACK;
                 return true;
+            } else {
+                mCamera = Camera.open(frontCameraId);
+                if (mCamera == null) {
+                    return false;
+                }
+                mCurrentCameraType = CameraType.CAMERA_FRONT;
+                mCurrentCameraId = frontCameraId;
+                return true;
             }
         } catch (Exception e) {
             // Camera is not available (in use or does not exist)
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean resumeOpen() {
+        try {
+            if (mCurrentCameraType != CameraType.CAMERA_NULL) {
+                mCamera = Camera.open(mCurrentCameraId);
+                if (mCamera != null) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -110,6 +144,14 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     }
 
     @Override
+    public boolean isBackCamera() {
+        if (mCurrentCameraType == CameraType.CAMERA_BACK) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void switchToBackCamera() {
         switchCamera(CameraType.CAMERA_BACK);
     }
@@ -132,13 +174,16 @@ public class Camera1Wrapper extends AbsCameraWrapper {
             } else if (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
                 backIndex = cameraIndex;
             }
-            mCurrentCameraId = cameraIndex;
         }
 
         mCurrentCameraType = type;
+        mCamera.stopPreview();
+        mCamera.release();
         if (type == CameraType.CAMERA_FRONT && frontIndex != -1) {
+            mCurrentCameraId = frontIndex;
             mCamera = Camera.open(frontIndex);
         } else if (type == CameraType.CAMERA_BACK && backIndex != -1) {
+            mCurrentCameraId = backIndex;
             mCamera = Camera.open(backIndex);
         }
     }
@@ -212,6 +257,19 @@ public class Camera1Wrapper extends AbsCameraWrapper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public int getZoom() {
+        if (mCamera != null) {
+            return mCamera.getParameters().getZoom();
+        }
+        return -1;
+    }
+
+    @Override
+    public void setZoom(int zoomLevel) {
+        mCamera.getParameters().setZoom(zoomLevel);
     }
 
     @Override

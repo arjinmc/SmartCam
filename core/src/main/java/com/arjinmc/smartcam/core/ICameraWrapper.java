@@ -1,7 +1,5 @@
 package com.arjinmc.smartcam.core;
 
-import android.content.Context;
-
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
 
 import java.util.List;
@@ -12,13 +10,6 @@ import java.util.List;
  * email: arjinmc@hotmail.com
  */
 public interface ICameraWrapper {
-
-    /**
-     * check if has camera
-     *
-     * @return
-     */
-    boolean hasCamera(Context context);
 
     /**
      * get camera wrapper
@@ -38,6 +29,13 @@ public interface ICameraWrapper {
      * open camera
      */
     boolean open();
+
+    /**
+     * resume the open camera
+     *
+     * @return
+     */
+    boolean resumeOpen();
 
     /**
      * if camera is open
@@ -73,14 +71,26 @@ public interface ICameraWrapper {
     void logFeatures();
 
     /**
-     * open flassh mode
+     * check if it has flash light
+     *
+     * @return
+     */
+    boolean hasFlashMode();
+
+    /**
+     * open flash mode
      */
     void openFlashMode();
 
     /**
-     * close flast mode
+     * close flash mode
      */
     void closeFlashMode();
+
+    /**
+     * auto flahs mode
+     */
+    void autoFlashMode();
 
     /**
      * check if has focus auto mode
@@ -88,6 +98,13 @@ public interface ICameraWrapper {
      * @return
      */
     boolean hasFocusAuto();
+
+    /**
+     * check if current camera is back camera
+     *
+     * @return
+     */
+    boolean isBackCamera();
 
     /**
      * switch to front camera
@@ -135,4 +152,18 @@ public interface ICameraWrapper {
      * @return
      */
     int getOrientation();
+
+    /**
+     * get zoom level
+     *
+     * @return
+     */
+    int getZoom();
+
+    /**
+     * set zoom level
+     *
+     * @param zoomLevel
+     */
+    void setZoom(int zoomLevel);
 }

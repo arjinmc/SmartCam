@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">ui</string>
+
+    <string name="smartcam_no_camera_tips">Your device has no camera.</string>
 </resources>
