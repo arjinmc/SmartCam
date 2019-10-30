@@ -1,7 +1,6 @@
 package com.arjinmc.smartcam.core.model;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.io.Serializable;
 

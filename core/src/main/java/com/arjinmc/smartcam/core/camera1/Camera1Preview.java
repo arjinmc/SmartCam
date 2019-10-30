@@ -2,11 +2,11 @@ package com.arjinmc.smartcam.core.camera1;
 
 import android.content.Context;
 import android.hardware.Camera;
-import android.util.Log;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
 import com.arjinmc.smartcam.core.wrapper.ICameraPreviewWrapper;
@@ -46,18 +46,18 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        Log.i(TAG, "surfaceCreated");
+        SmartCamLog.i(TAG, "surfaceCreated");
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        Log.i(TAG, "surfaceChanged:" + width + "/" + height);
+        SmartCamLog.i(TAG, "surfaceChanged:" + width + "/" + height);
         startPreview();
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        Log.i(TAG, "surfaceDestroyed");
+        SmartCamLog.i(TAG, "surfaceDestroyed");
 
         if (mHolder.getSurface() == null) {
             return;
@@ -81,7 +81,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
             mCamera = mCameraWrapper.getCamera();
             if (mCamera != null) {
                 mOrientation = SmartCamUtils.getWindowDisplayRotation(getContext());
-                Log.i("startPreview", mOrientation + "");
+                SmartCamLog.i(TAG, "startPreview orientation:" + mOrientation);
                 mCamera.setDisplayOrientation(SmartCamUtils.getShouldRotateDegree(getContext()
                         , mCameraWrapper.getCurrentCameraType()
                         , Integer.valueOf(mCameraWrapper.getCurrentCameraId())
@@ -91,7 +91,8 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                         getMeasuredWidth(), getMeasuredHeight());
 
                 if (cameraSupportPreviewSize != null) {
-                    Log.e("final preview size", cameraSupportPreviewSize.getWidth() + "/" + cameraSupportPreviewSize.getHeight());
+                    SmartCamLog.e(TAG, "final preview size:"
+                            + cameraSupportPreviewSize.getWidth() + "/" + cameraSupportPreviewSize.getHeight());
                     getHolder().setFixedSize(cameraSupportPreviewSize.getWidth(), cameraSupportPreviewSize.getHeight());
 
                 }
@@ -99,7 +100,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                 mCamera.startPreview();
             }
         } catch (IOException e) {
-            Log.d(TAG, "Error setting camera preview: " + e.getMessage());
+            SmartCamLog.d(TAG, "Error setting camera preview: " + e.getMessage());
         }
 
     }

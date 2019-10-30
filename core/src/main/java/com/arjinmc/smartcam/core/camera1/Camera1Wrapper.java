@@ -1,8 +1,8 @@
 package com.arjinmc.smartcam.core.camera1;
 
 import android.hardware.Camera;
-import android.util.Log;
 
+import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.lock.CameraLock;
 import com.arjinmc.smartcam.core.model.CameraFlashMode;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
@@ -267,19 +267,19 @@ public class Camera1Wrapper extends AbsCameraWrapper {
             mCamera.takePicture(new Camera.ShutterCallback() {
                 @Override
                 public void onShutter() {
-                    Log.i("onShutter", "onShutter");
+                    SmartCamLog.i(TAG, "onShutter");
 
                 }
             }, new Camera.PictureCallback() {
                 @Override
                 public void onPictureTaken(byte[] data, Camera camera) {
-                    Log.i("onPictureTaken", "raw");
+                    SmartCamLog.i(TAG, "raw");
 
                 }
             }, new Camera.PictureCallback() {
                 @Override
                 public void onPictureTaken(byte[] data, Camera camera) {
-                    Log.i("onPictureTaken2", "jpeg");
+                    SmartCamLog.i(TAG, "jpeg");
                     mCamera.startPreview();
                 }
             });
@@ -352,13 +352,13 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     @Override
     public void logFeatures() {
         if (mCamera == null) {
-            Log.i(TAG, "Camera is not open");
+            SmartCamLog.i(TAG, "Camera is not open");
             return;
         }
         Camera.Parameters parameters = mCamera.getParameters();
-        Log.i(TAG, "Antibanding:" + parameters.getAntibanding());
-        Log.i(TAG, "ColorEffect:" + parameters.getColorEffect());
-        Log.i(TAG, "FlashMode:" + parameters.getFlashMode());
-        Log.i(TAG, "FocusMode:" + parameters.getFocusMode());
+        SmartCamLog.i(TAG, "Antibanding:" + parameters.getAntibanding());
+        SmartCamLog.i(TAG, "ColorEffect:" + parameters.getColorEffect());
+        SmartCamLog.i(TAG, "FlashMode:" + parameters.getFlashMode());
+        SmartCamLog.i(TAG, "FocusMode:" + parameters.getFocusMode());
     }
 }

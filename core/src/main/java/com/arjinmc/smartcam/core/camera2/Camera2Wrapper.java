@@ -16,7 +16,6 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.os.Build;
 import android.os.Handler;
-import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 
@@ -24,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.collection.ArrayMap;
 
+import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.lock.CameraLock;
 import com.arjinmc.smartcam.core.model.CameraFlashMode;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
@@ -41,6 +41,8 @@ import java.util.List;
  */
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class Camera2Wrapper extends AbsCameraWrapper {
+
+    private final String TAG = "Camera2Wrapper";
 
     private CameraDevice mCamera;
     private Handler mHandler;
@@ -122,7 +124,7 @@ public class Camera2Wrapper extends AbsCameraWrapper {
                         if (mSmartCamStateListener != null) {
                             mSmartCamStateListener.onConnected();
                         }
-                        Log.e("onOpened", "onOpened");
+                        SmartCamLog.e(TAG, "onOpened");
 
                     }
 
@@ -133,7 +135,7 @@ public class Camera2Wrapper extends AbsCameraWrapper {
                         if (mSmartCamStateListener != null) {
                             mSmartCamStateListener.onDisconnected();
                         }
-                        Log.e("onDisconnected", "onDisconnected");
+                        SmartCamLog.e(TAG, "onDisconnected");
 
                     }
 
@@ -144,7 +146,7 @@ public class Camera2Wrapper extends AbsCameraWrapper {
                         if (mSmartCamStateListener != null) {
                             mSmartCamStateListener.onError(new SmartCamOpenError(error + "CameraDevice.StateCallback error"));
                         }
-                        Log.e("onError", "onError");
+                        SmartCamLog.e(TAG, "onError");
                     }
                 };
             }
@@ -167,7 +169,7 @@ public class Camera2Wrapper extends AbsCameraWrapper {
     @Override
     public boolean resumeOpen() {
 
-        Log.e("resumeOpen", "resumeOpen");
+        SmartCamLog.e(TAG, "resumeOpen");
 
         if (mCurrentCameraId == null && "-1".equals(mCurrentCameraId)) {
             return false;
@@ -293,7 +295,7 @@ public class Camera2Wrapper extends AbsCameraWrapper {
 
     @SuppressLint("MissingPermission")
     private void switchCamera(int cameraType) {
-        Log.e("switch camera", "switch camera");
+        SmartCamLog.e(TAG, "switch camera");
         String[] cameraIdList = getCameraIdList();
         if (cameraIdList == null || cameraIdList.length < 2) {
             return;

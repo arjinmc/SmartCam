@@ -10,13 +10,13 @@ import android.hardware.camera2.CaptureRequest;
 import android.media.ImageReader;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Surface;
 import android.view.TextureView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
 import com.arjinmc.smartcam.core.wrapper.ICameraPreviewWrapper;
 
@@ -29,6 +29,8 @@ import java.util.Arrays;
  */
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class Camera2Preview extends TextureView implements TextureView.SurfaceTextureListener, ICameraPreviewWrapper {
+
+    private final String TAG = "Camera2Preview";
 
     private Camera2Wrapper mCamera2Wrapper;
     private CameraDevice mCamera;
@@ -85,7 +87,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-        Log.e("onSurfaceTextureAvailable", "onSurfaceTextureAvailable");
+        SmartCamLog.e(TAG, "onSurfaceTextureAvailable");
         startPreview(width, height);
 
     }
@@ -98,7 +100,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
         mCamera2Wrapper.closeFlashMode();
-        Log.e("onSurfaceTextureDestroyed", "onSurfaceTextureDestroyed");
+        SmartCamLog.e(TAG, "onSurfaceTextureDestroyed");
         return false;
     }
 
@@ -133,7 +135,8 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             if (cameraSupportPreviewSize == null) {
                 return;
             }
-            Log.e("CameraSupportPreviewSize", cameraSupportPreviewSize.getWidth() + "/" + cameraSupportPreviewSize.getHeight());
+            SmartCamLog.e(TAG, "CameraSupportPreviewSize:"
+                    + cameraSupportPreviewSize.getWidth() + "/" + cameraSupportPreviewSize.getHeight());
             mImageReader = ImageReader.newInstance(cameraSupportPreviewSize.getWidth(), cameraSupportPreviewSize.getHeight(),
                     ImageFormat.JPEG, 2);
             mCamera.createCaptureSession(Arrays.asList(surface, mImageReader.getSurface()),
@@ -171,7 +174,6 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             e.printStackTrace();
         }
     }
-
 
 
     @Override
