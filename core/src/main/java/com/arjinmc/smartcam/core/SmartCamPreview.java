@@ -1,9 +1,9 @@
 package com.arjinmc.smartcam.core;
 
 import android.content.Context;
-import android.hardware.camera2.CameraDevice;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi;
 import com.arjinmc.smartcam.core.camera1.Camera1Preview;
 import com.arjinmc.smartcam.core.camera1.Camera1Wrapper;
 import com.arjinmc.smartcam.core.camera2.Camera2Preview;
+import com.arjinmc.smartcam.core.camera2.Camera2Wrapper;
 import com.arjinmc.smartcam.core.model.CameraVersion;
 
 /**
@@ -57,19 +58,30 @@ public class SmartCamPreview extends FrameLayout {
 
     private void init(SmartCam smartCam) {
 
+        if (smartCam == null) {
+            return;
+        }
+
         mSmartCam = smartCam;
 
         if (getChildCount() != 0) {
             removeAllViews();
         }
 
+        if (DebugConfig.useV1) {
+            mCurrentCameraVersion = CameraVersion.VERSION_1;
+            mCamera1Preview = new Camera1Preview(getContext(), (Camera1Wrapper) mSmartCam.getCameraWrapper());
+            addView(mCamera1Preview);
+            return;
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mCurrentCameraVersion = CameraVersion.VERSION_2;
-//            mCamera2Preview = new Camera2Preview(getContext(), (CameraDevice) smartCam.getCamera());
-//            addView(mCamera2Preview);
+            mCamera2Preview = new Camera2Preview(getContext(), (Camera2Wrapper) mSmartCam.getCameraWrapper());
+            addView(mCamera2Preview);
         } else {
             mCurrentCameraVersion = CameraVersion.VERSION_1;
-            mCamera1Preview = new Camera1Preview(getContext(), (Camera1Wrapper) smartCam.getCameraWrapper());
+            mCamera1Preview = new Camera1Preview(getContext(), (Camera1Wrapper) mSmartCam.getCameraWrapper());
             addView(mCamera1Preview);
         }
     }

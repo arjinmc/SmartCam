@@ -4,6 +4,7 @@ import android.hardware.Camera;
 import android.util.Log;
 
 import com.arjinmc.smartcam.core.SmartCamUtils;
+import com.arjinmc.smartcam.core.lock.CameraLock;
 import com.arjinmc.smartcam.core.model.CameraFlashMode;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
 import com.arjinmc.smartcam.core.model.CameraType;
@@ -26,6 +27,11 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     private final String TAG = "Camera1Wrapper";
 
     private Camera mCamera;
+    private CameraLock mCameraLock;
+
+    public Camera1Wrapper() {
+        mCameraLock = new CameraLock();
+    }
 
     @Override
     public Camera1Wrapper getCameraWrapper() {
@@ -57,7 +63,7 @@ public class Camera1Wrapper extends AbsCameraWrapper {
                 getCameraInfo(i, cameraInfo);
                 if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
                     //default mCurrentCameraId is back camera id
-                    mCurrentCameraId = i;
+                    mCurrentCameraId = i + "";
                 }
 
                 if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
@@ -83,7 +89,7 @@ public class Camera1Wrapper extends AbsCameraWrapper {
                     return;
                 }
                 mCurrentCameraType = CameraType.CAMERA_FRONT;
-                mCurrentCameraId = frontCameraId;
+                mCurrentCameraId = frontCameraId + "";
 
                 if (mSmartCamStateListener != null) {
                     mSmartCamStateListener.onConnected();
@@ -104,7 +110,7 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     public boolean resumeOpen() {
         try {
             if (mCurrentCameraType != CameraType.CAMERA_NULL) {
-                mCamera = Camera.open(mCurrentCameraId);
+                mCamera = Camera.open(Integer.valueOf(mCurrentCameraId));
                 if (mCamera != null) {
                     return true;
                 }
@@ -130,6 +136,11 @@ public class Camera1Wrapper extends AbsCameraWrapper {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean isLock() {
+        return mCameraLock.isLock();
     }
 
     @Override
@@ -170,11 +181,17 @@ public class Camera1Wrapper extends AbsCameraWrapper {
 
     @Override
     public void switchToBackCamera() {
+        if (isBackCamera()) {
+            return;
+        }
         switchCamera(CameraType.CAMERA_BACK);
     }
 
     @Override
     public void switchToFrontCamera() {
+        if (!isBackCamera()) {
+            return;
+        }
         switchCamera(CameraType.CAMERA_FRONT);
     }
 
@@ -194,14 +211,10 @@ public class Camera1Wrapper extends AbsCameraWrapper {
         }
 
         mCurrentCameraType = type;
-        mCamera.stopPreview();
-        mCamera.release();
         if (type == CameraType.CAMERA_FRONT && frontIndex != -1) {
-            mCurrentCameraId = frontIndex;
-            mCamera = Camera.open(frontIndex);
+            mCurrentCameraId = frontIndex + "";
         } else if (type == CameraType.CAMERA_BACK && backIndex != -1) {
-            mCurrentCameraId = backIndex;
-            mCamera = Camera.open(backIndex);
+            mCurrentCameraId = backIndex + "";
         }
     }
 
@@ -226,11 +239,11 @@ public class Camera1Wrapper extends AbsCameraWrapper {
 
     @Override
     public int getOrientation() {
-        if (mCurrentCameraId == -1) {
+        if ("-1".equals(mCurrentCameraId)) {
             return 0;
         }
         Camera.CameraInfo info = new Camera.CameraInfo();
-        getCameraInfo(mCurrentCameraId, info);
+        getCameraInfo(Integer.valueOf(mCurrentCameraId), info);
         return info.orientation;
     }
 

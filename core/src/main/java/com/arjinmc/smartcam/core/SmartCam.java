@@ -25,6 +25,11 @@ public class SmartCam extends AbsCameraWrapper {
     public SmartCam(Context context) {
         setContext(context);
 
+        if (DebugConfig.useV1) {
+            mCameraWrapper = new Camera1Wrapper();
+            return;
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mCameraWrapper = new Camera2Wrapper(getContext());
         } else {
@@ -34,7 +39,6 @@ public class SmartCam extends AbsCameraWrapper {
 
     @Override
     public void open() {
-//        mCameraWrapper = new Camera1Wrapper();
         mCameraWrapper.open();
     }
 
@@ -74,6 +78,16 @@ public class SmartCam extends AbsCameraWrapper {
     }
 
     @Override
+    public String getCurrentCameraId() {
+        return mCameraWrapper.getCurrentCameraId();
+    }
+
+    @Override
+    public int getCurrentCameraType() {
+        return mCameraWrapper.getCurrentCameraType();
+    }
+
+    @Override
     public boolean isBackCamera() {
         return mCameraWrapper.isBackCamera();
     }
@@ -86,6 +100,11 @@ public class SmartCam extends AbsCameraWrapper {
     @Override
     public void switchToFrontCamera() {
         mCameraWrapper.switchToFrontCamera();
+    }
+
+    @Override
+    public boolean isLock() {
+        return mCameraWrapper.isLock();
     }
 
     @Override

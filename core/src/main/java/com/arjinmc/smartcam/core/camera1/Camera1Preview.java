@@ -7,9 +7,9 @@ import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.arjinmc.smartcam.core.wrapper.ICameraPreviewWrapper;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
+import com.arjinmc.smartcam.core.wrapper.ICameraPreviewWrapper;
 
 import java.io.IOException;
 
@@ -84,7 +84,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                 Log.i("startPreview", mOrientation + "");
                 mCamera.setDisplayOrientation(SmartCamUtils.getShouldRotateDegree(getContext()
                         , mCameraWrapper.getCurrentCameraType()
-                        , mCameraWrapper.getCurrentCameraId()
+                        , Integer.valueOf(mCameraWrapper.getCurrentCameraId())
                         , mOrientation));
 
                 CameraSupportPreviewSize cameraSupportPreviewSize = mCameraWrapper.getCompatPreviewSize(

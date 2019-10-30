@@ -118,6 +118,12 @@ public interface ICameraWrapper {
     void switchToBackCamera();
 
     /**
+     * check if is lock
+     * @return
+     */
+    boolean isLock();
+
+    /**
      * get current camera type ：is front or back
      *
      * @return {@link com.arjinmc.smartcam.core.model.CameraType}
@@ -129,7 +135,7 @@ public interface ICameraWrapper {
      *
      * @return
      */
-    int getCurrentCameraId();
+    String getCurrentCameraId();
 
     /**
      * get preview sizes that current camera supported

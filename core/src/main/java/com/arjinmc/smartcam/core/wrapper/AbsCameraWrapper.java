@@ -22,7 +22,7 @@ public class AbsCameraWrapper implements ICameraWrapper {
      * mark current camera type
      */
     protected int mCurrentCameraType = CameraType.CAMERA_NULL;
-    protected int mCurrentCameraId = -1;
+    protected String mCurrentCameraId = "-1";
 
     protected SmartCamStateListener mSmartCamStateListener;
 
@@ -132,12 +132,17 @@ public class AbsCameraWrapper implements ICameraWrapper {
     }
 
     @Override
+    public boolean isLock() {
+        return false;
+    }
+
+    @Override
     public int getCurrentCameraType() {
         return 0;
     }
 
     @Override
-    public int getCurrentCameraId() {
+    public String getCurrentCameraId() {
         return mCurrentCameraId;
     }
 

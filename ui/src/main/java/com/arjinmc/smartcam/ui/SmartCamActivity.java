@@ -14,7 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.arjinmc.smartcam.core.SmartCam;
 import com.arjinmc.smartcam.core.SmartCamPreview;
 import com.arjinmc.smartcam.core.SmartCamUtils;
+import com.arjinmc.smartcam.core.callback.SmartCamStateListener;
 import com.arjinmc.smartcam.core.model.CameraFlashMode;
+import com.arjinmc.smartcam.core.model.SmartCamError;
 
 /**
  * Created by Eminem Lo on 2019-10-15.
@@ -63,25 +65,38 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initData() {
-        mSmartCam = new SmartCam();
-        hasCamera = mSmartCam.open();
+        mSmartCam = new SmartCam(this);
+        mSmartCam.setStateListener(new SmartCamStateListener() {
+            @Override
+            public void onConnected() {
+                hasCamera = true;
+                connected();
+            }
 
-        if (!hasCamera) {
-            Toast.makeText(this, R.string.smartcam_no_camera_tips, Toast.LENGTH_SHORT).show();
-            return;
-        }
+            @Override
+            public void onDisconnected() {
+                unconnected();
+            }
 
+            @Override
+            public void onError(SmartCamError error) {
+                unconnected();
+            }
+        });
+        mSmartCam.open();
+    }
+
+    private void connected() {
         hasFlashLight = SmartCamUtils.hasFlashLight(this);
 
-        if (hasCamera) {
-            mSmartCamPreview.setCamera(mSmartCam);
-            switchCamera(mSmartCam.isBackCamera());
-            if (hasFlashLight) {
-                mFlashMode = switchFlashModeUI(mSmartCam.getFlashMode());
-                mIvSwitchFlashLight.setVisibility(View.VISIBLE);
-            } else {
-                mIvSwitchFlashLight.setVisibility(View.GONE);
-            }
+        mSmartCamPreview.setCamera(mSmartCam);
+        switchCamera(mSmartCam.isBackCamera());
+
+        if (hasFlashLight) {
+            mFlashMode = switchFlashModeUI(mSmartCam.getFlashMode());
+            mIvSwitchFlashLight.setVisibility(View.VISIBLE);
+        } else {
+            mIvSwitchFlashLight.setVisibility(View.GONE);
         }
 
         if (mSmartCam.getCameraCount() >= 2) {
@@ -89,7 +104,13 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
         } else {
             mIvSwitchCamera.setVisibility(View.GONE);
         }
+    }
 
+    private void unconnected() {
+        if (!hasCamera) {
+            Toast.makeText(this, R.string.smartcam_no_camera_tips, Toast.LENGTH_SHORT).show();
+            return;
+        }
     }
 
     @Override
@@ -106,6 +127,10 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
         }
 
         if (viewId == R.id.smartcam_iv_switch_camera) {
+            //prevent from switching camera frequently
+            if (mSmartCam.isLock()) {
+                return;
+            }
             if (mSmartCam.isBackCamera()) {
                 mSmartCam.switchToFrontCamera();
                 switchCamera(false);
