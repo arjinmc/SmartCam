@@ -105,26 +105,5 @@ public final class SmartCamUtils {
         }
         return result;
     }
-
-    /**
-     * switch camera1 flash mode
-     *
-     * @param camera
-     * @param mode
-     */
-    public static void switchCamera1FlashMode(Camera camera, String mode) {
-        if (camera == null) {
-            return;
-        }
-        try {
-            camera.stopPreview();
-            Camera.Parameters parameters = camera.getParameters();
-            parameters.setFlashMode(mode);
-            camera.setParameters(parameters);
-            camera.startPreview();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }
 

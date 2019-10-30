@@ -6,13 +6,9 @@ import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraDevice;
-import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
-import android.hardware.camera2.CaptureResult;
-import android.hardware.camera2.TotalCaptureResult;
 import android.media.ImageReader;
 import android.os.Build;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Surface;
@@ -36,44 +32,12 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 
     private Camera2Wrapper mCamera2Wrapper;
     private CameraDevice mCamera;
-    private Handler mHandler;
-    private CameraCaptureSession.CaptureCallback mCaptureCallback = new CameraCaptureSession.CaptureCallback() {
-        @Override
-        public void onCaptureStarted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, long timestamp, long frameNumber) {
-            super.onCaptureStarted(session, request, timestamp, frameNumber);
-        }
-
-        @Override
-        public void onCaptureProgressed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureResult partialResult) {
-            super.onCaptureProgressed(session, request, partialResult);
-        }
-
-        @Override
-        public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
-            super.onCaptureCompleted(session, request, result);
-        }
-
-        @Override
-        public void onCaptureFailed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureFailure failure) {
-            super.onCaptureFailed(session, request, failure);
-        }
-
-        @Override
-        public void onCaptureSequenceCompleted(@NonNull CameraCaptureSession session, int sequenceId, long frameNumber) {
-            super.onCaptureSequenceCompleted(session, sequenceId, frameNumber);
-        }
-
-        @Override
-        public void onCaptureSequenceAborted(@NonNull CameraCaptureSession session, int sequenceId) {
-            super.onCaptureSequenceAborted(session, sequenceId);
-        }
-
-        @Override
-        public void onCaptureBufferLost(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull Surface target, long frameNumber) {
-            super.onCaptureBufferLost(session, request, target, frameNumber);
-        }
-    };
-
+    private CaptureRequest.Builder mPreviewRequestBuilder;
+    private CameraCaptureSession mCaptureSession;
+    private CaptureRequest mPreviewRequest;
+    private ImageReader mImageReader;
+    private Camera2Wrapper.OnFlashChangeListener mOnFlashChangeListener;
+    private int mWidth, mHeight;
 
     public Camera2Preview(Context context, Camera2Wrapper camera2Wrapper) {
         super(context);
@@ -105,7 +69,13 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 
     private void init() {
         setSurfaceTextureListener(this);
-        mHandler = new Handler();
+        mOnFlashChangeListener = new Camera2Wrapper.OnFlashChangeListener() {
+            @Override
+            public void onFlashChange() {
+                startPreview(mWidth, mHeight);
+            }
+        };
+        mCamera2Wrapper.setOnFlashChangeListener(mOnFlashChangeListener);
     }
 
     @Override
@@ -117,6 +87,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         Log.e("onSurfaceTextureAvailable", "onSurfaceTextureAvailable");
         startPreview(width, height);
+
     }
 
     @Override
@@ -126,6 +97,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        mCamera2Wrapper.closeFlashMode();
         Log.e("onSurfaceTextureDestroyed", "onSurfaceTextureDestroyed");
         return false;
     }
@@ -137,6 +109,9 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 
     private void startPreview(int width, int height) {
 
+        mWidth = width;
+        mHeight = height;
+
         if (mCamera == null) {
             mCamera2Wrapper.resumeOpen();
             mCamera = mCamera2Wrapper.getCamera();
@@ -146,23 +121,22 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
         if (mCamera == null) {
             return;
         }
-
         SurfaceTexture texture = getSurfaceTexture();
         texture.setDefaultBufferSize(width, height);
         Surface surface = new Surface(texture);
 
         try {
-            mCamera2Wrapper.setPreviewRequestBuilder(mCamera.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW));
-            mCamera2Wrapper.getPreviewRequestBuilder().addTarget(surface);
+            mPreviewRequestBuilder = mCamera.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+            mPreviewRequestBuilder.addTarget(surface);
 
             CameraSupportPreviewSize cameraSupportPreviewSize = mCamera2Wrapper.getCompatPreviewSize(width, height);
             if (cameraSupportPreviewSize == null) {
                 return;
             }
-            Log.e("CameraSupportPreviewSize",cameraSupportPreviewSize.getWidth()+"/"+cameraSupportPreviewSize.getHeight());
-            mCamera2Wrapper.setImageReader(ImageReader.newInstance(cameraSupportPreviewSize.getWidth(), cameraSupportPreviewSize.getHeight(),
-                    ImageFormat.JPEG, 2));
-            mCamera.createCaptureSession(Arrays.asList(surface, mCamera2Wrapper.getImageReader().getSurface()),
+            Log.e("CameraSupportPreviewSize", cameraSupportPreviewSize.getWidth() + "/" + cameraSupportPreviewSize.getHeight());
+            mImageReader = ImageReader.newInstance(cameraSupportPreviewSize.getWidth(), cameraSupportPreviewSize.getHeight(),
+                    ImageFormat.JPEG, 2);
+            mCamera.createCaptureSession(Arrays.asList(surface, mImageReader.getSurface()),
                     new CameraCaptureSession.StateCallback() {
 
                         @Override
@@ -171,20 +145,17 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                                 return;
                             }
 
-                            mCamera2Wrapper.setCaptureSession(cameraCaptureSession);
+                            mCaptureSession = cameraCaptureSession;
 
                             try {
                                 // Auto focus should be continuous for camera preview.
-                                mCamera2Wrapper.getPreviewRequestBuilder().set(CaptureRequest.CONTROL_AF_MODE,
+                                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
                                         CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-
-                                // Flash is automatically enabled when necessary.
-//                                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
-//                                        CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
-
-                                mCamera2Wrapper.setPreviewRequest(mCamera2Wrapper.getPreviewRequestBuilder().build());
-                                mCamera2Wrapper.getCaptureSession().setRepeatingRequest(mCamera2Wrapper.getPreviewRequest(),
-                                        mCaptureCallback, mHandler);
+                                //resume params has set
+                                mPreviewRequestBuilder = mCamera2Wrapper.resumeParams(mPreviewRequestBuilder);
+                                mPreviewRequest = mPreviewRequestBuilder.build();
+                                mCaptureSession.setRepeatingRequest(mPreviewRequest,
+                                        mCamera2Wrapper.getCaptureCallback(), mCamera2Wrapper.getHandler());
                             } catch (CameraAccessException e) {
                                 e.printStackTrace();
                             }
@@ -201,12 +172,10 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
         }
     }
 
+
+
     @Override
     public void destroy() {
-
-        if (mCamera != null) {
-            mCamera.close();
-            mCamera = null;
-        }
+        onSurfaceTextureDestroyed(getSurfaceTexture());
     }
 }

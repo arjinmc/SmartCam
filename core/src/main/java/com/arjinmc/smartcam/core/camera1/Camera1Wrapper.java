@@ -3,7 +3,6 @@ package com.arjinmc.smartcam.core.camera1;
 import android.hardware.Camera;
 import android.util.Log;
 
-import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.lock.CameraLock;
 import com.arjinmc.smartcam.core.model.CameraFlashMode;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
@@ -312,22 +311,42 @@ public class Camera1Wrapper extends AbsCameraWrapper {
 
     @Override
     public void openFlashMode() {
-        SmartCamUtils.switchCamera1FlashMode(mCamera, Camera.Parameters.FLASH_MODE_ON);
+        switchCameraFlashMode(Camera.Parameters.FLASH_MODE_ON);
     }
 
     @Override
     public void closeFlashMode() {
-        SmartCamUtils.switchCamera1FlashMode(mCamera, Camera.Parameters.FLASH_MODE_OFF);
+        switchCameraFlashMode(Camera.Parameters.FLASH_MODE_OFF);
     }
 
     @Override
     public void autoFlashMode() {
-        SmartCamUtils.switchCamera1FlashMode(mCamera, Camera.Parameters.FLASH_MODE_AUTO);
+        switchCameraFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
     }
 
     @Override
     public void torchFlashMode() {
-        SmartCamUtils.switchCamera1FlashMode(mCamera, Camera.Parameters.FLASH_MODE_TORCH);
+        switchCameraFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+    }
+
+    /**
+     * switch camera1 flash mode
+     *
+     * @param mode
+     */
+    public void switchCameraFlashMode(String mode) {
+        if (mCamera == null) {
+            return;
+        }
+        try {
+            mCamera.stopPreview();
+            Camera.Parameters parameters = mCamera.getParameters();
+            parameters.setFlashMode(mode);
+            mCamera.setParameters(parameters);
+            mCamera.startPreview();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

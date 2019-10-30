@@ -8,18 +8,24 @@ import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraMetadata;
+import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.CaptureResult;
+import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
-import android.media.ImageReader;
 import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.util.Size;
+import android.view.Surface;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.collection.ArrayMap;
 
 import com.arjinmc.smartcam.core.lock.CameraLock;
+import com.arjinmc.smartcam.core.model.CameraFlashMode;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
 import com.arjinmc.smartcam.core.model.CameraType;
 import com.arjinmc.smartcam.core.model.SmartCamOpenError;
@@ -40,10 +46,48 @@ public class Camera2Wrapper extends AbsCameraWrapper {
     private Handler mHandler;
     private CameraDevice.StateCallback mStateCallBack;
     private CameraLock mCameraLock;
-    private CaptureRequest.Builder mPreviewRequestBuilder;
-    private CameraCaptureSession mCaptureSession;
-    private CaptureRequest mPreviewRequest;
-    private ImageReader mImageReader;
+    private OnFlashChangeListener mOnFlashChangeListener;
+    /**
+     * current params of camera
+     */
+    private ArrayMap<CaptureRequest.Key, Integer> mCameraParams;
+
+    private CameraCaptureSession.CaptureCallback mCaptureCallback = new CameraCaptureSession.CaptureCallback() {
+        @Override
+        public void onCaptureStarted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, long timestamp, long frameNumber) {
+            super.onCaptureStarted(session, request, timestamp, frameNumber);
+        }
+
+        @Override
+        public void onCaptureProgressed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureResult partialResult) {
+            super.onCaptureProgressed(session, request, partialResult);
+        }
+
+        @Override
+        public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
+            super.onCaptureCompleted(session, request, result);
+        }
+
+        @Override
+        public void onCaptureFailed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureFailure failure) {
+            super.onCaptureFailed(session, request, failure);
+        }
+
+        @Override
+        public void onCaptureSequenceCompleted(@NonNull CameraCaptureSession session, int sequenceId, long frameNumber) {
+            super.onCaptureSequenceCompleted(session, sequenceId, frameNumber);
+        }
+
+        @Override
+        public void onCaptureSequenceAborted(@NonNull CameraCaptureSession session, int sequenceId) {
+            super.onCaptureSequenceAborted(session, sequenceId);
+        }
+
+        @Override
+        public void onCaptureBufferLost(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull Surface target, long frameNumber) {
+            super.onCaptureBufferLost(session, request, target, frameNumber);
+        }
+    };
 
     public Camera2Wrapper(Context context) {
         setContext(context);
@@ -255,12 +299,6 @@ public class Camera2Wrapper extends AbsCameraWrapper {
             return;
         }
 
-        if (mCaptureSession == null) {
-            return;
-        }
-
-        mCaptureSession.close();
-        mCaptureSession = null;
         mCamera.close();
         mCamera = null;
 
@@ -296,6 +334,55 @@ public class Camera2Wrapper extends AbsCameraWrapper {
     }
 
     @Override
+    public int getFlashMode() {
+
+        if (mCamera == null || mCameraParams == null || mCameraParams.isEmpty()) {
+            return CameraFlashMode.MODE_OFF;
+        }
+
+        int mode = mCameraParams.get(CaptureRequest.FLASH_MODE);
+        switch (mode) {
+            case CaptureRequest.FLASH_MODE_OFF:
+                return CameraFlashMode.MODE_OFF;
+            case CaptureRequest.FLASH_MODE_SINGLE:
+                return CameraFlashMode.MODE_AUTO;
+            case CaptureRequest.FLASH_MODE_TORCH:
+                return CameraFlashMode.MODE_TORCH;
+            default:
+                break;
+
+        }
+        return CameraFlashMode.MODE_OFF;
+    }
+
+    @Override
+    public void openFlashMode() {
+
+        dispatchFlashChange(CameraFlashMode.MODE_AUTO);
+        addCameraParam(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_SINGLE);
+    }
+
+    @Override
+    public void closeFlashMode() {
+
+        dispatchFlashChange(CameraFlashMode.MODE_OFF);
+        addCameraParam(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_OFF);
+    }
+
+    @Override
+    public void autoFlashMode() {
+
+        dispatchFlashChange(CameraFlashMode.MODE_AUTO);
+        addCameraParam(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_SINGLE);
+    }
+
+    @Override
+    public void torchFlashMode() {
+        dispatchFlashChange(CameraFlashMode.MODE_TORCH);
+        addCameraParam(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_TORCH);
+    }
+
+    @Override
     public boolean isLock() {
         return mCameraLock.isLock();
     }
@@ -310,35 +397,70 @@ public class Camera2Wrapper extends AbsCameraWrapper {
         super.setZoom(zoomLevel);
     }
 
-    public void setPreviewRequestBuilder(CaptureRequest.Builder previewRequestBuilder) {
-        mPreviewRequestBuilder = previewRequestBuilder;
+    public CameraCaptureSession.CaptureCallback getCaptureCallback() {
+        return mCaptureCallback;
     }
 
-    public CaptureRequest.Builder getPreviewRequestBuilder() {
-        return mPreviewRequestBuilder;
+    public Handler getHandler() {
+        return mHandler;
     }
 
-    public void setCaptureSession(CameraCaptureSession captureSession) {
-        mCaptureSession = captureSession;
+    private void addCameraParam(CaptureRequest.Key key, int value) {
+        if (mCameraParams == null) {
+            mCameraParams = new ArrayMap<>();
+        }
+        mCameraParams.put(key, value);
     }
 
-    public CameraCaptureSession getCaptureSession() {
-        return mCaptureSession;
+    private void removeCameraParam(CaptureRequest.Key key) {
+        if (mCameraParams == null || mCameraParams.isEmpty()) {
+            return;
+        }
+        if (mCameraParams.containsKey(key)) {
+            mCameraParams.remove(key);
+        }
+        if (mCameraParams.isEmpty()) {
+            mCameraParams = null;
+        }
     }
 
-    public void setPreviewRequest(CaptureRequest captureRequest) {
-        mPreviewRequest = captureRequest;
+    public CaptureRequest.Builder resumeParams(CaptureRequest.Builder builder) {
+        if (mCameraParams == null || mCameraParams.isEmpty()) {
+            return builder;
+        }
+        int size = mCameraParams.size();
+        for (int i = 0; i < size; i++) {
+            CaptureRequest.Key key = mCameraParams.keyAt(i);
+            builder.set(key, mCameraParams.get(key));
+        }
+        return builder;
     }
 
-    public CaptureRequest getPreviewRequest() {
-        return mPreviewRequest;
+
+    /**
+     * set listener for flash change
+     *
+     * @param onFlashChangeListener
+     */
+    public void setOnFlashChangeListener(OnFlashChangeListener onFlashChangeListener) {
+        mOnFlashChangeListener = onFlashChangeListener;
     }
 
-    public void setImageReader(ImageReader imageReader) {
-        mImageReader = imageReader;
+    /**
+     * dispatch flash change to preview
+     *
+     * @param flashType {@link CameraFlashMode}
+     */
+    private void dispatchFlashChange(int flashType) {
+        if (mOnFlashChangeListener != null && getFlashMode() != flashType) {
+            mOnFlashChangeListener.onFlashChange();
+        }
     }
 
-    public ImageReader getImageReader() {
-        return mImageReader;
+    /**
+     * listener for flash change
+     */
+    public interface OnFlashChangeListener {
+        void onFlashChange();
     }
 }

@@ -65,7 +65,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
 
         try {
             if (mCamera != null) {
-                SmartCamUtils.switchCamera1FlashMode(mCamera, Camera.Parameters.FLASH_MODE_OFF);
+                mCameraWrapper.closeFlashMode();
                 mCamera.stopPreview();
                 getHolder().removeCallback(this);
             }

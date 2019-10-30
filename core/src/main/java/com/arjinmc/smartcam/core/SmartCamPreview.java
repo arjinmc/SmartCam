@@ -3,7 +3,6 @@ package com.arjinmc.smartcam.core;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -118,8 +117,8 @@ public class SmartCamPreview extends FrameLayout {
     public void pause() {
         if (mCurrentCameraVersion == CameraVersion.VERSION_1) {
             mCamera1Preview.destroy();
-        } else if (mCurrentCameraVersion == CameraVersion.VERSION_2) {
-
+        } else if (mCurrentCameraVersion == CameraVersion.VERSION_2 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mCamera2Preview.destroy();
         }
     }
 }
