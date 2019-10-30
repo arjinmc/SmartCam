@@ -1,6 +1,7 @@
 package com.arjinmc.smartcam.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -92,13 +93,6 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
         mSmartCamPreview.setCamera(mSmartCam);
         switchCamera(mSmartCam.isBackCamera());
 
-        if (hasFlashLight) {
-            mFlashMode = switchFlashModeUI(mSmartCam.getFlashMode());
-            mIvSwitchFlashLight.setVisibility(View.VISIBLE);
-        } else {
-            mIvSwitchFlashLight.setVisibility(View.GONE);
-        }
-
         if (mSmartCam.getCameraCount() >= 2) {
             mIvSwitchCamera.setVisibility(View.VISIBLE);
         } else {
@@ -154,6 +148,7 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
      * @param isBack back camera
      */
     private void switchCamera(boolean isBack) {
+        Log.e("switchCamera ui", isBack + "");
         if (isBack) {
             mIvSwitchCamera.setImageResource(R.drawable.smartcam_ic_switch_front);
             if (hasFlashLight) {
