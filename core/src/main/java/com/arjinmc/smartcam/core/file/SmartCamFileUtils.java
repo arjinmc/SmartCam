@@ -13,6 +13,8 @@ import androidx.annotation.RequiresApi;
 import androidx.documentfile.provider.DocumentFile;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -36,6 +38,32 @@ public class SmartCamFileUtils {
 
     public static String getExternalDir(Context context) {
         return context.getExternalFilesDir("").getAbsolutePath();
+    }
+
+    /**
+     * save file
+     *
+     * @param bytes
+     * @param file
+     */
+    public static boolean saveFile(byte[] bytes, File file) {
+        if (bytes == null || bytes.length == 0) {
+            return false;
+        }
+        if (file == null || !file.exists() || file.isDirectory()) {
+            return false;
+        }
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            fileOutputStream.write(bytes);
+            fileOutputStream.close();
+            return true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     /**
@@ -68,6 +96,7 @@ public class SmartCamFileUtils {
 
     /**
      * create file
+     *
      * @param context
      * @param rootPath
      * @param fileName

@@ -123,7 +123,11 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             File file = new File(SmartCamFileUtils.getExternalStorageDir() + File.separator + SmartCamConfig.getRootDirName());
             if (!file.exists() || !file.isDirectory()) {
-                file.mkdir();
+                boolean mkdirResult = file.mkdir();
+                if (!mkdirResult) {
+                    file = new File(SmartCamFileUtils.getExternalDir(this) + File.separator + SmartCamConfig.getRootDirName());
+                    SmartCamConfig.setRootDirPath(file.getAbsolutePath());
+                }
             }
             SmartCamConfig.setRootDirPath(file.getAbsolutePath());
         } else {

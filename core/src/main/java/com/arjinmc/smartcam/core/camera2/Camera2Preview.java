@@ -72,7 +72,6 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
         @Override
         public void onImageAvailable(ImageReader reader) {
             Image image = reader.acquireLatestImage();
-
             switch (mCameraSaveType) {
                 case CameraSaveType.TYPE_FILE:
                 case CameraSaveType.TYPE_PATH:
@@ -87,6 +86,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                     break;
 
             }
+            startPreview(mWidth, mHeight);
         }
     };
 

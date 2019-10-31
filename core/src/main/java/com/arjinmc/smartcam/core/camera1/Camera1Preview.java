@@ -2,12 +2,14 @@ package com.arjinmc.smartcam.core.camera1;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.os.Handler;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamUtils;
+import com.arjinmc.smartcam.core.file.ImageFileSaver;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
 import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
 import com.arjinmc.smartcam.core.wrapper.ICameraPreviewWrapper;
@@ -29,7 +31,11 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     private Camera mCamera;
     private AbsCameraWrapper.OnClickCaptureLisenter mOnClickCaptureLisenter;
 
+    private int mCameraDegree;
     private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
+
+    private Handler mHandler = new Handler();
+
 
     public Camera1Preview(Context context, Camera1Wrapper camera1Wrapper) {
         super(context);
@@ -48,24 +54,17 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
 
         mOnClickCaptureLisenter = new AbsCameraWrapper.OnClickCaptureLisenter() {
             @Override
-            public void onCapture(File file) {
+            public void onCapture(final File file) {
                 try {
                     mCamera.takePicture(new Camera.ShutterCallback() {
                         @Override
                         public void onShutter() {
-                            SmartCamLog.i(TAG, "onShutter");
 
                         }
-                    }, new Camera.PictureCallback() {
+                    }, null, new Camera.PictureCallback() {
                         @Override
                         public void onPictureTaken(byte[] data, Camera camera) {
-                            SmartCamLog.i(TAG, "raw");
-
-                        }
-                    }, new Camera.PictureCallback() {
-                        @Override
-                        public void onPictureTaken(byte[] data, Camera camera) {
-                            SmartCamLog.i(TAG, "jpeg");
+                            mHandler.post(new ImageFileSaver(data, mCameraDegree, file, mCameraWrapper.getCaptureCallback()));
                             mCamera.startPreview();
                         }
                     });
@@ -150,7 +149,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
 
     @Override
     public void onOrientationChange(int degree) {
-
+        mCameraDegree = degree;
     }
 
     @Override
