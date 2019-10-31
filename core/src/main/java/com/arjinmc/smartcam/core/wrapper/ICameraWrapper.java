@@ -2,9 +2,11 @@ package com.arjinmc.smartcam.core.wrapper;
 
 import android.content.Context;
 
-import com.arjinmc.smartcam.core.callback.SmartCamStateListener;
+import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
+import com.arjinmc.smartcam.core.callback.SmartCamStateCallback;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -62,7 +64,17 @@ public interface ICameraWrapper {
     /**
      * capture for photo
      */
-    void capture();
+    void capture(File file);
+
+    /**
+     * capture for photo
+     */
+    void capturePath(String filePath);
+
+    /**
+     * capture for photo
+     */
+    void captureUri(String fileUri);
 
     /**
      * close
@@ -119,6 +131,7 @@ public interface ICameraWrapper {
 
     /**
      * check if is lock
+     *
      * @return
      */
     boolean isLock();
@@ -175,11 +188,25 @@ public interface ICameraWrapper {
     void setZoom(int zoomLevel);
 
     /**
-     * set state listener
+     * set state callback
      *
-     * @param smartCamStateListener
+     * @param smartCamStateCallback
      */
-    void setStateListener(SmartCamStateListener smartCamStateListener);
+    void setStateCallback(SmartCamStateCallback smartCamStateCallback);
+
+    /**
+     * set capture callback
+     *
+     * @param smartCamCaptureCallback
+     */
+    void setCaptureCallback(SmartCamCaptureCallback smartCamCaptureCallback);
+
+    /**
+     * get capture callback
+     *
+     * @return
+     */
+    SmartCamCaptureCallback getCaptureCallback();
 
     boolean hasFocusAuto();
 }

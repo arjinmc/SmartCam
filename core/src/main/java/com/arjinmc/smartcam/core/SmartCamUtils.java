@@ -83,7 +83,7 @@ public final class SmartCamUtils {
      * @param degrees
      * @return
      */
-    public static int getShouldRotateDegree(Context context, @CameraType.Type int type, int cameraId, int degrees) {
+    public static int getShouldRotateDegree(Context context, @CameraType.Type int type, String cameraId, int degrees) {
         if (context == null) {
             return 0;
         }
@@ -93,7 +93,7 @@ public final class SmartCamUtils {
         }
 
         Camera.CameraInfo info = new Camera.CameraInfo();
-        Camera.getCameraInfo(cameraId, info);
+        Camera.getCameraInfo(Integer.valueOf(cameraId), info);
         int result;
         if (type == CameraType.CAMERA_FRONT) {
             result = (info.orientation + degrees) % 360;

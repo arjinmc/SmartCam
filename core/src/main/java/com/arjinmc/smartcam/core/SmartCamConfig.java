@@ -10,4 +10,45 @@ public final class SmartCamConfig {
      * timeout duration for lock ,unit:TimeUnit.MILLISECONDS
      */
     public static final long LOCK_TIMEOUT_DURATION = 1000;
+
+    /**
+     * root dir path
+     */
+    private static String rootDirPath;
+
+    /**
+     * root dir for saving files (default name: SmartCam)
+     */
+    private static String rootDirName = "SmartCam";
+
+    public static String getRootDirName() {
+        return rootDirName;
+    }
+
+    /**
+     * set dir name for saving files
+     *
+     * @param dirName
+     */
+    public static void setRootDir(String dirName) {
+        rootDirName = dirName;
+    }
+
+    /**
+     * get root dir path
+     *
+     * @return
+     */
+    public static String getRootDirPath() {
+        return rootDirPath;
+    }
+
+    /**
+     * set root dir path
+     *
+     * @param dirPath
+     */
+    public static void setRootDirPath(String dirPath) {
+        rootDirPath = dirPath;
+    }
 }

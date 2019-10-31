@@ -8,7 +8,7 @@ import android.util.Log;
  */
 public final class SmartCamLog {
 
-    private static boolean isDebug = false;
+    private static boolean isDebug = true;
 
     public static void i(Class clz, String message) {
         if (isDebug) {

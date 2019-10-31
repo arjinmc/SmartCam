@@ -4,12 +4,14 @@ package com.arjinmc.smartcam.core;
 import android.content.Context;
 import android.os.Build;
 
-import com.arjinmc.smartcam.core.callback.SmartCamStateListener;
+import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
+import com.arjinmc.smartcam.core.callback.SmartCamStateCallback;
 import com.arjinmc.smartcam.core.camera1.Camera1Wrapper;
 import com.arjinmc.smartcam.core.camera2.Camera2Wrapper;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
 import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -68,8 +70,18 @@ public class SmartCam extends AbsCameraWrapper {
     }
 
     @Override
-    public void capture() {
-        mCameraWrapper.capture();
+    public void capture(File file) {
+        mCameraWrapper.capture(file);
+    }
+
+    @Override
+    public void capturePath(String filePath) {
+        mCameraWrapper.capturePath(filePath);
+    }
+
+    @Override
+    public void captureUri(String fileUri) {
+        mCameraWrapper.captureUri(fileUri);
     }
 
     @Override
@@ -143,8 +155,18 @@ public class SmartCam extends AbsCameraWrapper {
     }
 
     @Override
-    public void setStateListener(SmartCamStateListener smartCamStateListener) {
-        mCameraWrapper.setStateListener(smartCamStateListener);
+    public void setStateCallback(SmartCamStateCallback smartCamStateCallback) {
+        mCameraWrapper.setStateCallback(smartCamStateCallback);
+    }
+
+    @Override
+    public void setCaptureCallback(SmartCamCaptureCallback smartCamCaptureCallback) {
+        mCameraWrapper.setCaptureCallback(smartCamCaptureCallback);
+    }
+
+    @Override
+    public SmartCamCaptureCallback getCaptureCallback() {
+        return mCameraWrapper.getCaptureCallback();
     }
 
     @Override

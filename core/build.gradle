@@ -30,4 +30,5 @@ dependencies {
     testImplementation 'junit:junit:' + rootProject.ext.jUnitVersion
     androidTestImplementation 'androidx.test.ext:junit:' + rootProject.ext.extJunitVersion
     androidTestImplementation 'androidx.test.espresso:espresso-core:' + rootProject.ext.espressoVersion
+    implementation 'androidx.documentfile:documentfile:1.0.1'
 }

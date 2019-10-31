@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,15 +17,21 @@ import com.arjinmc.expandrecyclerview.adapter.RecyclerViewSingleTypeProcessor;
 import com.arjinmc.expandrecyclerview.adapter.RecyclerViewViewHolder;
 import com.arjinmc.expandrecyclerview.style.RecyclerViewStyleHelper;
 import com.arjinmc.recyclerviewdecoration.RecyclerViewItemDecoration;
+import com.arjinmc.smartcam.core.SmartCamConfig;
 import com.arjinmc.smartcam.core.SmartCamUtils;
+import com.arjinmc.smartcam.core.file.SmartCamFileUtils;
 import com.arjinmc.smartcam.permission.PermissionAssistant;
 import com.arjinmc.smartcam.ui.SmartCamActivity;
 
+import java.io.File;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String[] mPermissions = new String[]{Manifest.permission.CAMERA};
+    private String[] mPermissions = new String[]{
+            Manifest.permission.CAMERA
+            , Manifest.permission.WRITE_EXTERNAL_STORAGE
+            , Manifest.permission.READ_EXTERNAL_STORAGE};
     private Integer[] mTitles = new Integer[]{
             R.string.default_ui
             , R.string.prieview_from_new_object
@@ -84,7 +91,26 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         if (!PermissionAssistant.isGrantedAllPermissions(this, mPermissions)) {
             PermissionAssistant.requestPermissions(this, mPermissions, false);
+        } else {
+            initDir();
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (PermissionAssistant.isGrantedAllPermissions(this, mPermissions)) {
+            //create file dir for test
+            initDir();
+        }
+    }
+
+    private void initDir() {
+        File file = new File(SmartCamFileUtils.getExternalStoreageDir() + File.separator + SmartCamConfig.getRootDirName());
+        if (!file.exists() || !file.isDirectory()) {
+            file.mkdir();
+        }
+        SmartCamConfig.setRootDirPath(file.getAbsolutePath());
     }
 
     private void startActivity(Class clz) {

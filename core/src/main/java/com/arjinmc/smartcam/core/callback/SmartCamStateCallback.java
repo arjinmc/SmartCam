@@ -7,7 +7,7 @@ import com.arjinmc.smartcam.core.model.SmartCamError;
  * Created by Eminem Lo on 2019-10-28.
  * email: arjinmc@hotmail.com
  */
-public interface SmartCamStateListener {
+public interface SmartCamStateCallback {
 
     void onConnected();
 

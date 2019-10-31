@@ -4,20 +4,15 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
-import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
-import android.hardware.camera2.CaptureResult;
-import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.os.Build;
 import android.os.Handler;
 import android.util.Size;
-import android.view.Surface;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -49,47 +44,11 @@ public class Camera2Wrapper extends AbsCameraWrapper {
     private CameraDevice.StateCallback mStateCallBack;
     private CameraLock mCameraLock;
     private OnFlashChangeListener mOnFlashChangeListener;
+
     /**
      * current params of camera
      */
     private ArrayMap<CaptureRequest.Key, Integer> mCameraParams;
-
-    private CameraCaptureSession.CaptureCallback mCaptureCallback = new CameraCaptureSession.CaptureCallback() {
-        @Override
-        public void onCaptureStarted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, long timestamp, long frameNumber) {
-            super.onCaptureStarted(session, request, timestamp, frameNumber);
-        }
-
-        @Override
-        public void onCaptureProgressed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureResult partialResult) {
-            super.onCaptureProgressed(session, request, partialResult);
-        }
-
-        @Override
-        public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
-            super.onCaptureCompleted(session, request, result);
-        }
-
-        @Override
-        public void onCaptureFailed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureFailure failure) {
-            super.onCaptureFailed(session, request, failure);
-        }
-
-        @Override
-        public void onCaptureSequenceCompleted(@NonNull CameraCaptureSession session, int sequenceId, long frameNumber) {
-            super.onCaptureSequenceCompleted(session, sequenceId, frameNumber);
-        }
-
-        @Override
-        public void onCaptureSequenceAborted(@NonNull CameraCaptureSession session, int sequenceId) {
-            super.onCaptureSequenceAborted(session, sequenceId);
-        }
-
-        @Override
-        public void onCaptureBufferLost(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull Surface target, long frameNumber) {
-            super.onCaptureBufferLost(session, request, target, frameNumber);
-        }
-    };
 
     public Camera2Wrapper(Context context) {
         setContext(context);
@@ -121,8 +80,8 @@ public class Camera2Wrapper extends AbsCameraWrapper {
                         mCamera = camera;
                         mCurrentCameraId = camera.getId();
 
-                        if (mSmartCamStateListener != null) {
-                            mSmartCamStateListener.onConnected();
+                        if (mSmartCamStateCallback != null) {
+                            mSmartCamStateCallback.onConnected();
                         }
                         SmartCamLog.e(TAG, "onOpened");
 
@@ -132,8 +91,8 @@ public class Camera2Wrapper extends AbsCameraWrapper {
                     public void onDisconnected(@NonNull CameraDevice camera) {
                         mCameraLock.release();
                         mCamera = null;
-                        if (mSmartCamStateListener != null) {
-                            mSmartCamStateListener.onDisconnected();
+                        if (mSmartCamStateCallback != null) {
+                            mSmartCamStateCallback.onDisconnected();
                         }
                         SmartCamLog.e(TAG, "onDisconnected");
 
@@ -143,8 +102,8 @@ public class Camera2Wrapper extends AbsCameraWrapper {
                     public void onError(@NonNull CameraDevice camera, int error) {
                         mCameraLock.release();
                         mCamera = null;
-                        if (mSmartCamStateListener != null) {
-                            mSmartCamStateListener.onError(new SmartCamOpenError(error + "CameraDevice.StateCallback error"));
+                        if (mSmartCamStateCallback != null) {
+                            mSmartCamStateCallback.onError(new SmartCamOpenError(error + "CameraDevice.StateCallback error"));
                         }
                         SmartCamLog.e(TAG, "onError");
                     }
@@ -153,8 +112,8 @@ public class Camera2Wrapper extends AbsCameraWrapper {
 
             String[] cameraIdList = getCameraIdList();
             if (cameraIdList == null || cameraIdList.length == 0) {
-                if (mSmartCamStateListener != null) {
-                    mSmartCamStateListener.onError(new SmartCamOpenError("No camera"));
+                if (mSmartCamStateCallback != null) {
+                    mSmartCamStateCallback.onError(new SmartCamOpenError("No camera"));
                 }
                 return;
             }
@@ -399,10 +358,6 @@ public class Camera2Wrapper extends AbsCameraWrapper {
         super.setZoom(zoomLevel);
     }
 
-    public CameraCaptureSession.CaptureCallback getCaptureCallback() {
-        return mCaptureCallback;
-    }
-
     public Handler getHandler() {
         return mHandler;
     }
@@ -438,7 +393,6 @@ public class Camera2Wrapper extends AbsCameraWrapper {
         return builder;
     }
 
-
     /**
      * set listener for flash change
      *
@@ -465,4 +419,5 @@ public class Camera2Wrapper extends AbsCameraWrapper {
     public interface OnFlashChangeListener {
         void onFlashChange();
     }
+
 }

@@ -13,17 +13,27 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.arjinmc.smartcam.core.SmartCam;
+import com.arjinmc.smartcam.core.SmartCamConfig;
+import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamPreview;
 import com.arjinmc.smartcam.core.SmartCamUtils;
-import com.arjinmc.smartcam.core.callback.SmartCamStateListener;
+import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
+import com.arjinmc.smartcam.core.callback.SmartCamStateCallback;
 import com.arjinmc.smartcam.core.model.CameraFlashMode;
 import com.arjinmc.smartcam.core.model.SmartCamError;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Eminem Lo on 2019-10-15.
  * email: arjinmc@hotmail.com
  */
 public class SmartCamActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private static final String TAG = "SmartCamActivity";
 
     private final int FLASH_MODE_OFF = 0;
     private final int FLASH_MODE_AUTO = 1;
@@ -49,6 +59,7 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
         initView();
         initListener();
         initData();
+
     }
 
     private void initView() {
@@ -66,8 +77,9 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initData() {
+
         mSmartCam = new SmartCam(this);
-        mSmartCam.setStateListener(new SmartCamStateListener() {
+        mSmartCam.setStateCallback(new SmartCamStateCallback() {
             @Override
             public void onConnected() {
                 hasCamera = true;
@@ -82,6 +94,18 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onError(SmartCamError error) {
                 unconnected();
+            }
+        });
+
+        mSmartCam.setCaptureCallback(new SmartCamCaptureCallback() {
+            @Override
+            public void onSuccess(String filePath, String fileUri) {
+                SmartCamLog.i(TAG, "CaptureCallback success: filepath:" + filePath + "\tfile uri:" + fileUri);
+            }
+
+            @Override
+            public void onError(SmartCamError smartCamError) {
+                SmartCamLog.i(TAG, "CaptureCallback oError:" + smartCamError.toString());
             }
         });
         mSmartCam.open();
@@ -116,7 +140,7 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
 
         int viewId = v.getId();
         if (viewId == R.id.smartcam_btn_capture) {
-            mSmartCam.capture();
+            mSmartCam.capture(createNewFile());
             return;
         }
 
@@ -148,7 +172,6 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
      * @param isBack back camera
      */
     private void switchCamera(boolean isBack) {
-        Log.e("switchCamera ui", isBack + "");
         if (isBack) {
             mIvSwitchCamera.setImageResource(R.drawable.smartcam_ic_switch_front);
             if (hasFlashLight) {
@@ -208,6 +231,24 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
 
     private void resetFlashMode() {
         mFlashMode = switchFlashModeUI(CameraFlashMode.MODE_OFF);
+    }
+
+    private File createNewFile() {
+        SimpleDateFormat simpleFormatter = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String fileName = "IMAGE_" + simpleFormatter.format(new Date()) + ".jpeg";
+        File file = new File(SmartCamConfig.getRootDirPath() + File.separator + fileName);
+        if (!file.exists()) {
+            try {
+                boolean result = file.createNewFile();
+                if (result) {
+                    return file;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return null;
     }
 
     @Override

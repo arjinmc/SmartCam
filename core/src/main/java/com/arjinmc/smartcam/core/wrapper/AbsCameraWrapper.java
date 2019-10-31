@@ -2,10 +2,12 @@ package com.arjinmc.smartcam.core.wrapper;
 
 import android.content.Context;
 
-import com.arjinmc.smartcam.core.callback.SmartCamStateListener;
+import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
+import com.arjinmc.smartcam.core.callback.SmartCamStateCallback;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
 import com.arjinmc.smartcam.core.model.CameraType;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -24,7 +26,9 @@ public class AbsCameraWrapper implements ICameraWrapper {
     protected int mCurrentCameraType = CameraType.CAMERA_NULL;
     protected String mCurrentCameraId = "-1";
 
-    protected SmartCamStateListener mSmartCamStateListener;
+    protected SmartCamStateCallback mSmartCamStateCallback;
+    protected SmartCamCaptureCallback mSmartCamCaptureCallback;
+    protected OnClickCaptureLisenter mOnClickCaptureLisenter;
 
     @Override
     public Context getContext() {
@@ -68,8 +72,24 @@ public class AbsCameraWrapper implements ICameraWrapper {
     }
 
     @Override
-    public void capture() {
+    public void capture(File file) {
+        if (mOnClickCaptureLisenter != null) {
+            mOnClickCaptureLisenter.onCapture(file);
+        }
+    }
 
+    @Override
+    public void capturePath(String filePath) {
+        if (mOnClickCaptureLisenter != null) {
+            mOnClickCaptureLisenter.onCapturePath(filePath);
+        }
+    }
+
+    @Override
+    public void captureUri(String fileUri) {
+        if (mOnClickCaptureLisenter != null) {
+            mOnClickCaptureLisenter.onCaptureUri(fileUri);
+        }
     }
 
     @Override
@@ -205,13 +225,39 @@ public class AbsCameraWrapper implements ICameraWrapper {
     }
 
     @Override
-    public void setStateListener(SmartCamStateListener smartCamStateListener) {
-        mSmartCamStateListener = smartCamStateListener;
+    public void setStateCallback(SmartCamStateCallback smartCamStateCallback) {
+        mSmartCamStateCallback = smartCamStateCallback;
     }
+
+    @Override
+    public void setCaptureCallback(SmartCamCaptureCallback smartCamCaptureCallback) {
+        mSmartCamCaptureCallback = smartCamCaptureCallback;
+    }
+
+    @Override
+    public SmartCamCaptureCallback getCaptureCallback() {
+        return mSmartCamCaptureCallback;
+    }
+
 
     @Override
     public boolean hasFocusAuto() {
         return false;
+    }
+
+    public void setOnClickCaptureLisenter(OnClickCaptureLisenter onClickCaptureLisenter) {
+        mOnClickCaptureLisenter = onClickCaptureLisenter;
+    }
+
+    /**
+     * listener for capture photo
+     */
+    public interface OnClickCaptureLisenter {
+        void onCapture(File file);
+
+        void onCapturePath(String filePath);
+
+        void onCaptureUri(String fileUri);
     }
 
 }

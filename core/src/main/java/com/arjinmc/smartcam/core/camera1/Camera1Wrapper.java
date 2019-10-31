@@ -75,31 +75,31 @@ public class Camera1Wrapper extends AbsCameraWrapper {
             if (mCamera != null) {
                 mCurrentCameraType = CameraType.CAMERA_BACK;
 
-                if (mSmartCamStateListener != null) {
-                    mSmartCamStateListener.onConnected();
+                if (mSmartCamStateCallback != null) {
+                    mSmartCamStateCallback.onConnected();
                 }
                 return;
             } else {
                 mCamera = Camera.open(frontCameraId);
                 if (mCamera == null) {
-                    if (mSmartCamStateListener != null) {
-                        mSmartCamStateListener.onError(new SmartCamOpenError());
+                    if (mSmartCamStateCallback != null) {
+                        mSmartCamStateCallback.onError(new SmartCamOpenError());
                     }
                     return;
                 }
                 mCurrentCameraType = CameraType.CAMERA_FRONT;
                 mCurrentCameraId = frontCameraId + "";
 
-                if (mSmartCamStateListener != null) {
-                    mSmartCamStateListener.onConnected();
+                if (mSmartCamStateCallback != null) {
+                    mSmartCamStateCallback.onConnected();
                 }
                 return;
             }
         } catch (Exception e) {
             // Camera is not available (in use or does not exist)
             e.printStackTrace();
-            if (mSmartCamStateListener != null) {
-                mSmartCamStateListener.onError(new SmartCamOpenError(e.getMessage()));
+            if (mSmartCamStateCallback != null) {
+                mSmartCamStateCallback.onError(new SmartCamOpenError(e.getMessage()));
             }
             return;
         }
@@ -257,34 +257,6 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     public void resume() {
         if (mCamera != null) {
             mCamera.startPreview();
-        }
-    }
-
-    @Override
-    public void capture() {
-
-        try {
-            mCamera.takePicture(new Camera.ShutterCallback() {
-                @Override
-                public void onShutter() {
-                    SmartCamLog.i(TAG, "onShutter");
-
-                }
-            }, new Camera.PictureCallback() {
-                @Override
-                public void onPictureTaken(byte[] data, Camera camera) {
-                    SmartCamLog.i(TAG, "raw");
-
-                }
-            }, new Camera.PictureCallback() {
-                @Override
-                public void onPictureTaken(byte[] data, Camera camera) {
-                    SmartCamLog.i(TAG, "jpeg");
-                    mCamera.startPreview();
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

@@ -7,4 +7,5 @@ package com.arjinmc.smartcam.core.model;
 public final class SmartCamErrorCode {
 
     public static final int CAMERA_OPEN_ERROR = 100;
+    public static final int CAMERA_CAPTURE_FILE_NOT_EXIST = 101;
 }
