@@ -1,5 +1,6 @@
 package com.arjinmc.smartcam.ui;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.arjinmc.smartcam.core.SmartCam;
@@ -18,6 +20,7 @@ import com.arjinmc.smartcam.core.SmartCamPreview;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
 import com.arjinmc.smartcam.core.callback.SmartCamStateCallback;
+import com.arjinmc.smartcam.core.file.SmartCamFileUtils;
 import com.arjinmc.smartcam.core.model.CameraFlashMode;
 import com.arjinmc.smartcam.core.model.SmartCamError;
 
@@ -112,6 +115,7 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
                 SmartCamLog.i(TAG, "CaptureCallback oError:" + smartCamError.toString());
             }
         });
+
         mSmartCam.open();
     }
 
@@ -135,6 +139,7 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onClick(View v) {
 
@@ -143,11 +148,20 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
         }
 
         int viewId = v.getId();
+        //capture a photo
         if (viewId == R.id.smartcam_btn_capture) {
-            mSmartCam.capture(createNewFile());
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                mSmartCam.capture(createNewFile());
+                //or use this method
+//            mSmartCam.capturePath(createNewFile().getAbsolutePath());
+            } else {
+                mSmartCam.captureUri(createNewFileUri());
+            }
             return;
         }
 
+        //switch camera
         if (viewId == R.id.smartcam_iv_switch_camera) {
             //prevent from switching camera frequently
             if (mSmartCam.isLock()) {
@@ -238,9 +252,8 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private File createNewFile() {
-        SimpleDateFormat simpleFormatter = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-        String fileName = "IMAGE_" + simpleFormatter.format(new Date()) + ".jpeg";
-        File file = new File(SmartCamConfig.getRootDirPath() + File.separator + fileName);
+
+        File file = new File(SmartCamConfig.getRootDirPath() + File.separator + createNewFileName());
         if (!file.exists()) {
             try {
                 boolean result = file.createNewFile();
@@ -253,6 +266,17 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
             }
         }
         return null;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private String createNewFileUri() {
+        return SmartCamFileUtils.createFileByUri(this, SmartCamConfig.getRootDirPath()
+                , "image", createNewFileName());
+    }
+
+    private String createNewFileName() {
+        SimpleDateFormat simpleFormatter = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        return "IMAGE_" + simpleFormatter.format(new Date()) + ".jpeg";
     }
 
     @Override

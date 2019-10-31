@@ -2,12 +2,15 @@ package com.arjinmc.smartcam;
 
 import android.Manifest;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.CAMERA
             , Manifest.permission.WRITE_EXTERNAL_STORAGE
             , Manifest.permission.READ_EXTERNAL_STORAGE};
+
+    private final int REQUST_CODE_APPLY_STORAGE_PERMISSION = 1;
+
     private Integer[] mTitles = new Integer[]{
             R.string.default_ui
             , R.string.prieview_from_new_object
@@ -85,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -94,6 +99,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             initDir();
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == REQUST_CODE_APPLY_STORAGE_PERMISSION && resultCode == RESULT_OK) {
+            SmartCamConfig.setRootDirPath(data.getData().toString());
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -106,11 +119,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initDir() {
-        File file = new File(SmartCamFileUtils.getExternalStoreageDir() + File.separator + SmartCamConfig.getRootDirName());
-        if (!file.exists() || !file.isDirectory()) {
-            file.mkdir();
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            File file = new File(SmartCamFileUtils.getExternalStorageDir() + File.separator + SmartCamConfig.getRootDirName());
+            if (!file.exists() || !file.isDirectory()) {
+                file.mkdir();
+            }
+            SmartCamConfig.setRootDirPath(file.getAbsolutePath());
+        } else {
+            if (TextUtils.isEmpty(SmartCamConfig.getRootDirPath())) {
+                SmartCamFileUtils.applyOpenDirPermission(this, REQUST_CODE_APPLY_STORAGE_PERMISSION, null);
+            }
         }
-        SmartCamConfig.setRootDirPath(file.getAbsolutePath());
     }
 
     private void startActivity(Class clz) {

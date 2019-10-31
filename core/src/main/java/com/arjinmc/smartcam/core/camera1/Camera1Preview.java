@@ -149,6 +149,11 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     @Override
+    public void onOrientationChange(int degree) {
+
+    }
+
+    @Override
     public void destroy() {
         surfaceDestroyed(mHolder);
     }

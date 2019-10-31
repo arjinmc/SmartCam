@@ -8,6 +8,13 @@ package com.arjinmc.smartcam.core.wrapper;
 public interface ICameraPreviewWrapper {
 
     /**
+     * dispatch degree when Orientation change
+     *
+     * @param degree
+     */
+    void onOrientationChange(int degree);
+
+    /**
      * destory preview
      */
     void destroy();

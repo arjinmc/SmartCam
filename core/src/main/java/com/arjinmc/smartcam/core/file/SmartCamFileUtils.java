@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
+ * File util
  * Created by Eminem Lo on 2019-10-31.
  * email: arjinmc@hotmail.com
  */
@@ -25,7 +26,7 @@ public class SmartCamFileUtils {
         return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
     }
 
-    public static String getExternalStoreageDir() {
+    public static String getExternalStorageDir() {
         if (isExternalStorageAvailerAble()) {
             return Environment.getExternalStorageDirectory().getAbsolutePath();
         } else {

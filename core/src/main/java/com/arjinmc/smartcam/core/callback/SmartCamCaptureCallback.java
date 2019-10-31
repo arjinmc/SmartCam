@@ -9,8 +9,20 @@ import com.arjinmc.smartcam.core.model.SmartCamError;
  */
 public interface SmartCamCaptureCallback {
 
+    /**
+     * below android Q
+     * if you use {@link com.arjinmc.smartcam.core.SmartCam capture() or capturePath()} then you will get this callback
+     *
+     * @param path
+     */
     void onSuccessPath(String path);
 
+    /**
+     * above android Q
+     * if you use {@link com.arjinmc.smartcam.core.SmartCam captureUri()} then you will get this callback
+     *
+     * @param uri
+     */
     void onSuccessUri(String uri);
 
     void onError(SmartCamError smartCamError);

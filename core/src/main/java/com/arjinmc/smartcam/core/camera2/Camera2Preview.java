@@ -11,6 +11,7 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Surface;
 import android.view.TextureView;
@@ -20,7 +21,10 @@ import androidx.annotation.RequiresApi;
 
 import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamUtils;
-import com.arjinmc.smartcam.core.file.ImageSaver;
+import com.arjinmc.smartcam.core.callback.SmartCamOrientationEventListener;
+import com.arjinmc.smartcam.core.file.ImagePathSaver;
+import com.arjinmc.smartcam.core.file.ImageUriSaver;
+import com.arjinmc.smartcam.core.model.CameraSaveType;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
 import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
 import com.arjinmc.smartcam.core.wrapper.ICameraPreviewWrapper;
@@ -46,8 +50,15 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
     private ImageReader mImageReader;
     private Camera2Wrapper.OnFlashChangeListener mOnFlashChangeListener;
     private AbsCameraWrapper.OnClickCaptureLisenter mOnClickCaptureLisenter;
+    private SmartCamOrientationEventListener mOrientationEventListener;
     private int mWidth, mHeight;
-    private File mFile;
+    private int mCameraSaveType;
+    private File mSaveFile;
+    private String mSaveFileUri;
+    /**
+     * the degreee when capture
+     */
+    private Integer mDegree;
 
     private CameraCaptureSession.CaptureCallback mCaptureCallback = new CameraCaptureSession.CaptureCallback() {
 
@@ -55,24 +66,27 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
         public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
             super.onCaptureCompleted(session, request, result);
         }
-
-//        @Override
-//        public void onCaptureProgressed(@NonNull CameraCaptureSession session
-//                , @NonNull CaptureRequest request, @NonNull CaptureResult partialResult) {
-//            SmartCamLog.i(TAG,"onCaptureProgressed");
-//            super.onCaptureProgressed(session, request, partialResult);
-//        }
     };
 
     private ImageReader.OnImageAvailableListener mOnImageAvailableListener = new ImageReader.OnImageAvailableListener() {
         @Override
         public void onImageAvailable(ImageReader reader) {
             Image image = reader.acquireLatestImage();
-//            //我们可以将这帧数据转成字节数组，类似于Camera1的PreviewCallback回调的预览帧数据
-//            ByteBuffer buffer = image.getPlanes()[0].getBuffer();
-//            byte[] data = new byte[buffer.remaining()];
-//            buffer.get(data);
-            mCamera2Wrapper.getHandler().post(new ImageSaver(image, mFile, mCamera2Wrapper.getCaptureCallback()));
+
+            switch (mCameraSaveType) {
+                case CameraSaveType.TYPE_FILE:
+                case CameraSaveType.TYPE_PATH:
+                    mCamera2Wrapper.getHandler().post(new ImagePathSaver(image, mDegree, mSaveFile
+                            , mCamera2Wrapper.getCaptureCallback()));
+                    break;
+                case CameraSaveType.TYPE_URI:
+                    mCamera2Wrapper.getHandler().post(new ImageUriSaver(getContext(), image, mDegree
+                            , mSaveFileUri, mCamera2Wrapper.getCaptureCallback()));
+                    break;
+                default:
+                    break;
+
+            }
         }
     };
 
@@ -106,6 +120,8 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 
     private void init() {
         setSurfaceTextureListener(this);
+        mOrientationEventListener = new SmartCamOrientationEventListener(getContext(), this);
+        mOrientationEventListener.enable();
 
         //init click flash light listener
         mOnFlashChangeListener = new Camera2Wrapper.OnFlashChangeListener() {
@@ -124,17 +140,32 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                 if (mCaptureSession == null) {
                     return;
                 }
-                mFile = file;
+                mCameraSaveType = CameraSaveType.TYPE_FILE;
+                mSaveFile = file;
                 capture();
             }
 
             @Override
             public void onCapturePath(String filePath) {
-
+                if (mCaptureSession == null) {
+                    return;
+                }
+                if (!TextUtils.isEmpty(filePath)) {
+                    mSaveFile = new File(filePath);
+                }
+                mCameraSaveType = CameraSaveType.TYPE_PATH;
+                capture();
             }
 
             @Override
             public void onCaptureUri(String fileUri) {
+
+                if (mCaptureSession == null) {
+                    return;
+                }
+                mSaveFileUri = fileUri;
+                mCameraSaveType = CameraSaveType.TYPE_URI;
+                capture();
 
             }
         };
@@ -263,7 +294,13 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 
 
     @Override
+    public void onOrientationChange(int degree) {
+        mDegree = degree;
+    }
+
+    @Override
     public void destroy() {
+        mOrientationEventListener.disable();
         onSurfaceTextureDestroyed(getSurfaceTexture());
         try {
             if (mCaptureSession != null) {
