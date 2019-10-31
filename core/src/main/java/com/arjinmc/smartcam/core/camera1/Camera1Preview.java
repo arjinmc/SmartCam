@@ -9,6 +9,7 @@ import android.view.SurfaceView;
 
 import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamUtils;
+import com.arjinmc.smartcam.core.callback.SmartCamOrientationEventListener;
 import com.arjinmc.smartcam.core.file.ImageFileSaver;
 import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
 import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
@@ -30,6 +31,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     private Camera1Wrapper mCameraWrapper;
     private Camera mCamera;
     private AbsCameraWrapper.OnClickCaptureLisenter mOnClickCaptureLisenter;
+    private SmartCamOrientationEventListener mOrientationEventListener;
 
     private int mCameraDegree;
     private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
@@ -51,6 +53,9 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
         mHolder.addCallback(this);
         // deprecated setting, but required on Android versions prior to 3.0
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
+        mOrientationEventListener = new SmartCamOrientationEventListener(getContext(), this);
+        mOrientationEventListener.enable();
 
         mOnClickCaptureLisenter = new AbsCameraWrapper.OnClickCaptureLisenter() {
             @Override
@@ -154,6 +159,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
 
     @Override
     public void destroy() {
+        mOrientationEventListener.disable();
         surfaceDestroyed(mHolder);
     }
 
