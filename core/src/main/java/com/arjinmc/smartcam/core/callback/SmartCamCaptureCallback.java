@@ -9,7 +9,9 @@ import com.arjinmc.smartcam.core.model.SmartCamError;
  */
 public interface SmartCamCaptureCallback {
 
-    void onSuccess(String filePath, String fileUri);
+    void onSuccessPath(String path);
+
+    void onSuccessUri(String uri);
 
     void onError(SmartCamError smartCamError);
 }

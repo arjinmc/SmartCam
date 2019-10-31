@@ -1,7 +1,6 @@
 package com.arjinmc.smartcam.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -99,8 +98,13 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
 
         mSmartCam.setCaptureCallback(new SmartCamCaptureCallback() {
             @Override
-            public void onSuccess(String filePath, String fileUri) {
-                SmartCamLog.i(TAG, "CaptureCallback success: filepath:" + filePath + "\tfile uri:" + fileUri);
+            public void onSuccessPath(String path) {
+                SmartCamLog.i(TAG, "CaptureCallback onSuccessPath:" + path);
+            }
+
+            @Override
+            public void onSuccessUri(String uri) {
+                SmartCamLog.i(TAG, "CaptureCallback onSuccessUri:" + uri);
             }
 
             @Override

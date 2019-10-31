@@ -2,6 +2,7 @@ package com.arjinmc.smartcam.core.file;
 
 import android.media.Image;
 import android.os.Build;
+import android.text.TextUtils;
 
 import androidx.annotation.RequiresApi;
 
@@ -23,13 +24,21 @@ public class ImageSaver implements Runnable {
     /**
      * The JPEG image
      */
-    private final Image mImage;
-    private final File mFile;
+    private Image mImage;
+    private File mFile;
     private SmartCamCaptureCallback mSmartCamCaptureCallback;
 
     public ImageSaver(Image image, File file, SmartCamCaptureCallback smartCamCaptureCallback) {
         mImage = image;
         mFile = file;
+        mSmartCamCaptureCallback = smartCamCaptureCallback;
+    }
+
+    public ImageSaver(Image image, String filePath, SmartCamCaptureCallback smartCamCaptureCallback) {
+        mImage = image;
+        if (!TextUtils.isEmpty(filePath)) {
+            mFile = new File(filePath);
+        }
         mSmartCamCaptureCallback = smartCamCaptureCallback;
     }
 
@@ -51,7 +60,7 @@ public class ImageSaver implements Runnable {
             output = new FileOutputStream(mFile);
             output.write(bytes);
             if (mSmartCamCaptureCallback != null) {
-                mSmartCamCaptureCallback.onSuccess(mFile.getAbsolutePath(), null);
+                mSmartCamCaptureCallback.onSuccessPath(mFile.getAbsolutePath());
             }
         } catch (IOException e) {
             e.printStackTrace();
