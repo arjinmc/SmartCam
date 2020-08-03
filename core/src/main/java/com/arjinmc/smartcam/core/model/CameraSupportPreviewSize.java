@@ -9,6 +9,8 @@ import java.io.Serializable;
  */
 public class CameraSupportPreviewSize implements Serializable {
 
+    private static final long serialVersionUID = -4574686753967297581L;
+
     private int width;
     private int height;
 

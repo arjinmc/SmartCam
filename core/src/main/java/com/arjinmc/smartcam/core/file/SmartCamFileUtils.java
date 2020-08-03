@@ -211,7 +211,7 @@ public class SmartCamFileUtils {
     }
 
     /**
-     * apple open dir permssion for read and write
+     * apple open dir permission for read and write
      * above android Q
      *
      * @param activity

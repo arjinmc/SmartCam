@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Created by Eminem Lo on 2019-10-14.
  * email: arjinmc@hotmail.com
  */
-public class CameraType implements Serializable {
+public class CameraType{
 
     /**
      * camera not open

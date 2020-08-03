@@ -11,6 +11,8 @@ import java.io.Serializable;
  */
 public final class CameraFlashMode implements Serializable {
 
+    private static final long serialVersionUID = 5290608893853987744L;
+
     public static final int MODE_UNKNOWN = -1;
     public static final int MODE_OFF = 0;
     public static final int MODE_AUTO = 1;

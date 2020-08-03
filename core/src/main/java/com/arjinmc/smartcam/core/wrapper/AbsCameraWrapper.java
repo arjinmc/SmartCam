@@ -174,39 +174,43 @@ public class AbsCameraWrapper implements ICameraWrapper {
 
     @Override
     public CameraSupportPreviewSize getCompatPreviewSize(int width, int height) {
-        List<CameraSupportPreviewSize> supportPreviewSizes = getSupperPreviewSizes();
-        if (supportPreviewSizes == null || supportPreviewSizes.isEmpty()) {
-            return null;
-        }
 
-        if (height == 0) {
-            return null;
-        }
-
-        int postion = -1;
-        double minOffset = 0;
-        int size = supportPreviewSizes.size();
-        for (int i = 0; i < size; i++) {
-            CameraSupportPreviewSize cameraSupportPreviewSize = supportPreviewSizes.get(i);
-            double offset = Math.abs(cameraSupportPreviewSize.getWidth() / cameraSupportPreviewSize.getHeight() - width / height);
-            if (offset == 0) {
-                postion = i;
-                break;
-            }
-
-            if (minOffset == 0) {
-                minOffset = offset;
-                postion = i;
-            }
-            if (minOffset > offset) {
-                minOffset = offset;
-                postion = i;
-            }
-        }
-        if (postion == -1) {
-            return null;
-        }
-        return supportPreviewSizes.get(postion);
+//        List<CameraSupportPreviewSize> supportPreviewSizes = getSupperPreviewSizes();
+//        if (supportPreviewSizes == null || supportPreviewSizes.isEmpty()) {
+//            return null;
+//        }
+//
+//        if (height == 0) {
+//            return null;
+//        }
+//
+////        Log.e("SurfaceTexture", width + "/" + height);
+//        int postion = -1;
+//        double minOffset = 0;
+//        int size = supportPreviewSizes.size();
+//        for (int i = 0; i < size; i++) {
+//            CameraSupportPreviewSize cameraSupportPreviewSize = supportPreviewSizes.get(i);
+//            double offset = Math.abs(cameraSupportPreviewSize.getWidth() / cameraSupportPreviewSize.getHeight() - width / height);
+////            Log.e("PreviewSize", cameraSupportPreviewSize.getWidth() + "/" + cameraSupportPreviewSize.getHeight());
+//            if (offset == 0) {
+//                postion = i;
+//                break;
+//            }
+//
+//            if (minOffset == 0) {
+//                minOffset = offset;
+//                postion = i;
+//            }
+//            if (minOffset > offset) {
+//                minOffset = offset;
+//                postion = i;
+//            }
+//        }
+//        if (postion == -1) {
+//            return null;
+//        }
+//        return supportPreviewSizes.get(postion);
+        return null;
     }
 
     @Override

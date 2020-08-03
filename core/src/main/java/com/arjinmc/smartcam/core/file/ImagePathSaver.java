@@ -1,15 +1,18 @@
 package com.arjinmc.smartcam.core.file;
 
-import android.media.Image;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
 import com.arjinmc.smartcam.core.SmartCamLog;
+import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
 import com.arjinmc.smartcam.core.model.SmartCamCaptureError;
+import com.arjinmc.smartcam.core.model.SmartCamOutputOption;
 
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -24,43 +27,53 @@ public class ImagePathSaver implements Runnable {
 
     private final String TAG = "ImagePathSaver";
 
-    /**
-     * The JPEG image
-     */
-    private Image mImage;
-    private File mFile;
-    private Integer mDegree;
+    private SmartCamOutputOption mOutputOption;
     private SmartCamCaptureCallback mSmartCamCaptureCallback;
 
-    public ImagePathSaver(Image image, Integer degree, File file, SmartCamCaptureCallback smartCamCaptureCallback) {
-        mImage = image;
-        mDegree = degree;
-        mFile = file;
+    public ImagePathSaver(SmartCamOutputOption outputOption, SmartCamCaptureCallback smartCamCaptureCallback) {
+        mOutputOption = outputOption;
         mSmartCamCaptureCallback = smartCamCaptureCallback;
     }
 
     @Override
     public void run() {
 
-        SmartCamLog.i(TAG, "degree:" + mDegree);
-
-        if (mFile == null || !mFile.exists()) {
-            if (mSmartCamCaptureCallback != null) {
-                mSmartCamCaptureCallback.onError(new SmartCamCaptureError());
-            }
-            mImage.close();
+        if (mOutputOption == null) {
             return;
         }
 
-        ByteBuffer buffer = mImage.getPlanes()[0].getBuffer();
+        SmartCamLog.i(TAG, "degree:" + mOutputOption.getDegree());
+
+        if (mOutputOption.getFile() == null || !mOutputOption.getFile().exists()) {
+            if (mSmartCamCaptureCallback != null) {
+                mSmartCamCaptureCallback.onError(new SmartCamCaptureError());
+            }
+            mOutputOption.getImage().close();
+            return;
+        }
+
+        ByteBuffer buffer = mOutputOption.getImage().getPlanes()[0].getBuffer();
         byte[] bytes = new byte[buffer.remaining()];
         buffer.get(bytes);
         FileOutputStream output = null;
         try {
-            output = new FileOutputStream(mFile);
-            output.write(bytes);
+
+            if (mOutputOption.getMatrix() == null) {
+                output = new FileOutputStream(mOutputOption.getFile());
+                output.write(bytes);
+            } else {
+                Bitmap temp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                temp = SmartCamUtils.cropBitmap(temp, mOutputOption.getPreviewWidth(), mOutputOption.getPreviewHeight());
+//            Bitmap newBitmap = SmartCamUtils.rotateBitmap(temp, 90);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                temp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                byte[] data = baos.toByteArray();
+                output = new FileOutputStream(mOutputOption.getFile());
+                output.write(data);
+            }
+
             if (mSmartCamCaptureCallback != null) {
-                mSmartCamCaptureCallback.onSuccessPath(mFile.getAbsolutePath());
+                mSmartCamCaptureCallback.onSuccessPath(mOutputOption.getFile().getAbsolutePath());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -68,7 +81,7 @@ public class ImagePathSaver implements Runnable {
                 mSmartCamCaptureCallback.onError(new SmartCamCaptureError(e.getMessage()));
             }
         } finally {
-            mImage.close();
+            mOutputOption.getImage().close();
             if (null != output) {
                 try {
                     output.close();

@@ -185,12 +185,12 @@ public class Camera2Wrapper extends AbsCameraWrapper {
             CameraCharacteristics cameraCharacteristics = manager.getCameraCharacteristics(mCamera.getId());
             StreamConfigurationMap previewSizeMap = cameraCharacteristics.get(
                     CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-            Size[] preiviewSizeList = previewSizeMap.getOutputSizes(SurfaceTexture.class);
-            if (preiviewSizeList == null || preiviewSizeList.length == 0) {
+            Size[] previewSizeList = previewSizeMap.getOutputSizes(SurfaceTexture.class);
+            if (previewSizeList == null || previewSizeList.length == 0) {
                 return null;
             }
             List<CameraSupportPreviewSize> cameraSupportPreviewSizeList = new ArrayList<>();
-            for (Size childSize : preiviewSizeList) {
+            for (Size childSize : previewSizeList) {
                 cameraSupportPreviewSizeList.add(new CameraSupportPreviewSize(
                         childSize.getWidth(), childSize.getHeight()));
             }
