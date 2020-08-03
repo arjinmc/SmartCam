@@ -7,7 +7,6 @@ import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.hardware.Camera;
 import android.os.Build;
-import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 import android.view.WindowManager;
@@ -237,10 +236,49 @@ public final class SmartCamUtils {
         } else {
             int alterTop = (bitmap.getHeight() - previewHeight) / 2;
             int alterLeft = (bitmap.getWidth() - previewWidth) / 2;
-            Log.e("tag", "alterTop:" + alterTop + ",alterLeft:" + alterLeft
-                    + ",previewWidth:" + previewWidth + ",previewHeight:" + previewHeight);
+//            SmartCamLog.i("tag", "alterTop:" + alterTop + ",alterLeft:" + alterLeft
+//                    + ",previewWidth:" + previewWidth + ",previewHeight:" + previewHeight);
             return Bitmap.createBitmap(bitmap, alterLeft, alterTop, previewWidth, previewHeight);
         }
+    }
+
+    /**
+     * rotate the bitmap to the right direction
+     *
+     * @param bitmap
+     * @param degree
+     * @return
+     */
+    public static Bitmap rotateBitmap(Bitmap bitmap, int degree) {
+        if (bitmap == null) {
+            return bitmap;
+        }
+
+        if (degree >= 0 && degree <= 44) {
+            return bitmap;
+        }
+
+        if (degree >= 315 && degree <= 360) {
+            return bitmap;
+        }
+
+        int resultDegree = 0;
+
+        if (degree >= 45 && degree <= 135) {
+            resultDegree = 90;
+        }
+        if (degree >= 226 && degree <= 314) {
+            resultDegree = -90;
+        }
+        if (degree >= 136 && degree <= 225) {
+            resultDegree = 180;
+        }
+        Matrix matrix = new Matrix();
+        matrix.postRotate(resultDegree);
+        bitmap = Bitmap.createBitmap(bitmap, 0, 0
+                , bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+
+        return bitmap;
     }
 
     /**

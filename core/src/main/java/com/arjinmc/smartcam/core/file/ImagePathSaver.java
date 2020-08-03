@@ -58,19 +58,17 @@ public class ImagePathSaver implements Runnable {
         FileOutputStream output = null;
         try {
 
-            if (mOutputOption.getMatrix() == null) {
-                output = new FileOutputStream(mOutputOption.getFile());
-                output.write(bytes);
-            } else {
-                Bitmap temp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            Bitmap temp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            if (mOutputOption.getMatrix() != null) {
                 temp = SmartCamUtils.cropBitmap(temp, mOutputOption.getPreviewWidth(), mOutputOption.getPreviewHeight());
-//            Bitmap newBitmap = SmartCamUtils.rotateBitmap(temp, 90);
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                temp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                byte[] data = baos.toByteArray();
-                output = new FileOutputStream(mOutputOption.getFile());
-                output.write(data);
             }
+            temp = SmartCamUtils.rotateBitmap(temp, mOutputOption.getDegree());
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            temp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+            output = new FileOutputStream(mOutputOption.getFile());
+            output.write(data);
 
             if (mSmartCamCaptureCallback != null) {
                 mSmartCamCaptureCallback.onSuccessPath(mOutputOption.getFile().getAbsolutePath());
