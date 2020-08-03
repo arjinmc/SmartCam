@@ -14,7 +14,7 @@ import android.view.WindowManager;
 
 import androidx.annotation.RequiresApi;
 
-import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
+import com.arjinmc.smartcam.core.model.CameraSize;
 import com.arjinmc.smartcam.core.model.CameraType;
 
 import java.util.ArrayList;
@@ -168,18 +168,18 @@ public final class SmartCamUtils {
      * @return
      */
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static List<CameraSupportPreviewSize> convertSizes(Size[] sizes) {
+    public static List<CameraSize> convertSizes(Size[] sizes) {
         if (sizes == null || sizes.length <= 0) {
             return null;
         }
-        List<CameraSupportPreviewSize> cameraSupportPreviewSizes = new ArrayList<>();
+        List<CameraSize> cameraSizes = new ArrayList<>();
         int sizeLength = sizes.length;
         for (int i = 0; i < sizeLength; i++) {
             Size size = sizes[i];
-            cameraSupportPreviewSizes.add(new CameraSupportPreviewSize(size.getWidth(), size.getHeight()));
+            cameraSizes.add(new CameraSize(size.getWidth(), size.getHeight()));
 //            SmartCamLog.e("convertSizes", size.getWidth() + "," + size.getHeight());
         }
-        return cameraSupportPreviewSizes;
+        return cameraSizes;
     }
 
     /**
@@ -190,7 +190,7 @@ public final class SmartCamUtils {
      * @param previewSize
      * @return
      */
-    public static Matrix getBetterPreviewScaleMatrix(int targetWidth, int targetHeight, CameraSupportPreviewSize previewSize) {
+    public static Matrix getBetterPreviewScaleMatrix(int targetWidth, int targetHeight, CameraSize previewSize) {
         if (previewSize == null) {
             return null;
         }

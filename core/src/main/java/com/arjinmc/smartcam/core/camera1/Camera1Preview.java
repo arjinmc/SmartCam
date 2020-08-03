@@ -11,7 +11,7 @@ import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamOrientationEventListener;
 import com.arjinmc.smartcam.core.file.ImageFileSaver;
-import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
+import com.arjinmc.smartcam.core.model.CameraSize;
 import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
 import com.arjinmc.smartcam.core.wrapper.ICameraPreviewWrapper;
 
@@ -134,13 +134,13 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                         , mCameraWrapper.getCurrentCameraId()
                         , mOrientation));
 
-                CameraSupportPreviewSize cameraSupportPreviewSize = mCameraWrapper.getCompatPreviewSize(
+                CameraSize cameraSize = mCameraWrapper.getCompatPreviewSize(
                         getMeasuredWidth(), getMeasuredHeight());
 
-                if (cameraSupportPreviewSize != null) {
+                if (cameraSize != null) {
                     SmartCamLog.e(TAG, "final preview size:"
-                            + cameraSupportPreviewSize.getWidth() + "/" + cameraSupportPreviewSize.getHeight());
-                    getHolder().setFixedSize(cameraSupportPreviewSize.getWidth(), cameraSupportPreviewSize.getHeight());
+                            + cameraSize.getWidth() + "/" + cameraSize.getHeight());
+                    getHolder().setFixedSize(cameraSize.getWidth(), cameraSize.getHeight());
 
                 }
                 mCamera.setPreviewDisplay(getHolder());

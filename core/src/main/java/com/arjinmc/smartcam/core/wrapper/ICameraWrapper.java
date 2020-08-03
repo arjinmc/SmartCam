@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
 import com.arjinmc.smartcam.core.callback.SmartCamStateCallback;
-import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
+import com.arjinmc.smartcam.core.model.CameraSize;
 
 import java.io.File;
 import java.util.List;
@@ -155,7 +155,7 @@ public interface ICameraWrapper {
      *
      * @return
      */
-    List<CameraSupportPreviewSize> getSupperPreviewSizes();
+    List<CameraSize> getSupperPreviewSizes();
 
     /**
      * get the calculate  preview size support destination width and height
@@ -164,21 +164,21 @@ public interface ICameraWrapper {
      * @param height
      * @return
      */
-    CameraSupportPreviewSize getCompatPreviewSize(int width, int height);
+    CameraSize getCompatPreviewSize(int width, int height);
 
     /**
      * get output sizes that camera supported
      *
      * @return
      */
-    List<CameraSupportPreviewSize> getOutputSizes();
+    List<CameraSize> getOutputSizes();
 
     /**
      * get the biggest output size that camera supported
      *
      * @return
      */
-    CameraSupportPreviewSize getMaxOutputSize();
+    CameraSize getMaxOutputSize();
 
     /**
      * get the orientation rotation

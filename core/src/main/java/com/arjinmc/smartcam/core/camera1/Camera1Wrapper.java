@@ -5,7 +5,7 @@ import android.hardware.Camera;
 import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.lock.CameraLock;
 import com.arjinmc.smartcam.core.model.CameraFlashMode;
-import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
+import com.arjinmc.smartcam.core.model.CameraSize;
 import com.arjinmc.smartcam.core.model.CameraType;
 import com.arjinmc.smartcam.core.model.SmartCamOpenError;
 import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
@@ -218,7 +218,7 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     }
 
     @Override
-    public List<CameraSupportPreviewSize> getSupperPreviewSizes() {
+    public List<CameraSize> getSupperPreviewSizes() {
 
         if (mCamera == null) {
             return null;
@@ -226,12 +226,12 @@ public class Camera1Wrapper extends AbsCameraWrapper {
 
         List<Camera.Size> previewSizes = mCamera.getParameters().getSupportedPreviewSizes();
         if (previewSizes != null && !previewSizes.isEmpty()) {
-            List<CameraSupportPreviewSize> cameraSupportPreviewSizes = new ArrayList<>();
+            List<CameraSize> cameraSizes = new ArrayList<>();
             for (Camera.Size previewSize : previewSizes) {
-                cameraSupportPreviewSizes.add(new CameraSupportPreviewSize(previewSize.width, previewSize.height));
+                cameraSizes.add(new CameraSize(previewSize.width, previewSize.height));
             }
 
-            return cameraSupportPreviewSizes;
+            return cameraSizes;
         }
         return null;
     }

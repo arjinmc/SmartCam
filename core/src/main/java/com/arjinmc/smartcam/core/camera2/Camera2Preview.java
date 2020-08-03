@@ -26,7 +26,7 @@ import com.arjinmc.smartcam.core.callback.SmartCamOrientationEventListener;
 import com.arjinmc.smartcam.core.file.ImagePathSaver;
 import com.arjinmc.smartcam.core.file.ImageUriSaver;
 import com.arjinmc.smartcam.core.model.CameraSaveType;
-import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
+import com.arjinmc.smartcam.core.model.CameraSize;
 import com.arjinmc.smartcam.core.model.SmartCamOutputOption;
 import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
 import com.arjinmc.smartcam.core.wrapper.ICameraPreviewWrapper;
@@ -230,18 +230,18 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 
         try {
 
-            CameraSupportPreviewSize largest = mCamera2Wrapper.getMaxOutputSize();
+            CameraSize largestOutputSize = mCamera2Wrapper.getMaxOutputSize();
             SmartCamLog.i(TAG, "photo size:"
-                    + largest.getWidth() + "/" + largest.getHeight());
+                    + largestOutputSize.getWidth() + "/" + largestOutputSize.getHeight());
 
-            final CameraSupportPreviewSize previewSize = mCamera2Wrapper.getCompatPreviewSize(height, width);
+            final CameraSize previewSize = mCamera2Wrapper.getCompatPreviewSize(height, width);
             SmartCamLog.i(TAG, "preview size:"
                     + previewSize.getWidth() + "/" + previewSize.getHeight());
 
             texture.setDefaultBufferSize(previewSize.getWidth(), previewSize.getHeight());
             surface = new Surface(texture);
 
-            mImageReader = ImageReader.newInstance(largest.getWidth(), largest.getHeight()
+            mImageReader = ImageReader.newInstance(largestOutputSize.getWidth(), largestOutputSize.getHeight()
                     , ImageFormat.JPEG, 1);
 
             mPreviewRequestBuilder = mCamera.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);

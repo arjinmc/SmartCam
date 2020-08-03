@@ -3,18 +3,19 @@ package com.arjinmc.smartcam.core.model;
 import java.io.Serializable;
 
 /**
- * thie size that camera support preview
+ * the camera size
+ * for preview size / output size
  * Created by Eminem Lo on 2019-10-14.
  * email: arjinmc@hotmail.com
  */
-public class CameraSupportPreviewSize implements Serializable {
+public class CameraSize implements Serializable {
 
     private static final long serialVersionUID = -4574686753967297581L;
 
     private int width;
     private int height;
 
-    public CameraSupportPreviewSize(int width, int height) {
+    public CameraSize(int width, int height) {
         this.width = width;
         this.height = height;
     }

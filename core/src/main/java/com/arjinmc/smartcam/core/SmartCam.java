@@ -8,7 +8,7 @@ import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
 import com.arjinmc.smartcam.core.callback.SmartCamStateCallback;
 import com.arjinmc.smartcam.core.camera1.Camera1Wrapper;
 import com.arjinmc.smartcam.core.camera2.Camera2Wrapper;
-import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
+import com.arjinmc.smartcam.core.model.CameraSize;
 import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
 
 import java.io.File;
@@ -85,7 +85,7 @@ public class SmartCam extends AbsCameraWrapper {
     }
 
     @Override
-    public List<CameraSupportPreviewSize> getSupperPreviewSizes() {
+    public List<CameraSize> getSupperPreviewSizes() {
         return mCameraWrapper.getSupperPreviewSizes();
     }
 

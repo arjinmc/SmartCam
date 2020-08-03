@@ -24,7 +24,7 @@ import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.comparator.CompareSizesByArea;
 import com.arjinmc.smartcam.core.lock.CameraLock;
 import com.arjinmc.smartcam.core.model.CameraFlashMode;
-import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
+import com.arjinmc.smartcam.core.model.CameraSize;
 import com.arjinmc.smartcam.core.model.CameraType;
 import com.arjinmc.smartcam.core.model.SmartCamOpenError;
 import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
@@ -179,7 +179,7 @@ public class Camera2Wrapper extends AbsCameraWrapper {
     }
 
     @Override
-    public List<CameraSupportPreviewSize> getSupperPreviewSizes() {
+    public List<CameraSize> getSupperPreviewSizes() {
         if (mCamera == null) {
             return null;
         }
@@ -193,12 +193,12 @@ public class Camera2Wrapper extends AbsCameraWrapper {
             if (previewSizeList == null || previewSizeList.length == 0) {
                 return null;
             }
-            List<CameraSupportPreviewSize> cameraSupportPreviewSizeList = new ArrayList<>();
+            List<CameraSize> cameraSizeList = new ArrayList<>();
             for (Size childSize : previewSizeList) {
-                cameraSupportPreviewSizeList.add(new CameraSupportPreviewSize(
+                cameraSizeList.add(new CameraSize(
                         childSize.getWidth(), childSize.getHeight()));
             }
-            return cameraSupportPreviewSizeList;
+            return cameraSizeList;
         } catch (CameraAccessException e) {
             e.printStackTrace();
             return null;
@@ -363,12 +363,12 @@ public class Camera2Wrapper extends AbsCameraWrapper {
     }
 
     @Override
-    public CameraSupportPreviewSize getCompatPreviewSize(int width, int height) {
+    public CameraSize getCompatPreviewSize(int width, int height) {
         return chooseOptimalSize(getSupperPreviewSizes(), width, height, getMaxOutputSize());
     }
 
     @Override
-    public List<CameraSupportPreviewSize> getOutputSizes() {
+    public List<CameraSize> getOutputSizes() {
         CameraManager manager = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);
         CameraCharacteristics characteristics = null;
         try {
@@ -386,12 +386,12 @@ public class Camera2Wrapper extends AbsCameraWrapper {
     }
 
     @Override
-    public CameraSupportPreviewSize getMaxOutputSize() {
-        List<CameraSupportPreviewSize> cameraSupportPreviewSizes = getOutputSizes();
-        if (cameraSupportPreviewSizes == null || cameraSupportPreviewSizes.isEmpty()) {
+    public CameraSize getMaxOutputSize() {
+        List<CameraSize> cameraSizes = getOutputSizes();
+        if (cameraSizes == null || cameraSizes.isEmpty()) {
             return null;
         }
-        CameraSupportPreviewSize largest = Collections.max(cameraSupportPreviewSizes, new CompareSizesByArea());
+        CameraSize largest = Collections.max(cameraSizes, new CompareSizesByArea());
         return largest;
     }
 
@@ -471,15 +471,15 @@ public class Camera2Wrapper extends AbsCameraWrapper {
      * @param aspectRatio       The aspect ratio
      * @return The optimal {@code Size}, or an arbitrary one if none were big enough
      */
-    private CameraSupportPreviewSize chooseOptimalSize(List<CameraSupportPreviewSize> choices, int textureViewWidth,
-                                                       int textureViewHeight, CameraSupportPreviewSize aspectRatio) {
+    private CameraSize chooseOptimalSize(List<CameraSize> choices, int textureViewWidth,
+                                         int textureViewHeight, CameraSize aspectRatio) {
         // Collect the supported resolutions that are at least as big as the preview Surface
-        List<CameraSupportPreviewSize> bigEnough = new ArrayList<>();
+        List<CameraSize> bigEnough = new ArrayList<>();
         // Collect the supported resolutions that are smaller than the preview Surface
-        List<CameraSupportPreviewSize> notBigEnough = new ArrayList<>();
+        List<CameraSize> notBigEnough = new ArrayList<>();
         int w = aspectRatio.getWidth();
         int h = aspectRatio.getHeight();
-        for (CameraSupportPreviewSize option : choices) {
+        for (CameraSize option : choices) {
 //            SmartCamLog.e("supportSizes", option.getWidth() + "," + option.getHeight());
             if (option.getWidth() <= textureViewWidth && option.getHeight() <= textureViewHeight &&
                     option.getHeight() == option.getWidth() * h / w) {

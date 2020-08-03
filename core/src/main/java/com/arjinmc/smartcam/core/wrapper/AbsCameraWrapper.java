@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
 import com.arjinmc.smartcam.core.callback.SmartCamStateCallback;
-import com.arjinmc.smartcam.core.model.CameraSupportPreviewSize;
+import com.arjinmc.smartcam.core.model.CameraSize;
 import com.arjinmc.smartcam.core.model.CameraType;
 
 import java.io.File;
@@ -168,12 +168,12 @@ public class AbsCameraWrapper implements ICameraWrapper {
 
 
     @Override
-    public List<CameraSupportPreviewSize> getSupperPreviewSizes() {
+    public List<CameraSize> getSupperPreviewSizes() {
         return null;
     }
 
     @Override
-    public CameraSupportPreviewSize getCompatPreviewSize(int width, int height) {
+    public CameraSize getCompatPreviewSize(int width, int height) {
 
 //        List<CameraSupportPreviewSize> supportPreviewSizes = getSupperPreviewSizes();
 //        if (supportPreviewSizes == null || supportPreviewSizes.isEmpty()) {
@@ -214,12 +214,12 @@ public class AbsCameraWrapper implements ICameraWrapper {
     }
 
     @Override
-    public List<CameraSupportPreviewSize> getOutputSizes() {
+    public List<CameraSize> getOutputSizes() {
         return null;
     }
 
     @Override
-    public CameraSupportPreviewSize getMaxOutputSize() {
+    public CameraSize getMaxOutputSize() {
         return null;
     }
 
