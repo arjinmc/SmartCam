@@ -167,6 +167,20 @@ public interface ICameraWrapper {
     CameraSupportPreviewSize getCompatPreviewSize(int width, int height);
 
     /**
+     * get output sizes that camera supported
+     *
+     * @return
+     */
+    List<CameraSupportPreviewSize> getOutputSizes();
+
+    /**
+     * get the biggest output size that camera supported
+     *
+     * @return
+     */
+    CameraSupportPreviewSize getMaxOutputSize();
+
+    /**
      * get the orientation rotation
      *
      * @return

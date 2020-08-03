@@ -214,6 +214,16 @@ public class AbsCameraWrapper implements ICameraWrapper {
     }
 
     @Override
+    public List<CameraSupportPreviewSize> getOutputSizes() {
+        return null;
+    }
+
+    @Override
+    public CameraSupportPreviewSize getMaxOutputSize() {
+        return null;
+    }
+
+    @Override
     public int getOrientation() {
         return 0;
     }

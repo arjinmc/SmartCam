@@ -6,12 +6,9 @@ import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
-import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
-import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
-import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
@@ -26,7 +23,6 @@ import androidx.annotation.RequiresApi;
 import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamOrientationEventListener;
-import com.arjinmc.smartcam.core.comparator.CompareSizesByArea;
 import com.arjinmc.smartcam.core.file.ImagePathSaver;
 import com.arjinmc.smartcam.core.file.ImageUriSaver;
 import com.arjinmc.smartcam.core.model.CameraSaveType;
@@ -36,10 +32,7 @@ import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
 import com.arjinmc.smartcam.core.wrapper.ICameraPreviewWrapper;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Preview for camera2
@@ -237,19 +230,12 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 
         try {
 
-            CameraManager manager = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);
-            CameraCharacteristics characteristics = manager.getCameraCharacteristics(mCamera.getId());
-            StreamConfigurationMap map = characteristics.get(
-                    CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-            CameraSupportPreviewSize largest = Collections.max(
-                    SmartCamUtils.convertSizes(map.getOutputSizes(ImageFormat.JPEG)),
-                    new CompareSizesByArea());
-
-            SmartCamLog.e(TAG, "photo size:"
+            CameraSupportPreviewSize largest = mCamera2Wrapper.getMaxOutputSize();
+            SmartCamLog.i(TAG, "photo size:"
                     + largest.getWidth() + "/" + largest.getHeight());
 
-            final CameraSupportPreviewSize previewSize = chooseOptimalSize(mCamera2Wrapper.getSupperPreviewSizes(), height, width, largest);
-            SmartCamLog.e(TAG, "preview size:"
+            final CameraSupportPreviewSize previewSize = mCamera2Wrapper.getCompatPreviewSize(height, width);
+            SmartCamLog.i(TAG, "preview size:"
                     + previewSize.getWidth() + "/" + previewSize.getHeight());
 
             texture.setDefaultBufferSize(previewSize.getWidth(), previewSize.getHeight());
@@ -328,57 +314,9 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
         }
     }
 
-
     @Override
     public void onOrientationChange(int degree) {
         mDegree = degree;
-    }
-
-    /**
-     * Given {@code choices} of {@code Size}s supported by a camera, choose the smallest one that
-     * is at least as large as the respective texture view size, and that is at most as large as the
-     * respective max size, and whose aspect ratio matches with the specified value. If such size
-     * doesn't exist, choose the largest one that is at most as large as the respective max size,
-     * and whose aspect ratio matches with the specified value.
-     *
-     * @param choices           The list of sizes that the camera supports for the intended output
-     *                          class
-     * @param textureViewWidth  The width of the texture view relative to sensor coordinate
-     * @param textureViewHeight The height of the texture view relative to sensor coordinate
-     * @param aspectRatio       The aspect ratio
-     * @return The optimal {@code Size}, or an arbitrary one if none were big enough
-     */
-    private CameraSupportPreviewSize chooseOptimalSize(List<CameraSupportPreviewSize> choices, int textureViewWidth,
-                                                       int textureViewHeight, CameraSupportPreviewSize aspectRatio) {
-        // Collect the supported resolutions that are at least as big as the preview Surface
-        List<CameraSupportPreviewSize> bigEnough = new ArrayList<>();
-        // Collect the supported resolutions that are smaller than the preview Surface
-        List<CameraSupportPreviewSize> notBigEnough = new ArrayList<>();
-        int w = aspectRatio.getWidth();
-        int h = aspectRatio.getHeight();
-        for (CameraSupportPreviewSize option : choices) {
-//            SmartCamLog.e("supportSizes", option.getWidth() + "," + option.getHeight());
-            if (option.getWidth() <= textureViewWidth && option.getHeight() <= textureViewHeight &&
-                    option.getHeight() == option.getWidth() * h / w) {
-                if (option.getWidth() >= textureViewWidth &&
-                        option.getHeight() >= textureViewHeight) {
-                    bigEnough.add(option);
-                } else {
-                    notBigEnough.add(option);
-                }
-            }
-        }
-
-        // Pick the smallest of those big enough. If there is no one big enough, pick the
-        // largest of those not big enough.
-        if (bigEnough.size() > 0) {
-            return Collections.min(bigEnough, new CompareSizesByArea());
-        } else if (notBigEnough.size() > 0) {
-            return Collections.max(notBigEnough, new CompareSizesByArea());
-        } else {
-            SmartCamLog.e(TAG, "Couldn't find any suitable preview size");
-            return choices.get(0);
-        }
     }
 
 
