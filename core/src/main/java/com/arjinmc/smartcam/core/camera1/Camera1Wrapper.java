@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.hardware.Camera.getCameraInfo;
-import static android.hardware.Camera.getNumberOfCameras;
 
 /**
  * Wrapper for camera v1
@@ -55,7 +54,7 @@ public class Camera1Wrapper extends AbsCameraWrapper {
         try {
 
             //if camera is not open before
-            int numberOfCameras = getNumberOfCameras();
+            int numberOfCameras = getCameraCount();
             int frontCameraId = 1;
             Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
             for (int i = 0; i < numberOfCameras; i++) {
@@ -144,7 +143,7 @@ public class Camera1Wrapper extends AbsCameraWrapper {
 
     @Override
     public int getCameraCount() {
-        return getNumberOfCameras();
+        return Camera.getNumberOfCameras();
     }
 
     @Override
@@ -198,7 +197,7 @@ public class Camera1Wrapper extends AbsCameraWrapper {
 
         int frontIndex = -1;
         int backIndex = -1;
-        int cameraCount = getNumberOfCameras();
+        int cameraCount = getCameraCount();
         Camera.CameraInfo info = new Camera.CameraInfo();
         for (int cameraIndex = 0; cameraIndex < cameraCount; cameraIndex++) {
             getCameraInfo(cameraIndex, info);
