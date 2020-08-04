@@ -195,6 +195,8 @@ public class Camera1Wrapper extends AbsCameraWrapper {
 
     private void switchCamera(@CameraType.Type int type) {
 
+        mCamera.release();
+
         int frontIndex = -1;
         int backIndex = -1;
         int cameraCount = getCameraCount();
