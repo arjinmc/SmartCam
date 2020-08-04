@@ -52,6 +52,10 @@ public class ImageUriSaver implements Runnable {
         }
         SmartCamLog.i(TAG, "degree:" + mOutputOption.getDegree());
 
+        if (mOutputOption.getDegree() == null || mOutputOption.getDegree() == -1) {
+            mOutputOption.setDegree(0);
+        }
+
         if (TextUtils.isEmpty(mOutputOption.getUri())) {
             if (mSmartCamCaptureCallback != null) {
                 mSmartCamCaptureCallback.onError(new SmartCamCaptureError());
