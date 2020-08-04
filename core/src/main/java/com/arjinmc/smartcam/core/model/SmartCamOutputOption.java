@@ -21,14 +21,17 @@ public class SmartCamOutputOption implements Serializable {
     private int previewWidth;
     private int previewHeight;
     private Matrix matrix;
+    private int cameraType;
 
-    public SmartCamOutputOption(Image image, File file, Integer degree, int previewWidth, int previewHeight, Matrix matrix) {
+    public SmartCamOutputOption(Image image, File file, Integer degree
+            , int previewWidth, int previewHeight, Matrix matrix, @CameraType.Type int cameraType) {
         this.image = image;
         this.file = file;
         this.degree = degree;
         this.previewWidth = previewWidth;
         this.previewHeight = previewHeight;
         this.matrix = matrix;
+        this.cameraType = cameraType;
     }
 
     public Image getImage() {
@@ -77,5 +80,13 @@ public class SmartCamOutputOption implements Serializable {
 
     public void setMatrix(Matrix matrix) {
         this.matrix = matrix;
+    }
+
+    public int getCameraType() {
+        return cameraType;
+    }
+
+    public void setCameraType(int cameraType) {
+        this.cameraType = cameraType;
     }
 }

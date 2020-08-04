@@ -249,34 +249,63 @@ public final class SmartCamUtils {
      * @param degree
      * @return
      */
-    public static Bitmap rotateBitmap(Bitmap bitmap, int degree) {
+    public static Bitmap rotateBitmap(Bitmap bitmap, int degree, @CameraType.Type int type) {
         if (bitmap == null) {
             return bitmap;
         }
 
-        if (degree >= 0 && degree <= 44) {
-            return bitmap;
-        }
+        if (CameraType.CAMERA_BACK == type) {
 
-        if (degree >= 315 && degree <= 360) {
-            return bitmap;
-        }
+            if (degree >= 0 && degree <= 44) {
+                return bitmap;
+            }
 
-        int resultDegree = 0;
+            if (degree >= 315 && degree <= 360) {
+                return bitmap;
+            }
 
-        if (degree >= 45 && degree <= 135) {
-            resultDegree = 90;
+            int resultDegree = 0;
+
+            if (degree >= 45 && degree <= 135) {
+                resultDegree = 90;
+            }
+            if (degree >= 226 && degree <= 314) {
+                resultDegree = -90;
+            }
+            if (degree >= 136 && degree <= 225) {
+                resultDegree = 180;
+            }
+            Matrix matrix = new Matrix();
+            matrix.postRotate(resultDegree);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0
+                    , bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        } else {
+
+            int resultDegree = 0;
+
+            if (degree >= 0 && degree <= 44) {
+                resultDegree = 180;
+            }
+
+            if (degree >= 315 && degree <= 360) {
+                resultDegree = 180;
+            }
+
+            if (degree >= 45 && degree <= 135) {
+                resultDegree = 90;
+            }
+            if (degree >= 226 && degree <= 314) {
+                resultDegree = -90;
+            }
+            if (degree >= 136 && degree <= 225) {
+                resultDegree = 0;
+            }
+            Matrix matrix = new Matrix();
+            matrix.postRotate(resultDegree);
+            matrix.postScale(-1, 1);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0
+                    , bitmap.getWidth(), bitmap.getHeight(), matrix, true);
         }
-        if (degree >= 226 && degree <= 314) {
-            resultDegree = -90;
-        }
-        if (degree >= 136 && degree <= 225) {
-            resultDegree = 180;
-        }
-        Matrix matrix = new Matrix();
-        matrix.postRotate(resultDegree);
-        bitmap = Bitmap.createBitmap(bitmap, 0, 0
-                , bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
         return bitmap;
     }
