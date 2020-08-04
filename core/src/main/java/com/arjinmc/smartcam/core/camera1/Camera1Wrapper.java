@@ -115,7 +115,7 @@ public class Camera1Wrapper extends AbsCameraWrapper {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         return false;
     }
@@ -237,6 +237,22 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     }
 
     @Override
+    public List<CameraSize> getOutputSizes() {
+        if (mCamera == null) {
+            return null;
+        }
+        List<Camera.Size> pictureSizes = mCamera.getParameters().getSupportedPictureSizes();
+        if (pictureSizes == null || pictureSizes.isEmpty()) {
+            return null;
+        }
+        List<CameraSize> outputSize = new ArrayList<>();
+        for (Camera.Size pictureSize : pictureSizes) {
+            outputSize.add(new CameraSize(pictureSize.width, pictureSize.height));
+        }
+        return outputSize;
+    }
+
+    @Override
     public int getOrientation() {
         if ("-1".equals(mCurrentCameraId)) {
             return 0;
@@ -333,4 +349,5 @@ public class Camera1Wrapper extends AbsCameraWrapper {
         SmartCamLog.i(TAG, "FlashMode:" + parameters.getFlashMode());
         SmartCamLog.i(TAG, "FocusMode:" + parameters.getFocusMode());
     }
+
 }

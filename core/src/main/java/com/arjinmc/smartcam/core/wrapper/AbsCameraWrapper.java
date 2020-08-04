@@ -2,12 +2,16 @@ package com.arjinmc.smartcam.core.wrapper;
 
 import android.content.Context;
 
+import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
 import com.arjinmc.smartcam.core.callback.SmartCamStateCallback;
+import com.arjinmc.smartcam.core.comparator.CompareSizesByArea;
 import com.arjinmc.smartcam.core.model.CameraSize;
 import com.arjinmc.smartcam.core.model.CameraType;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -175,6 +179,8 @@ public class AbsCameraWrapper implements ICameraWrapper {
     @Override
     public CameraSize getCompatPreviewSize(int width, int height) {
 
+        return chooseOptimalSize(getSupperPreviewSizes(), width, height, getMaxOutputSize());
+
 //        List<CameraSupportPreviewSize> supportPreviewSizes = getSupperPreviewSizes();
 //        if (supportPreviewSizes == null || supportPreviewSizes.isEmpty()) {
 //            return null;
@@ -210,7 +216,6 @@ public class AbsCameraWrapper implements ICameraWrapper {
 //            return null;
 //        }
 //        return supportPreviewSizes.get(postion);
-        return null;
     }
 
     @Override
@@ -220,7 +225,12 @@ public class AbsCameraWrapper implements ICameraWrapper {
 
     @Override
     public CameraSize getMaxOutputSize() {
-        return null;
+        List<CameraSize> cameraSizes = getOutputSizes();
+        if (cameraSizes == null || cameraSizes.isEmpty()) {
+            return null;
+        }
+        CameraSize largest = Collections.max(cameraSizes, new CompareSizesByArea());
+        return largest;
     }
 
     @Override
@@ -257,6 +267,54 @@ public class AbsCameraWrapper implements ICameraWrapper {
     @Override
     public boolean hasFocusAuto() {
         return false;
+    }
+
+    /**
+     * Given {@code choices} of {@code Size}s supported by a camera, choose the smallest one that
+     * is at least as large as the respective texture view size, and that is at most as large as the
+     * respective max size, and whose aspect ratio matches with the specified value. If such size
+     * doesn't exist, choose the largest one that is at most as large as the respective max size,
+     * and whose aspect ratio matches with the specified value.
+     *
+     * @param choices           The list of sizes that the camera supports for the intended output
+     *                          class
+     * @param textureViewWidth  The width of the texture view relative to sensor coordinate
+     * @param textureViewHeight The height of the texture view relative to sensor coordinate
+     * @param aspectRatio       The aspect ratio
+     * @return The optimal {@code Size}, or an arbitrary one if none were big enough
+     */
+    private CameraSize chooseOptimalSize(List<CameraSize> choices, int textureViewWidth,
+                                         int textureViewHeight, CameraSize aspectRatio) {
+//        SmartCamLog.e("textureViewWidth", textureViewWidth + "," + textureViewHeight);
+        // Collect the supported resolutions that are at least as big as the preview Surface
+        List<CameraSize> bigEnough = new ArrayList<>();
+        // Collect the supported resolutions that are smaller than the preview Surface
+        List<CameraSize> notBigEnough = new ArrayList<>();
+        int w = aspectRatio.getWidth();
+        int h = aspectRatio.getHeight();
+        for (CameraSize option : choices) {
+//            SmartCamLog.e("supportSizes", option.getWidth() + "," + option.getHeight());
+            if (option.getWidth() <= textureViewWidth && option.getHeight() <= textureViewHeight &&
+                    option.getHeight() == option.getWidth() * h / w) {
+                if (option.getWidth() >= textureViewWidth &&
+                        option.getHeight() >= textureViewHeight) {
+                    bigEnough.add(option);
+                } else {
+                    notBigEnough.add(option);
+                }
+            }
+        }
+
+        // Pick the smallest of those big enough. If there is no one big enough, pick the
+        // largest of those not big enough.
+        if (bigEnough.size() > 0) {
+            return Collections.min(bigEnough, new CompareSizesByArea());
+        } else if (notBigEnough.size() > 0) {
+            return Collections.max(notBigEnough, new CompareSizesByArea());
+        } else {
+            SmartCamLog.e("AbsCameraWrapper", "Couldn't find any suitable preview size");
+            return choices.get(0);
+        }
     }
 
     public void setOnClickCaptureLisenter(OnClickCaptureLisenter onClickCaptureLisenter) {

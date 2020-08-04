@@ -1,6 +1,7 @@
 package com.arjinmc.smartcam.core.camera1;
 
 import android.content.Context;
+import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.view.OrientationEventListener;
@@ -69,8 +70,10 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                     }, null, new Camera.PictureCallback() {
                         @Override
                         public void onPictureTaken(byte[] data, Camera camera) {
-                            mHandler.post(new ImageFileSaver(data, mCameraDegree, file, mCameraWrapper.getCaptureCallback()));
-                            mCamera.startPreview();
+                            mHandler.post(new ImageFileSaver(data, mCameraDegree
+                                    , mCameraWrapper.getCurrentCameraType(), file
+                                    , mCameraWrapper.getCaptureCallback()));
+                            startPreview();
                         }
                     });
                 } catch (Exception e) {
@@ -135,15 +138,20 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                         , mOrientation));
 
                 CameraSize cameraSize = mCameraWrapper.getCompatPreviewSize(
-                        getMeasuredWidth(), getMeasuredHeight());
+                        getMeasuredHeight(), getMeasuredWidth());
 
                 if (cameraSize != null) {
                     SmartCamLog.e(TAG, "final preview size:"
                             + cameraSize.getWidth() + "/" + cameraSize.getHeight());
                     getHolder().setFixedSize(cameraSize.getWidth(), cameraSize.getHeight());
-
                 }
                 mCamera.setPreviewDisplay(getHolder());
+                Camera.Parameters parameters = mCamera.getParameters();
+                parameters.setPreviewSize(cameraSize.getWidth(), cameraSize.getHeight());
+                parameters.setPictureSize(cameraSize.getWidth(), cameraSize.getHeight());
+                parameters.setJpegQuality(100);
+                parameters.setPictureFormat(ImageFormat.JPEG);
+                mCamera.setParameters(parameters);
                 mCamera.startPreview();
             }
         } catch (IOException e) {

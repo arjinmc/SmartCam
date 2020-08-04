@@ -67,7 +67,8 @@ public class ImagePathSaver implements Runnable {
             if (mOutputOption.getMatrix() != null) {
                 temp = SmartCamUtils.cropBitmap(temp, mOutputOption.getPreviewWidth(), mOutputOption.getPreviewHeight());
             }
-            temp = SmartCamUtils.rotateBitmap(temp, mOutputOption.getDegree(), mOutputOption.getCameraType());
+
+            temp = SmartCamUtils.rotateBitmap2(temp, mOutputOption.getDegree(), mOutputOption.getCameraType());
 
             byteArrayOutputStream = new ByteArrayOutputStream();
             temp.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);

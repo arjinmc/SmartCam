@@ -250,15 +250,85 @@ public final class SmartCamUtils {
     }
 
     /**
-     * rotate the bitmap to the right direction
+     * rotate the bitmap to the right direction (camera1)
      *
      * @param bitmap
      * @param degree
      * @return
      */
-    public static Bitmap rotateBitmap(Bitmap bitmap, int degree, @CameraType.Type int type) {
+    public static Bitmap rotateBitmap1(Bitmap bitmap, int degree, @CameraType.Type int type) {
         if (bitmap == null) {
-            return bitmap;
+            return null;
+        }
+
+        if (CameraType.CAMERA_BACK == type) {
+
+            int resultDegree = 0;
+
+            if (degree >= 0 && degree <= 44) {
+                resultDegree = 90;
+            }
+
+            if (degree >= 315 && degree <= 360) {
+                resultDegree = 90;
+            }
+
+            if (degree >= 45 && degree <= 135) {
+                resultDegree = 180;
+            }
+            if (degree >= 226 && degree <= 314) {
+                resultDegree = 0;
+            }
+            if (degree >= 136 && degree <= 225) {
+                resultDegree = -90;
+            }
+
+            Matrix matrix = new Matrix();
+            matrix.postRotate(resultDegree);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0
+                    , bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        } else {
+
+            int resultDegree = 0;
+
+            if (degree >= 0 && degree <= 44) {
+                resultDegree = -90;
+            }
+
+            if (degree >= 315 && degree <= 360) {
+                resultDegree = -90;
+            }
+
+            if (degree >= 45 && degree <= 135) {
+                resultDegree = 180;
+            }
+            if (degree >= 226 && degree <= 314) {
+                resultDegree = 0;
+            }
+            if (degree >= 136 && degree <= 225) {
+                resultDegree = 90;
+            }
+            Matrix matrix = new Matrix();
+            matrix.postRotate(resultDegree);
+            matrix.postScale(-1, 1);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0
+                    , bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        }
+
+        return bitmap;
+    }
+
+
+    /**
+     * rotate the bitmap to the right direction (camera2)
+     *
+     * @param bitmap
+     * @param degree
+     * @return
+     */
+    public static Bitmap rotateBitmap2(Bitmap bitmap, int degree, @CameraType.Type int type) {
+        if (bitmap == null) {
+            return null;
         }
 
         if (CameraType.CAMERA_BACK == type) {
@@ -309,7 +379,6 @@ public final class SmartCamUtils {
             matrix.postRotate(resultDegree);
             bitmap = Bitmap.createBitmap(bitmap, 0, 0
                     , bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-            return bitmap;
         } else {
 
             int resultDegree = 0;
@@ -370,7 +439,6 @@ public final class SmartCamUtils {
         }
         return degree;
     }
-
 
     /**
      * get scale ratio
