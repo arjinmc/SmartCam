@@ -56,17 +56,18 @@ public class ImagePathSaver implements Runnable {
         byte[] bytes = new byte[buffer.remaining()];
         buffer.get(bytes);
         FileOutputStream output = null;
+        ByteArrayOutputStream byteArrayOutputStream = null;
         try {
 
             Bitmap temp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             if (mOutputOption.getMatrix() != null) {
                 temp = SmartCamUtils.cropBitmap(temp, mOutputOption.getPreviewWidth(), mOutputOption.getPreviewHeight());
             }
-            temp = SmartCamUtils.rotateBitmap(temp, mOutputOption.getDegree(),mOutputOption.getCameraType());
+            temp = SmartCamUtils.rotateBitmap(temp, mOutputOption.getDegree(), mOutputOption.getCameraType());
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            temp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] data = baos.toByteArray();
+            byteArrayOutputStream = new ByteArrayOutputStream();
+            temp.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+            byte[] data = byteArrayOutputStream.toByteArray();
             output = new FileOutputStream(mOutputOption.getFile());
             output.write(data);
 
@@ -80,13 +81,21 @@ public class ImagePathSaver implements Runnable {
             }
         } finally {
             mOutputOption.getImage().close();
-            if (null != output) {
+            if (output != null) {
                 try {
                     output.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
+            if (byteArrayOutputStream != null) {
+                try {
+                    byteArrayOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
         }
     }
 

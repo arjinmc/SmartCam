@@ -15,18 +15,42 @@ public class SmartCamOutputOption implements Serializable {
 
     private static final long serialVersionUID = -1996527596137638872L;
 
+    /**
+     * capture image result
+     */
     private Image image;
+    /**
+     * output file
+     */
     private File file;
     private Integer degree;
     private int previewWidth;
     private int previewHeight;
     private Matrix matrix;
+    /**
+     * {@link CameraType}
+     */
     private int cameraType;
+    /**
+     * output uri
+     */
+    private String uri;
 
     public SmartCamOutputOption(Image image, File file, Integer degree
             , int previewWidth, int previewHeight, Matrix matrix, @CameraType.Type int cameraType) {
         this.image = image;
         this.file = file;
+        this.degree = degree;
+        this.previewWidth = previewWidth;
+        this.previewHeight = previewHeight;
+        this.matrix = matrix;
+        this.cameraType = cameraType;
+    }
+
+    public SmartCamOutputOption(Image image, String uri, Integer degree
+            , int previewWidth, int previewHeight, Matrix matrix, @CameraType.Type int cameraType) {
+        this.image = image;
+        this.uri = uri;
         this.degree = degree;
         this.previewWidth = previewWidth;
         this.previewHeight = previewHeight;
@@ -88,5 +112,13 @@ public class SmartCamOutputOption implements Serializable {
 
     public void setCameraType(int cameraType) {
         this.cameraType = cameraType;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 }

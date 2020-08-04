@@ -89,14 +89,16 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                 case CameraSaveType.TYPE_PATH:
                     SmartCamLog.e("CameraSaveType", "ImagePathSaver");
                     mCamera2Wrapper.getHandler().post(new ImagePathSaver(
-                            new SmartCamOutputOption(image, mSaveFile, mDegree, mWidth, mHeight
-                                    , mMatrix, mCamera2Wrapper.getCurrentCameraType())
+                            new SmartCamOutputOption(image, mSaveFile, mDegree
+                                    , mWidth, mHeight, mMatrix, mCamera2Wrapper.getCurrentCameraType())
                             , mCamera2Wrapper.getCaptureCallback()));
                     break;
                 case CameraSaveType.TYPE_URI:
                     SmartCamLog.e("CameraSaveType", "ImageUriSaver");
-                    mCamera2Wrapper.getHandler().post(new ImageUriSaver(getContext(), image, mDegree
-                            , mSaveFileUri, mCamera2Wrapper.getCaptureCallback()));
+                    mCamera2Wrapper.getHandler().post(new ImageUriSaver(getContext()
+                            , new SmartCamOutputOption(image, mSaveFileUri, mDegree
+                            , mWidth, mHeight, mMatrix, mCamera2Wrapper.getCurrentCameraType())
+                            , mCamera2Wrapper.getCaptureCallback()));
                     break;
                 default:
                     break;

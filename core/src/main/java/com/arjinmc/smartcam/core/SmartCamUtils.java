@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.hardware.Camera;
+import android.media.ExifInterface;
 import android.os.Build;
 import android.util.Size;
 import android.view.Surface;
@@ -16,6 +17,7 @@ import androidx.annotation.RequiresApi;
 import com.arjinmc.smartcam.core.model.CameraSize;
 import com.arjinmc.smartcam.core.model.CameraType;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -221,24 +223,29 @@ public final class SmartCamUtils {
             return bitmap;
         }
 
-        boolean needCrop = false;
+        SmartCamLog.i("tag", "bitmap:" + bitmap.getWidth() + ",height:" + bitmap.getHeight()
+                + ",previewWidth:" + previewWidth + ",previewHeight:" + previewHeight);
+
         if (previewWidth <= bitmap.getWidth() && previewHeight <= bitmap.getHeight()) {
             float scale = Math.min(
                     (float) bitmap.getWidth() / previewWidth,
                     (float) bitmap.getHeight() / previewHeight);
             previewWidth *= scale;
             previewHeight *= scale;
-            needCrop = true;
-        }
 
-        if (!needCrop) {
-            return bitmap;
-        } else {
             int alterTop = (bitmap.getHeight() - previewHeight) / 2;
             int alterLeft = (bitmap.getWidth() - previewWidth) / 2;
-//            SmartCamLog.i("tag", "alterTop:" + alterTop + ",alterLeft:" + alterLeft
-//                    + ",previewWidth:" + previewWidth + ",previewHeight:" + previewHeight);
+            SmartCamLog.i("tag", "alterTop:" + alterTop + ",alterLeft:" + alterLeft
+                    + ",previewWidth:" + previewWidth + ",previewHeight:" + previewHeight);
+
             return Bitmap.createBitmap(bitmap, alterLeft, alterTop, previewWidth, previewHeight);
+        } else {
+            float scale = Math.max(
+                    (float) previewWidth / bitmap.getWidth(),
+                    (float) previewHeight / bitmap.getHeight());
+            SmartCamLog.e("scale", "scale:" + scale);
+            bitmap = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() * scale), (int) (bitmap.getHeight() * scale), false);
+            return bitmap;
         }
     }
 
@@ -256,6 +263,7 @@ public final class SmartCamUtils {
 
         if (CameraType.CAMERA_BACK == type) {
 
+            //xiaomi
             if (degree >= 0 && degree <= 44) {
                 return bitmap;
             }
@@ -275,10 +283,33 @@ public final class SmartCamUtils {
             if (degree >= 136 && degree <= 225) {
                 resultDegree = 180;
             }
+
+            //emulator
+//            int resultDegree = 0;
+//
+//            if (degree >= 0 && degree <= 44) {
+//                resultDegree = 90;
+//            }
+//
+//            if (degree >= 315 && degree <= 360) {
+//                resultDegree = 90;
+//            }
+//
+//            if (degree >= 45 && degree <= 135) {
+//                resultDegree = 180;
+//            }
+//            if (degree >= 226 && degree <= 314) {
+//                resultDegree = 0;
+//            }
+//            if (degree >= 136 && degree <= 225) {
+//                resultDegree = -90;
+//            }
+
             Matrix matrix = new Matrix();
             matrix.postRotate(resultDegree);
             bitmap = Bitmap.createBitmap(bitmap, 0, 0
                     , bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            return bitmap;
         } else {
 
             int resultDegree = 0;
@@ -309,6 +340,37 @@ public final class SmartCamUtils {
 
         return bitmap;
     }
+
+    /**
+     * get photo rotation
+     *
+     * @param path file path
+     * @return degree
+     */
+    public static int getPhotoRotationDegree(String path) {
+        int degree = 0;
+        try {
+            ExifInterface exifInterface = new ExifInterface(path);
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+                default:
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return degree;
+    }
+
 
     /**
      * get scale ratio
