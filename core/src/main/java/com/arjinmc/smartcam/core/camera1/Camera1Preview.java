@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.os.Handler;
-import android.util.Log;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -15,6 +14,7 @@ import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamOrientationEventListener;
 import com.arjinmc.smartcam.core.file.ImageFileSaver;
 import com.arjinmc.smartcam.core.model.CameraSize;
+import com.arjinmc.smartcam.core.model.SmartCamOutputOption1;
 import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
 import com.arjinmc.smartcam.core.wrapper.ICameraPreviewWrapper;
 
@@ -41,6 +41,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
 
     private Handler mHandler = new Handler();
 
+    private CameraSize mPreviewSize;
 
     public Camera1Preview(Context context, Camera1Wrapper camera1Wrapper) {
         super(context);
@@ -72,8 +73,8 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                     }, null, new Camera.PictureCallback() {
                         @Override
                         public void onPictureTaken(byte[] data, Camera camera) {
-                            mHandler.post(new ImageFileSaver(data, mCameraDegree
-                                    , mCameraWrapper.getCurrentCameraType(), file
+                            mHandler.post(new ImageFileSaver(new SmartCamOutputOption1(data, file, mCameraDegree
+                                    , mCameraWrapper.getCurrentCameraType(), getMeasuredHeight(), getMeasuredWidth())
                                     , mCameraWrapper.getCaptureCallback()));
                             if (SmartCamConfig.isAutoReset()) {
                                 startPreview();
@@ -141,26 +142,24 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                         , mCameraWrapper.getCurrentCameraId()
                         , mOrientation));
 
-                CameraSize cameraSize = mCameraWrapper.getCompatPreviewSize(
+                mPreviewSize = mCameraWrapper.getCompatPreviewSize(
                         getMeasuredHeight(), getMeasuredWidth());
 
-                if (cameraSize != null) {
+                if (mPreviewSize != null) {
                     SmartCamLog.e(TAG, "final preview size:"
-                            + cameraSize.getWidth() + "/" + cameraSize.getHeight());
-                    getHolder().setFixedSize(cameraSize.getWidth(), cameraSize.getHeight());
+                            + mPreviewSize.getWidth() + "/" + mPreviewSize.getHeight());
+                    getHolder().setFixedSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
                 }
                 mCamera.setPreviewDisplay(getHolder());
                 Camera.Parameters parameters = mCamera.getParameters();
-                float scale = SmartCamUtils.getScaleRatio(cameraSize.getWidth(), cameraSize.getHeight()
-                        , getMeasuredWidth(), getMeasuredHeight());
-                Log.e("scale", scale + "");
-                parameters.setPreviewSize(cameraSize.getWidth(), cameraSize.getHeight());
-                parameters.setPictureSize(cameraSize.getWidth(), cameraSize.getHeight());
+                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+                parameters.setSceneMode(Camera.Parameters.SCENE_MODE_AUTO);
+                parameters.setPreviewSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
+                CameraSize outputSize = mCameraWrapper.getMaxOutputSize();
+                parameters.setPictureSize(outputSize.getWidth(), outputSize.getHeight());
                 parameters.setJpegQuality(100);
                 parameters.setPictureFormat(ImageFormat.JPEG);
                 mCamera.setParameters(parameters);
-                postInvalidate();
-
                 mCamera.startPreview();
             }
         } catch (IOException e) {

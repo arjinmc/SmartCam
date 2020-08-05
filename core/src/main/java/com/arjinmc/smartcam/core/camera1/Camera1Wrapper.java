@@ -351,4 +351,41 @@ public class Camera1Wrapper extends AbsCameraWrapper {
         SmartCamLog.i(TAG, "FocusMode:" + parameters.getFocusMode());
     }
 
+    @Override
+    public CameraSize getCompatPreviewSize(int width, int height) {
+        final double ASPECT_TOLERANCE = 0.1;
+        double targetRatio = (double) width / height;
+
+        List<CameraSize> previewSizes = getSupperPreviewSizes();
+        if (previewSizes == null) {
+            return null;
+        }
+
+        CameraSize optimalSize = null;
+        double minDiff = Double.MAX_VALUE;
+
+        int targetHeight = height;
+
+        for (CameraSize size : previewSizes) {
+            double ratio = (double) size.getWidth() / size.getHeight();
+            if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) {
+                continue;
+            }
+            if (Math.abs(size.getHeight() - targetHeight) < minDiff) {
+                optimalSize = size;
+                minDiff = Math.abs(size.getHeight() - targetHeight);
+            }
+        }
+
+        if (optimalSize == null) {
+            minDiff = Double.MAX_VALUE;
+            for (CameraSize size : previewSizes) {
+                if (Math.abs(size.getHeight() - targetHeight) < minDiff) {
+                    optimalSize = size;
+                    minDiff = Math.abs(size.getHeight() - targetHeight);
+                }
+            }
+        }
+        return optimalSize;
+    }
 }

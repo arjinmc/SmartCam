@@ -14,7 +14,7 @@ import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
 import com.arjinmc.smartcam.core.model.SmartCamCaptureError;
-import com.arjinmc.smartcam.core.model.SmartCamOutputOption;
+import com.arjinmc.smartcam.core.model.SmartCamOutputOption2;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -35,10 +35,10 @@ public class ImageUriSaver implements Runnable {
      * The JPEG image
      */
     private Context mContext;
-    private SmartCamOutputOption mOutputOption;
+    private SmartCamOutputOption2 mOutputOption;
     private SmartCamCaptureCallback mSmartCamCaptureCallback;
 
-    public ImageUriSaver(Context context, SmartCamOutputOption outputOption, SmartCamCaptureCallback smartCamCaptureCallback) {
+    public ImageUriSaver(Context context, SmartCamOutputOption2 outputOption, SmartCamCaptureCallback smartCamCaptureCallback) {
         mContext = context;
         mOutputOption = outputOption;
         mSmartCamCaptureCallback = smartCamCaptureCallback;

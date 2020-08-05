@@ -27,7 +27,7 @@ import com.arjinmc.smartcam.core.file.ImagePathSaver;
 import com.arjinmc.smartcam.core.file.ImageUriSaver;
 import com.arjinmc.smartcam.core.model.CameraSaveType;
 import com.arjinmc.smartcam.core.model.CameraSize;
-import com.arjinmc.smartcam.core.model.SmartCamOutputOption;
+import com.arjinmc.smartcam.core.model.SmartCamOutputOption2;
 import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
 import com.arjinmc.smartcam.core.wrapper.ICameraPreviewWrapper;
 
@@ -89,14 +89,14 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                 case CameraSaveType.TYPE_PATH:
                     SmartCamLog.e("CameraSaveType", "ImagePathSaver");
                     mCamera2Wrapper.getHandler().post(new ImagePathSaver(
-                            new SmartCamOutputOption(image, mSaveFile, mDegree
+                            new SmartCamOutputOption2(image, mSaveFile, mDegree
                                     , mWidth, mHeight, mMatrix, mCamera2Wrapper.getCurrentCameraType())
                             , mCamera2Wrapper.getCaptureCallback()));
                     break;
                 case CameraSaveType.TYPE_URI:
                     SmartCamLog.e("CameraSaveType", "ImageUriSaver");
                     mCamera2Wrapper.getHandler().post(new ImageUriSaver(getContext()
-                            , new SmartCamOutputOption(image, mSaveFileUri, mDegree
+                            , new SmartCamOutputOption2(image, mSaveFileUri, mDegree
                             , mWidth, mHeight, mMatrix, mCamera2Wrapper.getCurrentCameraType())
                             , mCamera2Wrapper.getCaptureCallback()));
                     break;

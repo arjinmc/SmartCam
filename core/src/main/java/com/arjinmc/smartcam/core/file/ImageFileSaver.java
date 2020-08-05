@@ -7,9 +7,9 @@ import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
 import com.arjinmc.smartcam.core.model.SmartCamCaptureError;
+import com.arjinmc.smartcam.core.model.SmartCamOutputOption1;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -21,55 +21,52 @@ public class ImageFileSaver implements Runnable {
 
     private final String TAG = "ImageFileSaver";
 
-    /**
-     * The JPEG image
-     */
-    private byte[] mImage;
-    private File mFile;
-    private Integer mDegree;
-    private int mCameraType;
+    private SmartCamOutputOption1 mOutputOption;
     private SmartCamCaptureCallback mSmartCamCaptureCallback;
 
-    public ImageFileSaver(byte[] image, Integer degree, int cameraType, File file, SmartCamCaptureCallback smartCamCaptureCallback) {
-        mImage = image;
-        mDegree = degree;
-        mCameraType = cameraType;
-        mFile = file;
+    public ImageFileSaver(SmartCamOutputOption1 outputOption, SmartCamCaptureCallback smartCamCaptureCallback) {
+
+        mOutputOption = outputOption;
         mSmartCamCaptureCallback = smartCamCaptureCallback;
+
     }
 
     @Override
     public void run() {
 
-        SmartCamLog.i(TAG, "degree:" + mDegree);
+        if (mOutputOption == null) {
+            return;
+        }
+        SmartCamLog.i(TAG, "degree:" + mOutputOption.getDegree());
 
-        if (mFile == null || !mFile.exists()) {
+        if (mOutputOption.getFile() == null || !mOutputOption.getFile().exists()
+                || mOutputOption.getImageData() == null) {
             if (mSmartCamCaptureCallback != null) {
                 mSmartCamCaptureCallback.onError(new SmartCamCaptureError());
             }
-            mImage = null;
+            mOutputOption.setImageData(null);
             return;
         }
 
-        Bitmap temp = BitmapFactory.decodeByteArray(mImage, 0, mImage.length);
-//        if (mOutputOption.getMatrix() != null) {
-//            temp = SmartCamUtils.cropBitmap(temp, mOutputOption.getPreviewWidth(), mOutputOption.getPreviewHeight());
-//        }
-        temp = SmartCamUtils.rotateBitmap1(temp, mDegree, mCameraType);
+        Bitmap temp = BitmapFactory.decodeByteArray(mOutputOption.getImageData()
+                , 0, mOutputOption.getImageData().length);
+        temp = SmartCamUtils.cropBitmap(temp, mOutputOption.getPreviewWidth(), mOutputOption.getPreviewHeight());
+        temp = SmartCamUtils.rotateBitmap1(temp, mOutputOption.getDegree(), mOutputOption.getCameraType());
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         temp.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
         byte[] data = byteArrayOutputStream.toByteArray();
 
-        boolean isSave = SmartCamFileUtils.saveFile(data, mFile);
+        boolean isSave = SmartCamFileUtils.saveFile(data, mOutputOption.getFile());
         try {
             byteArrayOutputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        temp.recycle();
         if (mSmartCamCaptureCallback != null) {
             if (isSave) {
-                mSmartCamCaptureCallback.onSuccessPath(mFile.getAbsolutePath());
+                mSmartCamCaptureCallback.onSuccessPath(mOutputOption.getFile().getAbsolutePath());
             } else {
                 mSmartCamCaptureCallback.onError(new SmartCamCaptureError());
             }

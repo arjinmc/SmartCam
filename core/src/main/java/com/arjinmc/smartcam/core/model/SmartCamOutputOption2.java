@@ -7,11 +7,11 @@ import java.io.File;
 import java.io.Serializable;
 
 /**
- * Option for output file
+ * Output option for Camera2
  * Created by Eminem Lo on 3/8/2020.
  * email: arjinmc@hotmail.com
  */
-public class SmartCamOutputOption implements Serializable {
+public class SmartCamOutputOption2 implements Serializable {
 
     private static final long serialVersionUID = -1996527596137638872L;
 
@@ -36,7 +36,7 @@ public class SmartCamOutputOption implements Serializable {
      */
     private String uri;
 
-    public SmartCamOutputOption(Image image, File file, Integer degree
+    public SmartCamOutputOption2(Image image, File file, Integer degree
             , int previewWidth, int previewHeight, Matrix matrix, @CameraType.Type int cameraType) {
         this.image = image;
         this.file = file;
@@ -47,7 +47,7 @@ public class SmartCamOutputOption implements Serializable {
         this.cameraType = cameraType;
     }
 
-    public SmartCamOutputOption(Image image, String uri, Integer degree
+    public SmartCamOutputOption2(Image image, String uri, Integer degree
             , int previewWidth, int previewHeight, Matrix matrix, @CameraType.Type int cameraType) {
         this.image = image;
         this.uri = uri;
