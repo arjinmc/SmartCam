@@ -21,6 +21,11 @@ public final class SmartCamConfig {
      */
     private static String rootDirName = "SmartCam";
 
+    /**
+     * auto reset to preview after capture
+     */
+    private static boolean autoReset = false;
+
     public static String getRootDirName() {
         return rootDirName;
     }
@@ -50,5 +55,13 @@ public final class SmartCamConfig {
      */
     public static void setRootDirPath(String dirPath) {
         rootDirPath = dirPath;
+    }
+
+    public static boolean isAutoReset() {
+        return autoReset;
+    }
+
+    public static void setAutoReset(boolean autoReset) {
+        SmartCamConfig.autoReset = autoReset;
     }
 }

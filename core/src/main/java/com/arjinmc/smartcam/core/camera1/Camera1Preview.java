@@ -4,10 +4,12 @@ import android.content.Context;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.os.Handler;
+import android.util.Log;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.arjinmc.smartcam.core.SmartCamConfig;
 import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamOrientationEventListener;
@@ -73,7 +75,9 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                             mHandler.post(new ImageFileSaver(data, mCameraDegree
                                     , mCameraWrapper.getCurrentCameraType(), file
                                     , mCameraWrapper.getCaptureCallback()));
-                            startPreview();
+                            if (SmartCamConfig.isAutoReset()) {
+                                startPreview();
+                            }
                         }
                     });
                 } catch (Exception e) {
@@ -147,15 +151,20 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                 }
                 mCamera.setPreviewDisplay(getHolder());
                 Camera.Parameters parameters = mCamera.getParameters();
+                float scale = SmartCamUtils.getScaleRatio(cameraSize.getWidth(), cameraSize.getHeight()
+                        , getMeasuredWidth(), getMeasuredHeight());
+                Log.e("scale", scale + "");
                 parameters.setPreviewSize(cameraSize.getWidth(), cameraSize.getHeight());
                 parameters.setPictureSize(cameraSize.getWidth(), cameraSize.getHeight());
                 parameters.setJpegQuality(100);
                 parameters.setPictureFormat(ImageFormat.JPEG);
                 mCamera.setParameters(parameters);
+                postInvalidate();
+
                 mCamera.startPreview();
             }
         } catch (IOException e) {
-            SmartCamLog.d(TAG, "Error setting camera preview: " + e.getMessage());
+            e.printStackTrace();
         }
 
     }
@@ -163,6 +172,14 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     @Override
     public void onOrientationChange(int degree) {
         mCameraDegree = degree;
+    }
+
+    @Override
+    public void preview() {
+        if (mCamera == null) {
+            return;
+        }
+        startPreview();
     }
 
     @Override

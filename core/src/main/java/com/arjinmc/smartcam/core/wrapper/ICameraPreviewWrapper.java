@@ -15,6 +15,11 @@ public interface ICameraPreviewWrapper {
     void onOrientationChange(int degree);
 
     /**
+     * start to preview when capture stop
+     */
+    void preview();
+
+    /**
      * destory preview
      */
     void destroy();

@@ -324,6 +324,14 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
         mDegree = degree;
     }
 
+    @Override
+    public void preview() {
+        if (mCamera == null || mWidth == 0 || mHeight == 0) {
+            return;
+        }
+        startPreview(mWidth, mHeight);
+    }
+
 
     @Override
     public void destroy() {
