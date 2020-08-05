@@ -80,6 +80,8 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
 
     private void initData() {
 
+        SmartCamConfig.setAutoReset(true);
+
         mSmartCam = new SmartCam(this);
         mSmartCam.setStateCallback(new SmartCamStateCallback() {
             @Override
