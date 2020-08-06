@@ -17,7 +17,12 @@ public interface ICameraPreviewWrapper {
     /**
      * start to preview when capture stop
      */
-    void preview();
+    void startPreview();
+
+    /**
+     * stop preview
+     */
+    void stopPreview();
 
     /**
      * destory preview

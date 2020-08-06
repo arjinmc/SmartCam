@@ -325,13 +325,24 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
     }
 
     @Override
-    public void preview() {
+    public void startPreview() {
         if (mCamera == null || mWidth == 0 || mHeight == 0) {
             return;
         }
         startPreview(mWidth, mHeight);
     }
 
+    @Override
+    public void stopPreview() {
+        if (mCaptureSession == null) {
+            return;
+        }
+        try {
+            mCaptureSession.stopRepeating();
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void destroy() {

@@ -116,11 +116,19 @@ public class SmartCamPreview extends FrameLayout {
         }
     }
 
-    public void preview(){
+    public void startPreview() {
         if (mCurrentCameraVersion == CameraVersion.VERSION_1) {
-            mCamera1Preview.preview();
+            mCamera1Preview.startPreview();
         } else if (mCurrentCameraVersion == CameraVersion.VERSION_2 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mCamera2Preview.preview();
+            mCamera2Preview.startPreview();
+        }
+    }
+
+    public void stopPreview() {
+        if (mCurrentCameraVersion == CameraVersion.VERSION_1) {
+            mCamera1Preview.stopPreview();
+        } else if (mCurrentCameraVersion == CameraVersion.VERSION_2 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mCamera2Preview.stopPreview();
         }
     }
 }

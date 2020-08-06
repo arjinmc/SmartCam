@@ -77,7 +77,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                                     , mCameraWrapper.getCurrentCameraType(), getMeasuredHeight(), getMeasuredWidth())
                                     , mCameraWrapper.getCaptureCallback()));
                             if (SmartCamConfig.isAutoReset()) {
-                                startPreview();
+                                doPreview();
                             }
                         }
                     });
@@ -107,7 +107,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         SmartCamLog.i(TAG, "surfaceChanged:" + width + "/" + height);
-        startPreview();
+        doPreview();
     }
 
     @Override
@@ -129,7 +129,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
         }
     }
 
-    private void startPreview() {
+    private void doPreview() {
 
         try {
             mCameraWrapper.resumeOpen();
@@ -174,11 +174,19 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     @Override
-    public void preview() {
+    public void startPreview() {
         if (mCamera == null) {
             return;
         }
-        startPreview();
+        doPreview();
+    }
+
+    @Override
+    public void stopPreview() {
+        if (mCamera == null) {
+            return;
+        }
+        mCamera.stopPreview();
     }
 
     @Override
