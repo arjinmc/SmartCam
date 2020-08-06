@@ -268,8 +268,6 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                                 // Auto focus should be continuous for camera preview.
                                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
                                         CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-                                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
-                                        CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
                                 mPreviewRequestBuilder.set(CaptureRequest.JPEG_QUALITY, (byte) 100);
                                 //resume params has set
                                 mPreviewRequestBuilder = mCamera2Wrapper.resumeParams(mPreviewRequestBuilder);
@@ -346,9 +344,10 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 
     @Override
     public void destroy() {
-        mOrientationEventListener.disable();
-        onSurfaceTextureDestroyed(getSurfaceTexture());
         try {
+            mOrientationEventListener.disable();
+            onSurfaceTextureDestroyed(getSurfaceTexture());
+
             if (mCaptureSession != null) {
                 mCaptureSession.abortCaptures();
             }
