@@ -45,12 +45,6 @@ public class SmartCamPreview extends FrameLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public SmartCamPreview(Context context, SmartCam smartCam) {
-        super(context);
-        init(smartCam);
-
-    }
-
     public void setCamera(SmartCam smartCam) {
         init(smartCam);
     }

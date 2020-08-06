@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.arjinmc.smartcam.core.SmartCam;
 import com.arjinmc.smartcam.core.SmartCamPreview;
+import com.arjinmc.smartcam.core.callback.SmartCamStateCallback;
+import com.arjinmc.smartcam.core.model.SmartCamError;
 
 /**
  * Use SmartCamPreveiw in xml
@@ -24,12 +26,29 @@ public class PreviewFromXMLActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview_from_xml);
 
+        mSmartCamPreview = findViewById(R.id.camera_preview);
         mSmartCam = new SmartCam(this);
+
+        mSmartCam.setStateCallback(new SmartCamStateCallback() {
+            @Override
+            public void onConnected() {
+                mSmartCamPreview.setCamera(mSmartCam);
+            }
+
+            @Override
+            public void onDisconnected() {
+
+            }
+
+            @Override
+            public void onError(SmartCamError error) {
+
+            }
+        });
+
         mSmartCam.open();
         Log.i("tag", mSmartCam.getCameraCount() + "/" + mSmartCam.getOrientation());
         mSmartCam.logFeatures();
 
-        mSmartCamPreview = findViewById(R.id.camera_preview);
-        mSmartCamPreview.setCamera(mSmartCam);
     }
 }
