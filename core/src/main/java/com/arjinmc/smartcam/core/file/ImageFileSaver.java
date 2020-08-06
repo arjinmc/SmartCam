@@ -39,6 +39,10 @@ public class ImageFileSaver implements Runnable {
         }
         SmartCamLog.i(TAG, "degree:" + mOutputOption.getDegree());
 
+        if (mOutputOption.getDegree() == null || mOutputOption.getDegree() == -1) {
+            mOutputOption.setDegree(0);
+        }
+
         if (mOutputOption.getFile() == null || !mOutputOption.getFile().exists()
                 || mOutputOption.getImageData() == null) {
             if (mSmartCamCaptureCallback != null) {

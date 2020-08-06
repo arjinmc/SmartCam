@@ -64,4 +64,8 @@ public final class SmartCamConfig {
     public static void setAutoReset(boolean autoReset) {
         SmartCamConfig.autoReset = autoReset;
     }
+
+    public static void setDebugLog(boolean visible) {
+        SmartCamLog.setIsDebug(visible);
+    }
 }
