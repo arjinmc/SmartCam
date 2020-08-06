@@ -64,6 +64,10 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
         mOnClickCaptureLisenter = new AbsCameraWrapper.OnClickCaptureLisenter() {
             @Override
             public void onCapture(final File file) {
+
+                if (mCamera == null) {
+                    return;
+                }
                 try {
                     mCamera.takePicture(new Camera.ShutterCallback() {
                         @Override

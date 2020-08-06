@@ -299,6 +299,9 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
      */
     private void capture() {
 
+        if (mCaptureSession == null) {
+            return;
+        }
         try {
             CaptureRequest.Builder captureRequestBuilder = mCamera.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             captureRequestBuilder = mCamera2Wrapper.resumeParams(captureRequestBuilder);
@@ -324,7 +327,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 
     @Override
     public void startPreview() {
-        if (mCamera == null || mWidth == 0 || mHeight == 0) {
+        if (mCamera == null || mWidth == 0 || mHeight == 0 || mCaptureSession == null) {
             return;
         }
         startPreview(mWidth, mHeight);
