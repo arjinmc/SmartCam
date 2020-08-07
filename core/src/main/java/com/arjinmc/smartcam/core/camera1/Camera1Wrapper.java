@@ -129,6 +129,11 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     }
 
     @Override
+    public void release() {
+        close();
+    }
+
+    @Override
     public boolean isOpen() {
         if (mCamera == null) {
             return false;

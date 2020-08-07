@@ -30,7 +30,7 @@ public class AbsCameraWrapper implements ICameraWrapper {
 
     protected SmartCamStateCallback mSmartCamStateCallback;
     protected SmartCamCaptureCallback mSmartCamCaptureCallback;
-    protected OnClickCaptureLisenter mOnClickCaptureLisenter;
+    protected OnClickCaptureListener mOnClickCaptureListener;
 
     @Override
     public Context getContext() {
@@ -75,22 +75,22 @@ public class AbsCameraWrapper implements ICameraWrapper {
 
     @Override
     public void capture(File file) {
-        if (mOnClickCaptureLisenter != null) {
-            mOnClickCaptureLisenter.onCapture(file);
+        if (mOnClickCaptureListener != null) {
+            mOnClickCaptureListener.onCapture(file);
         }
     }
 
     @Override
     public void capturePath(String filePath) {
-        if (mOnClickCaptureLisenter != null) {
-            mOnClickCaptureLisenter.onCapturePath(filePath);
+        if (mOnClickCaptureListener != null) {
+            mOnClickCaptureListener.onCapturePath(filePath);
         }
     }
 
     @Override
     public void captureUri(String fileUri) {
-        if (mOnClickCaptureLisenter != null) {
-            mOnClickCaptureLisenter.onCaptureUri(fileUri);
+        if (mOnClickCaptureListener != null) {
+            mOnClickCaptureListener.onCaptureUri(fileUri);
         }
     }
 
@@ -107,6 +107,19 @@ public class AbsCameraWrapper implements ICameraWrapper {
     @Override
     public void resume() {
 
+    }
+
+    @Override
+    public void release() {
+        if (mSmartCamCaptureCallback != null) {
+            mSmartCamCaptureCallback = null;
+        }
+        if (mSmartCamStateCallback != null) {
+            mSmartCamStateCallback = null;
+        }
+        if (mOnClickCaptureListener != null) {
+            mOnClickCaptureListener = null;
+        }
     }
 
     @Override
@@ -230,14 +243,14 @@ public class AbsCameraWrapper implements ICameraWrapper {
         return false;
     }
 
-    public void setOnClickCaptureLisenter(OnClickCaptureLisenter onClickCaptureLisenter) {
-        mOnClickCaptureLisenter = onClickCaptureLisenter;
+    public void setOnClickCaptureLisenter(OnClickCaptureListener onClickCaptureListener) {
+        mOnClickCaptureListener = onClickCaptureListener;
     }
 
     /**
      * listener for capture photo
      */
-    public interface OnClickCaptureLisenter {
+    public interface OnClickCaptureListener {
         void onCapture(File file);
 
         void onCapturePath(String filePath);

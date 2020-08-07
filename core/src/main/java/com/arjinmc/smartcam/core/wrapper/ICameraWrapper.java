@@ -85,6 +85,8 @@ public interface ICameraWrapper {
 
     void resume();
 
+    void release();
+
     /**
      * log the features of cameara
      */
@@ -208,12 +210,14 @@ public interface ICameraWrapper {
      */
     void setStateCallback(SmartCamStateCallback smartCamStateCallback);
 
+
     /**
      * set capture callback
      *
      * @param smartCamCaptureCallback
      */
     void setCaptureCallback(SmartCamCaptureCallback smartCamCaptureCallback);
+
 
     /**
      * get capture callback

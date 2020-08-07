@@ -60,7 +60,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
     private CaptureRequest mPreviewRequest;
     private ImageReader mImageReader;
     private Camera2Wrapper.OnFlashChangeListener mOnFlashChangeListener;
-    private AbsCameraWrapper.OnClickCaptureLisenter mOnClickCaptureLisenter;
+    private AbsCameraWrapper.OnClickCaptureListener mOnClickCaptureListener;
     private SmartCamOrientationEventListener mOrientationEventListener;
     private int mWidth, mHeight;
     private int mCameraSaveType;
@@ -151,7 +151,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
         mCamera2Wrapper.setOnFlashChangeListener(mOnFlashChangeListener);
 
         //init click capture listener
-        mOnClickCaptureLisenter = new AbsCameraWrapper.OnClickCaptureLisenter() {
+        mOnClickCaptureListener = new AbsCameraWrapper.OnClickCaptureListener() {
             @Override
             public void onCapture(File file) {
 
@@ -187,7 +187,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 
             }
         };
-        mCamera2Wrapper.setOnClickCaptureLisenter(mOnClickCaptureLisenter);
+        mCamera2Wrapper.setOnClickCaptureLisenter(mOnClickCaptureListener);
     }
 
     @Override
@@ -352,9 +352,9 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             onSurfaceTextureDestroyed(getSurfaceTexture());
 
             if (mCaptureSession != null) {
-                mCaptureSession.abortCaptures();
+                mCaptureSession = null;
             }
-        } catch (CameraAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

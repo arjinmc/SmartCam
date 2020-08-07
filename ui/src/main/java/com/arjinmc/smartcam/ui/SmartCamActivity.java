@@ -284,6 +284,7 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onPause() {
         super.onPause();
+        mSmartCam.pause();
         mSmartCamPreview.pause();
         if (hasFlashLight) {
             resetFlashMode();
@@ -293,12 +294,13 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onResume() {
         super.onResume();
+        mSmartCam.resume();
         mSmartCamPreview.resume();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mSmartCam.close();
+        mSmartCam.release();
     }
 }

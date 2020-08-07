@@ -33,7 +33,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     private SurfaceHolder mHolder;
     private Camera1Wrapper mCameraWrapper;
     private Camera mCamera;
-    private AbsCameraWrapper.OnClickCaptureLisenter mOnClickCaptureLisenter;
+    private AbsCameraWrapper.OnClickCaptureListener mOnClickCaptureListener;
     private SmartCamOrientationEventListener mOrientationEventListener;
 
     private int mCameraDegree;
@@ -61,7 +61,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
         mOrientationEventListener = new SmartCamOrientationEventListener(getContext(), this);
         mOrientationEventListener.enable();
 
-        mOnClickCaptureLisenter = new AbsCameraWrapper.OnClickCaptureLisenter() {
+        mOnClickCaptureListener = new AbsCameraWrapper.OnClickCaptureListener() {
             @Override
             public void onCapture(final File file) {
 
@@ -100,7 +100,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
 
             }
         };
-        mCameraWrapper.setOnClickCaptureLisenter(mOnClickCaptureLisenter);
+        mCameraWrapper.setOnClickCaptureLisenter(mOnClickCaptureListener);
     }
 
     @Override

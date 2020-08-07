@@ -420,6 +420,17 @@ public class Camera2Wrapper extends AbsCameraWrapper {
         return builder;
     }
 
+    @Override
+    public void release() {
+        if (mCamera != null) {
+            mCamera.close();
+        }
+
+        if (mStateCallBack != null) {
+            mStateCallBack = null;
+        }
+    }
+
     /**
      * Given {@code choices} of {@code Size}s supported by a camera, choose the smallest one that
      * is at least as large as the respective texture view size, and that is at most as large as the

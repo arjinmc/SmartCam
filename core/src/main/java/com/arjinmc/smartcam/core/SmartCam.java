@@ -50,6 +50,11 @@ public class SmartCam extends AbsCameraWrapper {
     }
 
     @Override
+    public void release() {
+        mCameraWrapper.release();
+    }
+
+    @Override
     public Object getCameraWrapper() {
         return mCameraWrapper;
     }
