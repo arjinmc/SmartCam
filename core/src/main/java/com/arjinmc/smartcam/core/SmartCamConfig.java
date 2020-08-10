@@ -7,7 +7,7 @@ package com.arjinmc.smartcam.core;
 public final class SmartCamConfig {
 
     /**
-     * timeout duration for lock ,unit:TimeUnit.MILLISECONDS
+     * timeout duration for lock for witch camera,unit:TimeUnit.MILLISECONDS
      */
     public static final long LOCK_TIMEOUT_DURATION = 1000;
 

@@ -281,6 +281,10 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                                 }
                             } catch (CameraAccessException e) {
                                 e.printStackTrace();
+                            } catch (IllegalStateException e) {
+                                e.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
 
@@ -316,6 +320,10 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             mCaptureSession.abortCaptures();
             mCaptureSession.capture(captureRequestBuilder.build(), null, null);
         } catch (CameraAccessException e) {
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
