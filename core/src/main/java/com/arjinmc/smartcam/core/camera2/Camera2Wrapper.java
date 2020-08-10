@@ -197,6 +197,7 @@ public class Camera2Wrapper extends AbsCameraWrapper {
             for (Size childSize : previewSizeList) {
                 cameraSizeList.add(new CameraSize(
                         childSize.getWidth(), childSize.getHeight()));
+//                SmartCamLog.e("preview size", childSize.getWidth() + "," + childSize.getHeight());
             }
             return cameraSizeList;
         } catch (CameraAccessException e) {

@@ -100,7 +100,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
 
             }
         };
-        mCameraWrapper.setOnClickCaptureLisenter(mOnClickCaptureListener);
+        mCameraWrapper.setOnClickCaptureListener(mOnClickCaptureListener);
     }
 
     @Override

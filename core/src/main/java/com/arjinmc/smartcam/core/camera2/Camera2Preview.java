@@ -187,7 +187,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 
             }
         };
-        mCamera2Wrapper.setOnClickCaptureLisenter(mOnClickCaptureListener);
+        mCamera2Wrapper.setOnClickCaptureListener(mOnClickCaptureListener);
     }
 
     @Override

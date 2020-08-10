@@ -243,7 +243,7 @@ public class AbsCameraWrapper implements ICameraWrapper {
         return false;
     }
 
-    public void setOnClickCaptureLisenter(OnClickCaptureListener onClickCaptureListener) {
+    public void setOnClickCaptureListener(OnClickCaptureListener onClickCaptureListener) {
         mOnClickCaptureListener = onClickCaptureListener;
     }
 
