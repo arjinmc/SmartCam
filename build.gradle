@@ -23,10 +23,10 @@ allprojects {
 }
 
 ext{
-    compileSdkVersion = 29
-    buildToolsVersion = '29.0.2'
+    compileSdkVersion = 30
+    buildToolsVersion = '30.0.1'
     minSdkVersion = 15
-    targetSdkVersion = 29
+    targetSdkVersion = 30
 
     appcompatVersion = '1.1.0'
     constraintlayoutVersion = '1.1.3'

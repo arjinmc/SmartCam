@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -39,7 +40,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     private int mCameraDegree;
     private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
 
-    private Handler mHandler = new Handler();
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     private CameraSize mPreviewSize;
 

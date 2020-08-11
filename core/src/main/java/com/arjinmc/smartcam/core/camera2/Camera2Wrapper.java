@@ -13,6 +13,7 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Size;
 
 import androidx.annotation.NonNull;
@@ -56,7 +57,7 @@ public class Camera2Wrapper extends AbsCameraWrapper {
 
     public Camera2Wrapper(Context context) {
         setContext(context);
-        mHandler = new Handler();
+        mHandler = new Handler(Looper.getMainLooper());
         mCameraLock = new CameraLock();
     }
 
