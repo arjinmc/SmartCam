@@ -298,6 +298,8 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                     }, mCamera2Wrapper.getHandler());
         } catch (CameraAccessException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
