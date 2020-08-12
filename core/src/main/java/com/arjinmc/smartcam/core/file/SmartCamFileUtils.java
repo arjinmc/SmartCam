@@ -24,12 +24,12 @@ import java.io.IOException;
  */
 public class SmartCamFileUtils {
 
-    private static boolean isExternalStorageAvailerAble() {
+    private static boolean isExternalStorageAvailable() {
         return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
     }
 
     public static String getExternalStorageDir() {
-        if (isExternalStorageAvailerAble()) {
+        if (isExternalStorageAvailable()) {
             return Environment.getExternalStorageDirectory().getAbsolutePath();
         } else {
             return null;

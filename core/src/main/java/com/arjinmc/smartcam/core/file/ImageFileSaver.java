@@ -68,6 +68,7 @@ public class ImageFileSaver implements Runnable {
             e.printStackTrace();
         }
         temp.recycle();
+        mOutputOption.setImageData(null);
         if (mSmartCamCaptureCallback != null) {
             if (isSave) {
                 mSmartCamCaptureCallback.onSuccessPath(mOutputOption.getFile().getAbsolutePath());
