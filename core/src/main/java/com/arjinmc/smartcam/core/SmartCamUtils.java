@@ -6,8 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.hardware.Camera;
-import android.media.ExifInterface;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.Size;
 import android.view.Surface;
 import android.view.WindowManager;
@@ -17,8 +17,11 @@ import androidx.annotation.RequiresApi;
 import com.arjinmc.smartcam.core.model.CameraSize;
 import com.arjinmc.smartcam.core.model.CameraType;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -411,49 +414,116 @@ public final class SmartCamUtils {
     }
 
     /**
-     * get photo rotation
+     * check if it's a image file
      *
-     * @param path file path
-     * @return degree
+     * @param file
+     * @return
      */
-    public static int getPhotoRotationDegree(String path) {
-        int degree = 0;
-        try {
-            ExifInterface exifInterface = new ExifInterface(path);
-            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-            switch (orientation) {
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    degree = 90;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    degree = 180;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    degree = 270;
-                    break;
-                default:
-                    break;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static boolean isImageFile(File file) {
+        if (file == null || !file.exists() || file.isDirectory()) {
+            return false;
         }
-        return degree;
+        return isImageFile(file.getAbsolutePath());
     }
 
     /**
-     * get scale ratio
+     * check if it's a image file
      *
-     * @param width
-     * @param height
-     * @param targetWidth
-     * @param targetHeight
+     * @param filePath
      * @return
      */
-    public static float getScaleRatio(int width, int height, int targetWidth, int targetHeight) {
-        float scale = Math.max(
-                (float) targetHeight / height,
-                (float) targetWidth / width);
-        return scale;
+    public static boolean isImageFile(String filePath) {
+        if (TextUtils.isEmpty(filePath)) {
+            return false;
+        }
+        return isEditableImageFile(filePath);
+    }
+
+
+    /**
+     * check if it's a image file
+     *
+     * @param filePath
+     * @return
+     */
+    public static boolean isEditableImageFile(String filePath) {
+        if (TextUtils.isEmpty(filePath)) {
+            return false;
+        }
+        String fileType = getFileTypeValue(filePath);
+        if (TextUtils.isEmpty(fileType)) {
+            return false;
+        } else {
+            HashMap<String, String> fileTypes = getEditableFileTypeList();
+            if (fileTypes.containsKey(fileType)) {
+                return true;
+            }
+            return false;
+        }
+    }
+
+    /**
+     * get
+     *
+     * @return
+     */
+    private static HashMap<String, String> getEditableFileTypeList() {
+        HashMap<String, String> fileTypes = new HashMap<>(5);
+        fileTypes.put("FFD8FF", "jpg");
+        fileTypes.put("89504E47", "png");
+        fileTypes.put("47494638", "gif");
+        fileTypes.put("49492A00", "tif");
+        fileTypes.put("424D", "bmp");
+        return fileTypes;
+    }
+
+    /**
+     * get file header value
+     *
+     * @param filePath
+     * @return
+     */
+    private static String getFileTypeValue(String filePath) {
+        FileInputStream is = null;
+        String value = null;
+        try {
+            is = new FileInputStream(filePath);
+            byte[] b = new byte[3];
+            is.read(b, 0, b.length);
+            value = bytesToHexString(b);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (null != is) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+        return value;
+    }
+
+    /**
+     * bytes convert to Hex string
+     *
+     * @param src
+     * @return
+     */
+    private static String bytesToHexString(byte[] src) {
+        StringBuilder builder = new StringBuilder();
+        if (src == null || src.length <= 0) {
+            return null;
+        }
+        String hv;
+        for (int i = 0; i < src.length; i++) {
+            hv = Integer.toHexString(src[i] & 0xFF).toUpperCase();
+            if (hv.length() < 2) {
+                builder.append(0);
+            }
+            builder.append(hv);
+        }
+        return builder.toString();
     }
 }
 
