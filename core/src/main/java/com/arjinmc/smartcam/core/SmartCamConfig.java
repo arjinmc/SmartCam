@@ -10,24 +10,55 @@ public final class SmartCamConfig {
      * timeout duration for lock for witch camera,unit:TimeUnit.MILLISECONDS
      */
     public static final long LOCK_TIMEOUT_DURATION = 1000;
+    /**
+     * Default capture quality
+     */
+    private static final int DEFAULT_CAPTURE_QUALITY = 100;
 
     /**
      * root dir path
      */
-    private static String rootDirPath;
+    private String mRootDirPath;
 
     /**
      * root dir for saving files (default name: SmartCam)
      */
-    private static String rootDirName = "SmartCam";
+    private String mRootDirName = "SmartCam";
 
     /**
      * auto reset to preview after capture
      */
-    private static boolean autoReset = false;
+    private boolean mAutoReset = false;
+    /**
+     * capture quality
+     */
+    private int mCaptureQuality = DEFAULT_CAPTURE_QUALITY;
 
-    public static String getRootDirName() {
-        return rootDirName;
+    private static SmartCamConfig mSmartCamConfig;
+
+    public SmartCamConfig() {
+        try {
+            throw new IllegalAccessException("Use getInstance() to get an instance");
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static SmartCamConfig getInstance() {
+        if (mSmartCamConfig == null) {
+            mSmartCamConfig = new SmartCamConfig();
+        }
+        return mSmartCamConfig;
+    }
+
+
+    /**
+     * get dir name for saving files
+     *
+     * @return
+     */
+    public String getRootDirName() {
+        return mRootDirName;
     }
 
     /**
@@ -35,8 +66,8 @@ public final class SmartCamConfig {
      *
      * @param dirName
      */
-    public static void setRootDir(String dirName) {
-        rootDirName = dirName;
+    public void setRootDir(String dirName) {
+        mRootDirName = dirName;
     }
 
     /**
@@ -44,8 +75,8 @@ public final class SmartCamConfig {
      *
      * @return
      */
-    public static String getRootDirPath() {
-        return rootDirPath;
+    public String getRootDirPath() {
+        return mRootDirPath;
     }
 
     /**
@@ -53,16 +84,34 @@ public final class SmartCamConfig {
      *
      * @param dirPath
      */
-    public static void setRootDirPath(String dirPath) {
-        rootDirPath = dirPath;
+    public void setRootDirPath(String dirPath) {
+        mRootDirPath = dirPath;
     }
 
-    public static boolean isAutoReset() {
-        return autoReset;
+    public boolean isAutoReset() {
+        return mAutoReset;
     }
 
-    public static void setAutoReset(boolean autoReset) {
-        SmartCamConfig.autoReset = autoReset;
+    public void setAutoReset(boolean autoReset) {
+        mAutoReset = autoReset;
+    }
+
+    /**
+     * get capture quality
+     *
+     * @return
+     */
+    public int getCaptureQuality() {
+        return mCaptureQuality;
+    }
+
+    /**
+     * set capture quality
+     *
+     * @param captureQuality
+     */
+    public void setCaptureQuality(int captureQuality) {
+        mCaptureQuality = captureQuality;
     }
 
     public static void setDebugLog(boolean visible) {

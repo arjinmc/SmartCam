@@ -81,7 +81,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                             mHandler.post(new ImageFileSaver(new SmartCamOutputOption1(data, file, mCameraDegree
                                     , mCameraWrapper.getCurrentCameraType(), getMeasuredHeight(), getMeasuredWidth())
                                     , mCameraWrapper.getCaptureCallback()));
-                            if (SmartCamConfig.isAutoReset()) {
+                            if (SmartCamConfig.getInstance().isAutoReset()) {
                                 doPreview();
                             }
                         }
@@ -162,7 +162,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                 parameters.setPreviewSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
                 CameraSize outputSize = mCameraWrapper.getMaxOutputSize();
                 parameters.setPictureSize(outputSize.getWidth(), outputSize.getHeight());
-                parameters.setJpegQuality(100);
+                parameters.setJpegQuality(SmartCamConfig.getInstance().getCaptureQuality());
                 parameters.setPictureFormat(ImageFormat.JPEG);
                 mCamera.setParameters(parameters);
                 mCamera.startPreview();

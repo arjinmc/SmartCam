@@ -80,7 +80,7 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
 
     private void initData() {
 
-        SmartCamConfig.setAutoReset(true);
+        SmartCamConfig.getInstance().setAutoReset(true);
 
         mSmartCam = new SmartCam(this);
         mSmartCam.setStateCallback(new SmartCamStateCallback() {
@@ -255,7 +255,7 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
 
     private File createNewFile() {
 
-        File file = new File(SmartCamConfig.getRootDirPath() + File.separator + createNewFileName());
+        File file = new File(SmartCamConfig.getInstance().getRootDirPath() + File.separator + createNewFileName());
         if (!file.exists()) {
             try {
                 boolean result = file.createNewFile();
@@ -272,7 +272,7 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String createNewFileUri() {
-        return SmartCamFileUtils.createFileByUri(this, SmartCamConfig.getRootDirPath()
+        return SmartCamFileUtils.createFileByUri(this, SmartCamConfig.getInstance().getRootDirPath()
                 , "image", createNewFileName());
     }
 

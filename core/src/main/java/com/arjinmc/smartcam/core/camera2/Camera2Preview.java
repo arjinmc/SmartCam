@@ -105,7 +105,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                     break;
 
             }
-            if (SmartCamConfig.isAutoReset()) {
+            if (SmartCamConfig.getInstance().isAutoReset()) {
                 startPreview(mWidth, mHeight);
             }
         }
@@ -271,7 +271,8 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                                 // Auto focus should be continuous for camera preview.
                                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
                                         CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-                                mPreviewRequestBuilder.set(CaptureRequest.JPEG_QUALITY, (byte) 100);
+                                mPreviewRequestBuilder.set(CaptureRequest.JPEG_QUALITY
+                                        , (byte) SmartCamConfig.getInstance().getCaptureQuality());
                                 //resume params has set
                                 mPreviewRequestBuilder = mCamera2Wrapper.resumeParams(mPreviewRequestBuilder);
                                 mPreviewRequest = mPreviewRequestBuilder.build();
