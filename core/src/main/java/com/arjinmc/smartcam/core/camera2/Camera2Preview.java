@@ -20,6 +20,7 @@ import android.view.TextureView;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import com.arjinmc.smartcam.core.SmartCamConfig;
 import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamOrientationEventListener;
@@ -104,7 +105,9 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                     break;
 
             }
-            startPreview(mWidth, mHeight);
+            if (SmartCamConfig.isAutoReset()) {
+                startPreview(mWidth, mHeight);
+            }
         }
     };
 
