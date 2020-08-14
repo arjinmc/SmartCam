@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SmartCamConfig.getInstance().setDebugLog(true);
+
         mRecyclerView = findViewById(R.id.rv_list);
         mRecyclerView.addItemDecoration(new RecyclerViewItemDecoration.Builder(this)
                 .color(ContextCompat.getColor(this, android.R.color.darker_gray))

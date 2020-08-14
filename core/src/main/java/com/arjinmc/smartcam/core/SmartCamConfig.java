@@ -36,14 +36,6 @@ public final class SmartCamConfig {
 
     private static SmartCamConfig mSmartCamConfig;
 
-    public SmartCamConfig() {
-        try {
-            throw new IllegalAccessException("Use getInstance() to get an instance");
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static SmartCamConfig getInstance() {
         if (mSmartCamConfig == null) {
             mSmartCamConfig = new SmartCamConfig();
@@ -114,7 +106,7 @@ public final class SmartCamConfig {
         mCaptureQuality = captureQuality;
     }
 
-    public static void setDebugLog(boolean visible) {
+    public void setDebugLog(boolean visible) {
         SmartCamLog.setIsDebug(visible);
     }
 }
