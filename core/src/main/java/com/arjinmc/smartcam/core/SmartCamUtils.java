@@ -140,31 +140,6 @@ public final class SmartCamUtils {
         return result;
     }
 
-    public static int[] calculateBetterPreviewSize(int supportSizeWidth, int supportSizeHeight, int previewWidth, int previewHeight) {
-
-        int[] compatSize = new int[2];
-        if (supportSizeWidth > supportSizeHeight) {
-            int temp = supportSizeHeight;
-            supportSizeHeight = supportSizeWidth;
-            supportSizeWidth = temp;
-        }
-        double ratioWidth = supportSizeWidth / (double) previewWidth;
-        double ratioHeight = supportSizeHeight / (double) previewHeight;
-        SmartCamLog.e(TAG, "ratioWidth:" + ratioWidth + ",ratioHeight:" + ratioHeight);
-        int ratio;
-        if (ratioWidth > ratioHeight) {
-            ratio = Double.valueOf(ratioWidth > 1 ? ratioWidth : ratioWidth * 100).intValue();
-        } else {
-            ratio = Double.valueOf(ratioHeight > 1 ? ratioHeight : ratioHeight * 100).intValue();
-        }
-        compatSize[0] = supportSizeWidth * ratio;
-        compatSize[1] = supportSizeHeight * ratio;
-        SmartCamLog.e(TAG, "ratio:" + ratio);
-        SmartCamLog.e(TAG, "view size:" + previewWidth + "，" + previewHeight);
-        SmartCamLog.e(TAG, "calculateBetterPreviewSize:" + compatSize[0] + "," + compatSize[1]);
-        return compatSize;
-    }
-
     /**
      * convert size to CameraSupportPreviewSize
      *
@@ -336,7 +311,6 @@ public final class SmartCamUtils {
 
         if (CameraType.CAMERA_BACK == type) {
 
-            //xiaomi
             if (degree >= 0 && degree <= 44) {
                 return bitmap;
             }

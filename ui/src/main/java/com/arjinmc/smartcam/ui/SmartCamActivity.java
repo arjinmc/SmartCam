@@ -300,7 +300,8 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        mSmartCamPreview.pause();
         mSmartCam.release();
+        super.onDestroy();
     }
 }
