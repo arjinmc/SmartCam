@@ -284,24 +284,36 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onPause() {
         super.onPause();
-        mSmartCam.pause();
-        mSmartCamPreview.pause();
         if (hasFlashLight) {
             resetFlashMode();
+        }
+        if (mSmartCam != null) {
+            mSmartCam.pause();
+        }
+        if (mSmartCamPreview != null) {
+            mSmartCamPreview.pause();
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mSmartCam.resume();
-        mSmartCamPreview.resume();
+        if (mSmartCam != null) {
+            mSmartCam.resume();
+        }
+        if (mSmartCamPreview != null) {
+            mSmartCamPreview.resume();
+        }
     }
 
     @Override
     protected void onDestroy() {
-        mSmartCamPreview.pause();
-        mSmartCam.release();
+        if (mSmartCam != null) {
+            mSmartCam.release();
+        }
+        if (mSmartCamPreview != null) {
+            mSmartCamPreview.release();
+        }
         super.onDestroy();
     }
 }

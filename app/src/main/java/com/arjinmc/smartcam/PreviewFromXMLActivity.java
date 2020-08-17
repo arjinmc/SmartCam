@@ -51,4 +51,37 @@ public class PreviewFromXMLActivity extends AppCompatActivity {
         mSmartCam.logFeatures();
 
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mSmartCam != null) {
+            mSmartCam.pause();
+        }
+        if (mSmartCamPreview != null) {
+            mSmartCamPreview.pause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mSmartCam != null) {
+            mSmartCam.resume();
+        }
+        if (mSmartCamPreview != null) {
+            mSmartCamPreview.resume();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mSmartCam != null) {
+            mSmartCam.release();
+        }
+        if (mSmartCamPreview != null) {
+            mSmartCamPreview.release();
+        }
+    }
 }
