@@ -15,6 +15,8 @@ import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamOrientationEventListener;
 import com.arjinmc.smartcam.core.file.ImageFileSaver;
 import com.arjinmc.smartcam.core.model.CameraSize;
+import com.arjinmc.smartcam.core.model.SmartCamCaptureError;
+import com.arjinmc.smartcam.core.model.SmartCamError;
 import com.arjinmc.smartcam.core.model.SmartCamOutputOption1;
 import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
 import com.arjinmc.smartcam.core.wrapper.ICameraPreviewWrapper;
@@ -88,6 +90,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
+                    dispatchError(new SmartCamCaptureError());
                 }
             }
 
@@ -198,6 +201,13 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     public void destroy() {
         mOrientationEventListener.disable();
         surfaceDestroyed(mHolder);
+    }
+
+    private void dispatchError(SmartCamError smartCamError) {
+        if (mCameraWrapper == null || mCameraWrapper.getCaptureCallback() == null) {
+            return;
+        }
+        mCameraWrapper.getCaptureCallback().onError(smartCamError);
     }
 
 }

@@ -8,10 +8,10 @@ package com.arjinmc.smartcam.core.model;
 public class SmartCamCaptureError extends SmartCamError {
 
     public SmartCamCaptureError() {
-        super(SmartCamErrorCode.CAMERA_CAPTURE_FILE_NOT_EXIST, "File is not exist");
+        super(SmartCamFileErrorCode.CAMERA_CAPTURE_FILE_NOT_EXIST, "File is not exist");
     }
 
     public SmartCamCaptureError(String message) {
-        super(SmartCamErrorCode.CAMERA_CAPTURE_FILE_NOT_EXIST, message);
+        super(SmartCamFileErrorCode.CAMERA_CAPTURE_FILE_NOT_EXIST, message);
     }
 }

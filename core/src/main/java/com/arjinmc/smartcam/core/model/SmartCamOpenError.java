@@ -8,10 +8,10 @@ package com.arjinmc.smartcam.core.model;
 public class SmartCamOpenError extends SmartCamError {
 
     public SmartCamOpenError() {
-        super(SmartCamErrorCode.CAMERA_OPEN_ERROR, "Camera Open Error");
+        super(SmartCamFileErrorCode.CAMERA_OPEN_ERROR, "Camera Open Error");
     }
 
     public SmartCamOpenError(String message) {
-        super(SmartCamErrorCode.CAMERA_OPEN_ERROR, message);
+        super(SmartCamFileErrorCode.CAMERA_OPEN_ERROR, message);
     }
 }

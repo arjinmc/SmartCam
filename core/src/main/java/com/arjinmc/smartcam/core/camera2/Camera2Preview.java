@@ -28,7 +28,11 @@ import com.arjinmc.smartcam.core.file.ImagePathSaver;
 import com.arjinmc.smartcam.core.file.ImageUriSaver;
 import com.arjinmc.smartcam.core.model.CameraSaveType;
 import com.arjinmc.smartcam.core.model.CameraSize;
+import com.arjinmc.smartcam.core.model.SmartCamError;
+import com.arjinmc.smartcam.core.model.SmartCamOpenError;
 import com.arjinmc.smartcam.core.model.SmartCamOutputOption2;
+import com.arjinmc.smartcam.core.model.SmartCamPreviewError;
+import com.arjinmc.smartcam.core.model.SmartCamUnknownError;
 import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
 import com.arjinmc.smartcam.core.wrapper.ICameraPreviewWrapper;
 
@@ -285,27 +289,33 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                                 }
                             } catch (CameraAccessException e) {
                                 e.printStackTrace();
+                                dispatchError(new SmartCamOpenError());
                             } catch (IllegalStateException e) {
                                 e.printStackTrace();
+                                dispatchError(new SmartCamOpenError());
                             } catch (Exception e) {
                                 e.printStackTrace();
+                                dispatchError(new SmartCamUnknownError());
                             }
                         }
 
                         @Override
                         public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
-
+                            dispatchError(new SmartCamPreviewError());
                         }
                     }, mCamera2Wrapper.getHandler());
         } catch (CameraAccessException e) {
             e.printStackTrace();
+            dispatchError(new SmartCamOpenError());
         } catch (Exception e) {
             e.printStackTrace();
+            dispatchError(new SmartCamUnknownError());
+
         }
     }
 
     /**
-     * capture phohto
+     * capture photo
      */
     private void capture() {
 
@@ -327,10 +337,13 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             mCaptureSession.capture(captureRequestBuilder.build(), null, null);
         } catch (CameraAccessException e) {
             e.printStackTrace();
+            dispatchError(new SmartCamOpenError());
         } catch (IllegalStateException e) {
             e.printStackTrace();
+            dispatchError(new SmartCamOpenError());
         } catch (Exception e) {
             e.printStackTrace();
+            dispatchError(new SmartCamUnknownError());
         }
     }
 
@@ -371,5 +384,13 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void dispatchError(SmartCamError smartCamError) {
+        if (mCamera2Wrapper == null || mCamera2Wrapper.getCaptureCallback() == null
+                || smartCamError == null) {
+            return;
+        }
+        mCamera2Wrapper.getCaptureCallback().onError(smartCamError);
     }
 }
