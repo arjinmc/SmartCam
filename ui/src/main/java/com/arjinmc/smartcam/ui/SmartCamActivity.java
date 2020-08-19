@@ -98,6 +98,7 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onError(SmartCamError error) {
                 unconnected();
+                mSmartCam.open();
             }
         });
 

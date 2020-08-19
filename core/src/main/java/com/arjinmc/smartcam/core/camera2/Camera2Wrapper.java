@@ -28,6 +28,7 @@ import com.arjinmc.smartcam.core.model.CameraFlashMode;
 import com.arjinmc.smartcam.core.model.CameraSize;
 import com.arjinmc.smartcam.core.model.CameraType;
 import com.arjinmc.smartcam.core.model.SmartCamOpenError;
+import com.arjinmc.smartcam.core.model.SmartCamPreviewError;
 import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
 
 import java.util.ArrayList;
@@ -108,7 +109,11 @@ public class Camera2Wrapper extends AbsCameraWrapper {
                         mCameraLock.release();
                         mCamera = null;
                         if (mSmartCamStateCallback != null) {
-                            mSmartCamStateCallback.onError(new SmartCamOpenError(error + "CameraDevice.StateCallback error"));
+                            if (error == 4) {
+                                mSmartCamStateCallback.onError(new SmartCamPreviewError());
+                            } else {
+                                mSmartCamStateCallback.onError(new SmartCamOpenError(error + "CameraDevice.StateCallback error"));
+                            }
                         }
                         SmartCamLog.e(TAG, "onError");
                     }

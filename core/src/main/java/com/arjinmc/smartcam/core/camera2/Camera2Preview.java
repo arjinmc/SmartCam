@@ -310,7 +310,6 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
         } catch (Exception e) {
             e.printStackTrace();
             dispatchError(new SmartCamUnknownError());
-
         }
     }
 
