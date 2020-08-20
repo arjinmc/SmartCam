@@ -221,7 +221,7 @@ public final class SmartCamUtils {
         SmartCamLog.i(TAG, "getPictureDegree:" + degree);
         return degree;
     }
-`
+
     /**
      * crop bitmap
      *
