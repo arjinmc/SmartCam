@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.hardware.Camera;
+import android.media.ExifInterface;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Size;
@@ -60,7 +61,9 @@ public final class SmartCamUtils {
         if (context == null) {
             return false;
         }
-        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR
+                && context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
             return true;
         } else {
             return false;
@@ -156,7 +159,7 @@ public final class SmartCamUtils {
         for (int i = 0; i < sizeLength; i++) {
             Size size = sizes[i];
             cameraSizes.add(new CameraSize(size.getWidth(), size.getHeight()));
-//            SmartCamLog.e("convertSizes", size.getWidth() + "," + size.getHeight());
+//            SmartCamLog.e(TAG,"convertSizes:"+ size.getWidth() + "," + size.getHeight());
         }
         return cameraSizes;
     }
@@ -183,9 +186,40 @@ public final class SmartCamUtils {
         float scale = Math.max(
                 (float) targetHeight / previewSize.getWidth(),
                 (float) targetWidth / previewSize.getHeight());
-//        SmartCamLog.e("scale", scale + "");
+//        SmartCamLog.e(TAG,"scale:"+scale);
         matrix.postScale(scale, scale, centerX, centerY);
         return matrix;
+    }
+
+    /**
+     * get photo orientation
+     *
+     * @param path
+     * @return
+     */
+    public static int getPhotoOrientation(String path) {
+        int degree = 0;
+        try {
+            ExifInterface exifInterface = new ExifInterface(path);
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+                default:
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        SmartCamLog.i(TAG, "getPictureDegree:" + degree);
+        return degree;
     }
 
     /**
@@ -201,10 +235,17 @@ public final class SmartCamUtils {
             return bitmap;
         }
 
-        SmartCamLog.i("tag", "bitmap:" + bitmap.getWidth() + ",height:" + bitmap.getHeight()
+        SmartCamLog.i(TAG, "bitmap:" + bitmap.getWidth() + ",height:" + bitmap.getHeight()
                 + ",previewWidth:" + previewWidth + ",previewHeight:" + previewHeight);
 
+        if (bitmap.getWidth() > bitmap.getHeight()) {
+            int temp = previewWidth;
+            previewWidth = previewHeight;
+            previewHeight = temp;
+        }
+
         if (previewWidth <= bitmap.getWidth() && previewHeight <= bitmap.getHeight()) {
+
             float scale = Math.min(
                     (float) bitmap.getWidth() / previewWidth,
                     (float) bitmap.getHeight() / previewHeight);
@@ -213,15 +254,16 @@ public final class SmartCamUtils {
 
             int alterTop = (bitmap.getHeight() - previewHeight) / 2;
             int alterLeft = (bitmap.getWidth() - previewWidth) / 2;
-            SmartCamLog.i("tag", "alterTop:" + alterTop + ",alterLeft:" + alterLeft
+            SmartCamLog.i(TAG, "alterTop:" + alterTop + ",alterLeft:" + alterLeft
                     + ",previewWidth:" + previewWidth + ",previewHeight:" + previewHeight);
 
             return Bitmap.createBitmap(bitmap, alterLeft, alterTop, previewWidth, previewHeight);
+
         } else {
             float scale = Math.max(
                     (float) previewWidth / bitmap.getWidth(),
                     (float) previewHeight / bitmap.getHeight());
-            SmartCamLog.e("scale", "scale:" + scale);
+            SmartCamLog.i(TAG, "scale:" + scale);
             bitmap = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() * scale), (int) (bitmap.getHeight() * scale), false);
             return bitmap;
         }

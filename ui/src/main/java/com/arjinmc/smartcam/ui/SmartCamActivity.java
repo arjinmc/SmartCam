@@ -2,6 +2,7 @@ package com.arjinmc.smartcam.ui;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -23,6 +24,7 @@ import com.arjinmc.smartcam.core.callback.SmartCamStateCallback;
 import com.arjinmc.smartcam.core.file.SmartCamFileUtils;
 import com.arjinmc.smartcam.core.model.CameraFlashMode;
 import com.arjinmc.smartcam.core.model.SmartCamError;
+import com.arjinmc.smartcam.core.model.SmartCamPreviewError;
 
 import java.io.File;
 import java.io.IOException;
@@ -98,7 +100,9 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onError(SmartCamError error) {
                 unconnected();
-                mSmartCam.open();
+                if (error instanceof SmartCamPreviewError) {
+                    mSmartCam.open();
+                }
             }
         });
 
@@ -154,13 +158,13 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
         //capture a photo
         if (viewId == R.id.smartcam_btn_capture) {
 
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                mSmartCam.capture(createNewFile());
-                //or use this method
+//            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            mSmartCam.capture(createNewFile());
+            //or use this method
 //            mSmartCam.capturePath(createNewFile().getAbsolutePath());
-            } else {
-                mSmartCam.captureUri(createNewFileUri());
-            }
+//            } else {
+//                mSmartCam.captureUri(createNewFileUri());
+//            }
             return;
         }
 
@@ -259,6 +263,7 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
         File file = new File(SmartCamConfig.getInstance().getRootDirPath() + File.separator + createNewFileName());
         if (!file.exists()) {
             try {
+                Log.e("file path", file.getAbsolutePath());
                 boolean result = file.createNewFile();
                 if (result) {
                     return file;

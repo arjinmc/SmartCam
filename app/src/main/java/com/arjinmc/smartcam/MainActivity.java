@@ -2,9 +2,8 @@ package com.arjinmc.smartcam;
 
 import android.Manifest;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -122,21 +121,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void initDir() {
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             File file = new File(SmartCamFileUtils.getExternalStorageDir() + File.separator + SmartCamConfig.getInstance().getRootDirName());
             if (!file.exists() || !file.isDirectory()) {
                 boolean mkdirResult = file.mkdir();
                 if (!mkdirResult) {
                     file = new File(SmartCamFileUtils.getExternalDir(this) + File.separator + SmartCamConfig.getInstance().getRootDirName());
+                    file.mkdir();
                     SmartCamConfig.getInstance().setRootDirPath(file.getAbsolutePath());
                 }
             }
             SmartCamConfig.getInstance().setRootDirPath(file.getAbsolutePath());
-        } else {
-            if (TextUtils.isEmpty(SmartCamConfig.getInstance().getRootDirPath())) {
-                SmartCamFileUtils.applyOpenDirPermission(this, REQUST_CODE_APPLY_STORAGE_PERMISSION, null);
-            }
-        }
+            Log.e("root path",SmartCamConfig.getInstance().getRootDirPath()+"");
+//        } else {
+//            if (TextUtils.isEmpty(SmartCamConfig.getInstance().getRootDirPath())) {
+//                SmartCamFileUtils.applyOpenDirPermission(this, REQUST_CODE_APPLY_STORAGE_PERMISSION, null);
+//            }
+//        }
     }
 
     private void startActivity(Class clz) {

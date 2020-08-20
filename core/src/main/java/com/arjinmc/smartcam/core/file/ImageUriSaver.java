@@ -10,6 +10,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.RequiresApi;
 
+import com.arjinmc.smartcam.core.SmartCamCompatUtils;
 import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
@@ -72,11 +73,16 @@ public class ImageUriSaver implements Runnable {
         try {
 
             Bitmap temp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+            if (SmartCamCompatUtils.isXiaomi8()) {
+                temp = SmartCamUtils.rotateBitmap1(temp, mOutputOption.getDegree(), mOutputOption.getCameraType());
+            } else {
+                temp = SmartCamUtils.rotateBitmap2(temp, mOutputOption.getDegree(), mOutputOption.getCameraType());
+            }
+
             if (mOutputOption.getMatrix() != null) {
                 temp = SmartCamUtils.cropBitmap(temp, mOutputOption.getPreviewWidth(), mOutputOption.getPreviewHeight());
             }
-
-            temp = SmartCamUtils.rotateBitmap2(temp, mOutputOption.getDegree(), mOutputOption.getCameraType());
 
             byteArrayOutputStream = new ByteArrayOutputStream();
             temp.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
