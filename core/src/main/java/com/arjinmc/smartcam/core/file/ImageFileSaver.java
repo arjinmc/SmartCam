@@ -54,7 +54,7 @@ public class ImageFileSaver implements Runnable {
 
         Bitmap temp = BitmapFactory.decodeByteArray(mOutputOption.getImageData()
                 , 0, mOutputOption.getImageData().length);
-        temp = SmartCamUtils.cropBitmap(temp, mOutputOption.getPreviewWidth(), mOutputOption.getPreviewHeight());
+        temp = SmartCamUtils.cropBitmap1(temp, mOutputOption.getPreviewWidth(), mOutputOption.getPreviewHeight());
         temp = SmartCamUtils.rotateBitmap1(temp, mOutputOption.getDegree(), mOutputOption.getCameraType());
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

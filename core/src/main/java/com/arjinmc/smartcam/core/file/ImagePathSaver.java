@@ -66,14 +66,14 @@ public class ImagePathSaver implements Runnable {
 
             Bitmap temp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
+            if (mOutputOption.getMatrix() != null) {
+                temp = SmartCamUtils.cropBitmap2(temp, mOutputOption.getPreviewWidth(), mOutputOption.getPreviewHeight());
+            }
+
             if (SmartCamCompatUtils.isXiaomi8()) {
                 temp = SmartCamUtils.rotateBitmap1(temp, mOutputOption.getDegree(), mOutputOption.getCameraType());
             } else {
                 temp = SmartCamUtils.rotateBitmap2(temp, mOutputOption.getDegree(), mOutputOption.getCameraType());
-            }
-
-            if (mOutputOption.getMatrix() != null) {
-                temp = SmartCamUtils.cropBitmap(temp, mOutputOption.getPreviewWidth(), mOutputOption.getPreviewHeight());
             }
 
             byteArrayOutputStream = new ByteArrayOutputStream();
