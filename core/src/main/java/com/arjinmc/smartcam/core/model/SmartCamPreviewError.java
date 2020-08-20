@@ -8,10 +8,10 @@ package com.arjinmc.smartcam.core.model;
 public class SmartCamPreviewError extends SmartCamError {
 
     public SmartCamPreviewError() {
-        super(SmartCamFileErrorCode.CAMERA_PREVIEW_ERROR, "Camera error cannot preview");
+        super(SmartCamErrorCode.CAMERA_PREVIEW_ERROR, "Camera error cannot preview");
     }
 
     public SmartCamPreviewError(String message) {
-        super(SmartCamFileErrorCode.CAMERA_PREVIEW_ERROR, message);
+        super(SmartCamErrorCode.CAMERA_PREVIEW_ERROR, message);
     }
 }

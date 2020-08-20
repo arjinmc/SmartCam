@@ -8,10 +8,10 @@ package com.arjinmc.smartcam.core.model;
 public class SmartCamUnknownError extends SmartCamError {
 
     public SmartCamUnknownError() {
-        super(SmartCamFileErrorCode.CAMERA_UNKNOWN_ERROR, "Camera unknown error");
+        super(SmartCamErrorCode.CAMERA_UNKNOWN_ERROR, "Camera unknown error");
     }
 
     public SmartCamUnknownError(String message) {
-        super(SmartCamFileErrorCode.CAMERA_CAPTURE_FILE_NOT_EXIST, message);
+        super(SmartCamErrorCode.CAMERA_CAPTURE_FILE_NOT_EXIST, message);
     }
 }
