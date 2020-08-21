@@ -200,7 +200,11 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     @Override
     public void destroy() {
         mOrientationEventListener.disable();
-        surfaceDestroyed(mHolder);
+        try {
+            surfaceDestroyed(mHolder);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void dispatchError(SmartCamError smartCamError) {
