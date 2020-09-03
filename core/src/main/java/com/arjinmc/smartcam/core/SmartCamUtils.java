@@ -97,21 +97,6 @@ public final class SmartCamUtils {
     }
 
     /**
-     * get window display surface rotation like Surface.ROTATION_270
-     *
-     * @param context
-     * @return
-     */
-    public static int getWindowSurfaceRotation(Context context) {
-
-        if (context == null) {
-            return -1;
-        }
-        int angle = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
-        return angle;
-    }
-
-    /**
      * get should rotate degree
      *
      * @param context
@@ -141,6 +126,33 @@ public final class SmartCamUtils {
             result = (info.orientation - degrees + 360) % 360;
         }
         return result;
+    }
+
+    public static int getShouldRotateDegree(@CameraType.Type int type, int orientation) {
+
+        int rotation;
+        if (type == CameraType.CAMERA_FRONT) {
+            if (orientation >= 45 && orientation < 135) {
+                rotation = 180;
+            } else if (orientation >= 135 && orientation < 225) {
+                rotation = 90;
+            } else if (orientation >= 225 && orientation < 315) {
+                rotation = 0;
+            } else {
+                rotation = 270;
+            }
+        } else {
+            if (orientation >= 45 && orientation < 135) {
+                rotation = 180;
+            } else if (orientation >= 135 && orientation < 225) {
+                rotation = 270;
+            } else if (orientation >= 225 && orientation < 315) {
+                rotation = 0;
+            } else {
+                rotation = 90;
+            }
+        }
+        return rotation;
     }
 
     /**
@@ -468,6 +480,22 @@ public final class SmartCamUtils {
         }
 
         return bitmap;
+    }
+
+    /**
+     * scale
+     *
+     * @param bitmap
+     * @return
+     */
+    public static Bitmap postScaleFroFrontCamera(Bitmap bitmap, @CameraType.Type int type) {
+        if (bitmap == null || type != CameraType.CAMERA_FRONT) {
+            return bitmap;
+        }
+        Matrix matrix = new Matrix();
+        matrix.postScale(-1, 1);
+        return bitmap = Bitmap.createBitmap(bitmap, 0, 0
+                , bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     /**

@@ -9,7 +9,6 @@ import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
-import android.hardware.camera2.TotalCaptureResult;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
@@ -89,14 +88,6 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             }
             if (mCamera2Wrapper != null || mCamera2Wrapper.getCaptureCallback() != null) {
                 mCamera2Wrapper.getCaptureCallback().onError(new SmartCamCaptureError());
-            }
-        }
-
-        @Override
-        public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
-            super.onCaptureCompleted(session, request, result);
-            if (mCaptureSession != null) {
-                mCaptureSession.close();
             }
         }
     };
@@ -341,11 +332,13 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             CaptureRequest.Builder captureRequestBuilder = mCamera.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             captureRequestBuilder = mCamera2Wrapper.resumeParams(captureRequestBuilder);
             captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+//            captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, SmartCamUtils.getShouldRotateDegree(
+//                    getContext()
+//                    , mCamera2Wrapper.getCurrentCameraType()
+//                    , mCamera2Wrapper.getCurrentCameraId()
+//                    , SmartCamUtils.getCaptureOrientation(mDegree)));
             captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, SmartCamUtils.getShouldRotateDegree(
-                    getContext()
-                    , mCamera2Wrapper.getCurrentCameraType()
-                    , mCamera2Wrapper.getCurrentCameraId()
-                    , SmartCamUtils.getWindowDisplayRotation(getContext())));
+                    mCamera2Wrapper.getCurrentCameraType(),mDegree));
             captureRequestBuilder.addTarget(mImageReader.getSurface());
             mCaptureSession.stopRepeating();
             mCaptureSession.abortCaptures();

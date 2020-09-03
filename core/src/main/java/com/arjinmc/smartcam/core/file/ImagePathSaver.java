@@ -6,7 +6,6 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import com.arjinmc.smartcam.core.SmartCamCompatUtils;
 import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
@@ -70,11 +69,12 @@ public class ImagePathSaver implements Runnable {
                 temp = SmartCamUtils.cropBitmap2(temp, mOutputOption.getPreviewWidth(), mOutputOption.getPreviewHeight());
             }
 
-            if (SmartCamCompatUtils.isXiaomi8()) {
-                temp = SmartCamUtils.rotateBitmap1(temp, mOutputOption.getDegree(), mOutputOption.getCameraType());
-            } else {
-                temp = SmartCamUtils.rotateBitmap2(temp, mOutputOption.getDegree(), mOutputOption.getCameraType());
-            }
+//            if (SmartCamCompatUtils.isXiaomi8()) {
+//                temp = SmartCamUtils.rotateBitmap1(temp, mOutputOption.getDegree(), mOutputOption.getCameraType());
+//            } else {
+//                temp = SmartCamUtils.rotateBitmap2(temp, mOutputOption.getDegree(), mOutputOption.getCameraType());
+//            }
+            temp = SmartCamUtils.postScaleFroFrontCamera(temp, mOutputOption.getCameraType());
 
             byteArrayOutputStream = new ByteArrayOutputStream();
             temp.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);

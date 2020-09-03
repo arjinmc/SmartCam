@@ -115,7 +115,7 @@ public class Camera2Wrapper extends AbsCameraWrapper {
                                 mSmartCamStateCallback.onError(new SmartCamOpenError(error + "CameraDevice.StateCallback error"));
                             }
                         }
-                        SmartCamLog.e(TAG, "onError");
+                        SmartCamLog.e(TAG, "onError:" + error);
                     }
                 };
             }
