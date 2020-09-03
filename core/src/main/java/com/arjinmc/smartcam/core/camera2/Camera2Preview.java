@@ -7,6 +7,7 @@ import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraDevice;
+import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.media.Image;
@@ -28,6 +29,7 @@ import com.arjinmc.smartcam.core.file.ImagePathSaver;
 import com.arjinmc.smartcam.core.file.ImageUriSaver;
 import com.arjinmc.smartcam.core.model.CameraSaveType;
 import com.arjinmc.smartcam.core.model.CameraSize;
+import com.arjinmc.smartcam.core.model.SmartCamCaptureError;
 import com.arjinmc.smartcam.core.model.SmartCamError;
 import com.arjinmc.smartcam.core.model.SmartCamOpenError;
 import com.arjinmc.smartcam.core.model.SmartCamOutputOption2;
@@ -80,8 +82,22 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
     private CameraCaptureSession.CaptureCallback mCaptureCallback = new CameraCaptureSession.CaptureCallback() {
 
         @Override
+        public void onCaptureFailed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureFailure failure) {
+            super.onCaptureFailed(session, request, failure);
+            if (mCaptureSession != null) {
+                mCaptureSession.close();
+            }
+            if (mCamera2Wrapper != null || mCamera2Wrapper.getCaptureCallback() != null) {
+                mCamera2Wrapper.getCaptureCallback().onError(new SmartCamCaptureError());
+            }
+        }
+
+        @Override
         public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
             super.onCaptureCompleted(session, request, result);
+            if (mCaptureSession != null) {
+                mCaptureSession.close();
+            }
         }
     };
 
