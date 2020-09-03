@@ -387,6 +387,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             onSurfaceTextureDestroyed(getSurfaceTexture());
 
             if (mCaptureSession != null) {
+                stopPreview();
                 mCaptureSession = null;
             }
         } catch (Exception e) {
