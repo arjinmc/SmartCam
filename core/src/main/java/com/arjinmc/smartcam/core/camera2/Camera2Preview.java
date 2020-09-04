@@ -6,7 +6,9 @@ import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
+import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
+import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
 import android.media.Image;
@@ -14,6 +16,7 @@ import android.media.ImageReader;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Surface;
 import android.view.TextureView;
 
@@ -87,7 +90,9 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                 mCaptureSession.close();
             }
             if (mCamera2Wrapper != null || mCamera2Wrapper.getCaptureCallback() != null) {
-                mCamera2Wrapper.getCaptureCallback().onError(new SmartCamCaptureError());
+                if (CaptureFailure.REASON_ERROR == failure.getReason()) {
+                    dispatchError(new SmartCamCaptureError());
+                }
             }
         }
     };
@@ -100,17 +105,17 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                 case CameraSaveType.TYPE_FILE:
                 case CameraSaveType.TYPE_PATH:
                     SmartCamLog.e("CameraSaveType", "ImagePathSaver");
-                    mCamera2Wrapper.getHandler().post(new ImagePathSaver(
+                    new ImagePathSaver(
                             new SmartCamOutputOption2(image, mSaveFile, mDegree
                                     , mWidth, mHeight, mMatrix, mCamera2Wrapper.getCurrentCameraType())
-                            , mCamera2Wrapper.getCaptureCallback()));
+                            , mCamera2Wrapper.getCaptureCallback()).run();
                     break;
                 case CameraSaveType.TYPE_URI:
                     SmartCamLog.e("CameraSaveType", "ImageUriSaver");
-                    mCamera2Wrapper.getHandler().post(new ImageUriSaver(getContext()
+                    new ImageUriSaver(getContext()
                             , new SmartCamOutputOption2(image, mSaveFileUri, mDegree
                             , mWidth, mHeight, mMatrix, mCamera2Wrapper.getCurrentCameraType())
-                            , mCamera2Wrapper.getCaptureCallback()));
+                            , mCamera2Wrapper.getCaptureCallback()).run();
                     break;
                 default:
                     break;
@@ -338,7 +343,13 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 //                    , mCamera2Wrapper.getCurrentCameraId()
 //                    , SmartCamUtils.getCaptureOrientation(mDegree)));
             captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, SmartCamUtils.getShouldRotateDegree(
-                    mCamera2Wrapper.getCurrentCameraType(),mDegree));
+                    mCamera2Wrapper.getCurrentCameraType(), mDegree));
+
+            Log.e("my1", SmartCamUtils.getShouldRotateDegree(
+                    mCamera2Wrapper.getCurrentCameraType(), mDegree) + "");
+            CameraManager manager = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);
+            CameraCharacteristics characteristics = manager.getCameraCharacteristics(mCamera2Wrapper.getCurrentCameraId());
+            Log.e("my2", getJpegOrientation(characteristics, SmartCamUtils.getWindowDisplayRotation(getContext())) + "");
             captureRequestBuilder.addTarget(mImageReader.getSurface());
             mCaptureSession.stopRepeating();
             mCaptureSession.abortCaptures();
@@ -353,6 +364,26 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             e.printStackTrace();
             dispatchError(new SmartCamUnknownError());
         }
+    }
+
+    private int getJpegOrientation(CameraCharacteristics c, int deviceOrientation) {
+        if (deviceOrientation == android.view.OrientationEventListener.ORIENTATION_UNKNOWN) {
+            return 0;
+        }
+        int sensorOrientation = c.get(CameraCharacteristics.SENSOR_ORIENTATION);
+
+        // Round device orientation to a multiple of 90
+        deviceOrientation = (deviceOrientation + 45) / 90 * 90;
+
+        // Reverse device orientation for front-facing cameras
+        boolean facingFront = c.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_FRONT;
+        if (facingFront) deviceOrientation = -deviceOrientation;
+
+        // Calculate desired JPEG orientation relative to camera orientation to make
+        // the image upright relative to the device orientation
+        int jpegOrientation = (sensorOrientation + deviceOrientation + 360) % 360;
+
+        return jpegOrientation;
     }
 
     @Override

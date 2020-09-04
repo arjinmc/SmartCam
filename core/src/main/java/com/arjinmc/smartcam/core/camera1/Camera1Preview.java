@@ -80,9 +80,9 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                     }, null, new Camera.PictureCallback() {
                         @Override
                         public void onPictureTaken(byte[] data, Camera camera) {
-                            mHandler.post(new ImageFileSaver(new SmartCamOutputOption1(data, file, mCameraDegree
+                            new ImageFileSaver(new SmartCamOutputOption1(data, file, mCameraDegree
                                     , mCameraWrapper.getCurrentCameraType(), getMeasuredHeight(), getMeasuredWidth())
-                                    , mCameraWrapper.getCaptureCallback()));
+                                    , mCameraWrapper.getCaptureCallback()).run();
                             if (SmartCamConfig.getInstance().isAutoReset()) {
                                 doPreview();
                             }
