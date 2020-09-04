@@ -24,7 +24,7 @@ allprojects {
 
 ext{
     compileSdkVersion = 30
-    buildToolsVersion = '30.0.1'
+    buildToolsVersion = '30.0.2 '
     minSdkVersion = 15
     targetSdkVersion = 30
     cmakeVersion = '3.10.2'

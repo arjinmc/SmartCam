@@ -1,17 +1,19 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.arjinmc.smartcam"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -21,22 +23,11 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:' + rootProject.ext.appcompatVersion
-    implementation 'androidx.constraintlayout:constraintlayout:' + rootProject.ext.constraintlayoutVersion
-
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'com.arjinmc.android:expandrecyclerview:2.1'
-
-    implementation project(":core")
-    implementation project(":ui")
-    implementation project(":compress")
-    implementation project(":waterprint")
-    implementation project(":face")
-    implementation project(":filter")
-    implementation project(":transfer")
 
     testImplementation 'junit:junit:' + rootProject.ext.jUnitVersion
     androidTestImplementation 'androidx.test.ext:junit:' + rootProject.ext.extJunitVersion
     androidTestImplementation 'androidx.test.espresso:espresso-core:' + rootProject.ext.espressoVersion
+
 }

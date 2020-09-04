@@ -1,3 +1,5 @@
+include ':waterprint'
+include ':compress'
 include ':transfer'
 include ':app', ':core', ':ui', ':filter', ':face'
 rootProject.name='SmartCam'

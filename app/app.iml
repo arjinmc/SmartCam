@@ -140,5 +140,10 @@
     <orderEntry type="library" name="Gradle: com.arjinmc.android:expandrecyclerview:2.1@aar" level="project" />
     <orderEntry type="module" module-name="core" />
     <orderEntry type="module" module-name="ui" />
+    <orderEntry type="module" module-name="compress" />
+    <orderEntry type="module" module-name="waterprint" />
+    <orderEntry type="module" module-name="face" />
+    <orderEntry type="module" module-name="filter" />
+    <orderEntry type="module" module-name="transfer" />
   </component>
 </module>
