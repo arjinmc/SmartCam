@@ -346,9 +346,8 @@ public class Camera2Wrapper extends AbsCameraWrapper {
     public void openFlashMode() {
 
         dispatchFlashChange(CameraFlashMode.MODE_ON);
-        addCameraParam(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_ON_EXTERNAL_FLASH);
-        removeCameraParam(CaptureRequest.FLASH_MODE);
-
+        removeCameraParam(CaptureRequest.CONTROL_AE_MODE);
+        addCameraParam(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_SINGLE);
     }
 
     @Override
