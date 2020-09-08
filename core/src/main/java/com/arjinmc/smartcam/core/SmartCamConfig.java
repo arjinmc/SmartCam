@@ -103,7 +103,11 @@ public final class SmartCamConfig {
      * @param captureQuality
      */
     public void setCaptureQuality(int captureQuality) {
-        mCaptureQuality = captureQuality;
+        if (captureQuality < 0 || captureQuality > DEFAULT_CAPTURE_QUALITY) {
+            mCaptureQuality = DEFAULT_CAPTURE_QUALITY;
+        } else {
+            mCaptureQuality = captureQuality;
+        }
     }
 
     public void setDebugLog(boolean visible) {
