@@ -1,5 +1,7 @@
 package com.arjinmc.smartcam.core;
 
+import com.arjinmc.smartcam.core.model.CameraManualFocusParams;
+
 /**
  * Created by Eminem Lo on 2019-10-29.
  * email: arjinmc@hotmail.com
@@ -13,7 +15,11 @@ public final class SmartCamConfig {
     /**
      * Default capture quality
      */
-    private static final int DEFAULT_CAPTURE_QUALITY = 100;
+    private final int DEFAULT_CAPTURE_QUALITY = 100;
+    /**
+     * Default auto dismiss manual focus view when camera orientation changed offset
+     */
+    private final int DEFAULT_MANUAL_FOCUS_DISMISS_DEGREE_OFFSET = 10;
 
     /**
      * root dir path
@@ -33,6 +39,26 @@ public final class SmartCamConfig {
      * capture quality
      */
     private int mCaptureQuality = DEFAULT_CAPTURE_QUALITY;
+
+    /**
+     * make camera preview as auto-focus
+     */
+    private boolean mIsAutoFocus = true;
+
+    /**
+     * make camera use manual focus
+     */
+    private boolean mUseManualFocus = true;
+
+    /**
+     * when the camera orientation changed above offset value then auto hide the manual focus view
+     */
+    private int mDismissManualFocusDegreeOffset = DEFAULT_MANUAL_FOCUS_DISMISS_DEGREE_OFFSET;
+
+    /**
+     * manual focus params
+     */
+    private CameraManualFocusParams mCameraManualFocusParams;
 
     private static SmartCamConfig mSmartCamConfig;
 
@@ -108,6 +134,41 @@ public final class SmartCamConfig {
         } else {
             mCaptureQuality = captureQuality;
         }
+    }
+
+    public boolean isIsAutoFocus() {
+        return mIsAutoFocus;
+    }
+
+    public void setAutoFocus(boolean mIsAutoFocus) {
+        this.mIsAutoFocus = mIsAutoFocus;
+    }
+
+    public boolean isUseManualFocus() {
+        return mUseManualFocus;
+    }
+
+    public void setUseManualFocus(boolean useManualFocus) {
+        this.mUseManualFocus = useManualFocus;
+    }
+
+    public int getDismissManualFocusDegreeOffset() {
+        return mDismissManualFocusDegreeOffset;
+    }
+
+    public void setDismissManualFocusDegreeOffset(int dismissManualFocusDegreeOffset) {
+        if (dismissManualFocusDegreeOffset <= 0) {
+            dismissManualFocusDegreeOffset = DEFAULT_MANUAL_FOCUS_DISMISS_DEGREE_OFFSET;
+        }
+        this.mDismissManualFocusDegreeOffset = dismissManualFocusDegreeOffset;
+    }
+
+    public CameraManualFocusParams getCameraManualFocusParams() {
+        return mCameraManualFocusParams;
+    }
+
+    public void setCameraManualFocusParams(CameraManualFocusParams cameraManualFocusParams) {
+        this.mCameraManualFocusParams = cameraManualFocusParams;
     }
 
     public void setDebugLog(boolean visible) {

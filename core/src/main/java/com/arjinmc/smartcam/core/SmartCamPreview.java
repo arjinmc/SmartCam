@@ -3,6 +3,8 @@ package com.arjinmc.smartcam.core;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -13,7 +15,10 @@ import com.arjinmc.smartcam.core.camera1.Camera1Preview;
 import com.arjinmc.smartcam.core.camera1.Camera1Wrapper;
 import com.arjinmc.smartcam.core.camera2.Camera2Preview;
 import com.arjinmc.smartcam.core.camera2.Camera2Wrapper;
+import com.arjinmc.smartcam.core.model.CameraManualFocusParams;
+import com.arjinmc.smartcam.core.model.CameraSize;
 import com.arjinmc.smartcam.core.model.CameraVersion;
+import com.arjinmc.smartcam.core.view.CameraManualFocusView;
 
 /**
  * SmartCamPreview
@@ -27,6 +32,8 @@ public class SmartCamPreview extends FrameLayout {
     private SmartCam mSmartCam;
     private Camera1Preview mCamera1Preview;
     private Camera2Preview mCamera2Preview;
+    private CameraManualFocusView mCameraManualFocusView;
+    private OnManualFocusListener mOnManualFocusListener;
 
     public SmartCamPreview(@NonNull Context context) {
         super(context);
@@ -61,10 +68,30 @@ public class SmartCamPreview extends FrameLayout {
             removeAllViews();
         }
 
+        mOnManualFocusListener = new OnManualFocusListener() {
+            @Override
+            public void requestFocus(float x, float y) {
+                showManualFocusView(x, y);
+            }
+
+            @Override
+            public void cancelFocus() {
+                hideManualFocusView();
+            }
+        };
+
         if (DebugConfig.useV1) {
             mCurrentCameraVersion = CameraVersion.VERSION_1;
             mCamera1Preview = new Camera1Preview(getContext(), (Camera1Wrapper) mSmartCam.getCameraWrapper());
             addView(mCamera1Preview);
+
+            if (SmartCamConfig.getInstance().isUseManualFocus()) {
+                mCameraManualFocusView = new CameraManualFocusView(getContext());
+                mCameraManualFocusView.setVisibility(View.GONE);
+                addView(mCameraManualFocusView, new FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                mCamera1Preview.setOnManualFocusListener(mOnManualFocusListener);
+            }
             return;
         }
 
@@ -77,6 +104,19 @@ public class SmartCamPreview extends FrameLayout {
             mCamera1Preview = new Camera1Preview(getContext(), (Camera1Wrapper) mSmartCam.getCameraWrapper());
             addView(mCamera1Preview);
         }
+
+        if (SmartCamConfig.getInstance().isUseManualFocus()) {
+            mCameraManualFocusView = new CameraManualFocusView(getContext());
+            mCameraManualFocusView.setVisibility(View.GONE);
+            addView(mCameraManualFocusView, new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mCamera2Preview.setOnManualFocusListener(mOnManualFocusListener);
+            } else {
+                mCamera1Preview.setOnManualFocusListener(mOnManualFocusListener);
+            }
+        }
     }
 
     /**
@@ -88,6 +128,60 @@ public class SmartCamPreview extends FrameLayout {
     public void setFixedSize(int width, int height) {
         if (mCurrentCameraVersion == CameraVersion.VERSION_1) {
             mCamera1Preview.getHolder().setFixedSize(width, height);
+        }
+    }
+
+    /**
+     * hide manual focus view
+     */
+    public void hideManualFocusView() {
+        if (mCameraManualFocusView != null && mCameraManualFocusView.getVisibility() == View.VISIBLE) {
+            mCameraManualFocusView.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * show manual focus view
+     *
+     * @param x
+     * @param y
+     */
+    public void showManualFocusView(float x, float y) {
+
+        if (mCameraManualFocusView != null) {
+
+            //check border
+            CameraManualFocusParams cameraManualFocusParams = mCameraManualFocusView.getCameraManualFocusParams();
+            if (cameraManualFocusParams == null) {
+                return;
+            }
+
+            boolean canShow = true;
+            if (cameraManualFocusParams.getShape() == CameraManualFocusParams.CAMERA_MANUAL_FOCUS_SHAPE_CIRCLE) {
+                if (x - cameraManualFocusParams.getRadius() < 0
+                        || x + cameraManualFocusParams.getRadius() > getMeasuredWidth()
+                        || y - cameraManualFocusParams.getRadius() < 0
+                        || y + cameraManualFocusParams.getRadius() > getMeasuredHeight()) {
+                    canShow = false;
+                }
+            } else if (cameraManualFocusParams.getShape() == CameraManualFocusParams.CAMERA_MANUAL_FOCUS_SHAPE_SQUARE) {
+                CameraSize shapeSize = cameraManualFocusParams.getSize();
+                if (shapeSize != null) {
+                    if (x - shapeSize.getWidth() / 2 < 0
+                            || x + shapeSize.getWidth() / 2 > getMeasuredWidth()
+                            || y - shapeSize.getHeight() / 2 < 0
+                            || y + shapeSize.getHeight() / 2 > getMeasuredHeight()) {
+                        canShow = false;
+                    }
+                }
+            }
+
+            if (canShow) {
+                mCameraManualFocusView.setTouchPoint(x, y);
+                if (mCameraManualFocusView.getVisibility() != View.VISIBLE) {
+                    mCameraManualFocusView.setVisibility(View.VISIBLE);
+                }
+            }
         }
     }
 
@@ -134,6 +228,12 @@ public class SmartCamPreview extends FrameLayout {
         } else if (mCurrentCameraVersion == CameraVersion.VERSION_2 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mCamera2Preview.stopPreview();
         }
+    }
+
+    public interface OnManualFocusListener {
+        void requestFocus(float x, float y);
+
+        void cancelFocus();
     }
 }
 

@@ -1,5 +1,7 @@
 package com.arjinmc.smartcam.core.wrapper;
 
+import com.arjinmc.smartcam.core.SmartCamPreview;
+
 /**
  * interface fot CameraPreviewWrapper
  * Created by Eminem Lo on 2019-10-28.
@@ -28,4 +30,10 @@ public interface ICameraPreviewWrapper {
      * destory preview
      */
     void destroy();
+
+    /**
+     * callback for manual focus
+     * @param onManualFocusListener
+     */
+    void setOnManualFocusListener(SmartCamPreview.OnManualFocusListener onManualFocusListener);
 }

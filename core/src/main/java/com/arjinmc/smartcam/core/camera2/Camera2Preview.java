@@ -17,6 +17,7 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.TextureView;
 
@@ -25,6 +26,7 @@ import androidx.annotation.RequiresApi;
 
 import com.arjinmc.smartcam.core.SmartCamConfig;
 import com.arjinmc.smartcam.core.SmartCamLog;
+import com.arjinmc.smartcam.core.SmartCamPreview;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamOrientationEventListener;
 import com.arjinmc.smartcam.core.file.ImagePathSaver;
@@ -71,6 +73,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
     private Camera2Wrapper.OnFlashChangeListener mOnFlashChangeListener;
     private AbsCameraWrapper.OnClickCaptureListener mOnClickCaptureListener;
     private SmartCamOrientationEventListener mOrientationEventListener;
+    private SmartCamPreview.OnManualFocusListener mOnManualFocusListener;
     private int mWidth, mHeight;
     private int mCameraSaveType;
     private File mSaveFile;
@@ -235,6 +238,16 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (mOnManualFocusListener != null) {
+                mOnManualFocusListener.requestFocus(event.getX(), event.getY());
+            }
+        }
+        return super.onTouchEvent(event);
+    }
+
     private void startPreview(final int width, final int height) {
 
         if (mCamera == null) {
@@ -388,6 +401,12 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 
     @Override
     public void onOrientationChange(int degree) {
+        if (mDegree != null
+                && Math.abs(degree - mDegree) > SmartCamConfig.getInstance().getDismissManualFocusDegreeOffset()) {
+            if (mOnManualFocusListener != null) {
+                mOnManualFocusListener.cancelFocus();
+            }
+        }
         mDegree = degree;
     }
 
@@ -424,6 +443,11 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void setOnManualFocusListener(SmartCamPreview.OnManualFocusListener onManualFocusListener) {
+        mOnManualFocusListener = onManualFocusListener;
     }
 
     private void dispatchError(SmartCamError smartCamError) {

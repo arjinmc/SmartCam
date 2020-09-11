@@ -5,12 +5,14 @@ import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.arjinmc.smartcam.core.SmartCamConfig;
 import com.arjinmc.smartcam.core.SmartCamLog;
+import com.arjinmc.smartcam.core.SmartCamPreview;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamOrientationEventListener;
 import com.arjinmc.smartcam.core.file.ImageFileSaver;
@@ -38,6 +40,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     private Camera mCamera;
     private AbsCameraWrapper.OnClickCaptureListener mOnClickCaptureListener;
     private SmartCamOrientationEventListener mOrientationEventListener;
+    private SmartCamPreview.OnManualFocusListener mOnManualFocusListener;
 
     private int mCameraDegree;
     private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
@@ -137,6 +140,16 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
         }
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (mOnManualFocusListener != null) {
+                mOnManualFocusListener.requestFocus(event.getX(), event.getY());
+            }
+        }
+        return super.onTouchEvent(event);
+    }
+
     private void doPreview() {
 
         try {
@@ -178,6 +191,12 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
 
     @Override
     public void onOrientationChange(int degree) {
+
+        if (Math.abs(degree - mCameraDegree) > SmartCamConfig.getInstance().getDismissManualFocusDegreeOffset()) {
+            if (mOnManualFocusListener != null) {
+                mOnManualFocusListener.cancelFocus();
+            }
+        }
         mCameraDegree = degree;
     }
 
@@ -205,6 +224,11 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void setOnManualFocusListener(SmartCamPreview.OnManualFocusListener onManualFocusListener) {
+        mOnManualFocusListener = onManualFocusListener;
     }
 
     private void dispatchError(SmartCamError smartCamError) {
