@@ -1,6 +1,7 @@
 package com.arjinmc.smartcam.core;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
@@ -34,6 +35,7 @@ public class SmartCamPreview extends FrameLayout {
     private Camera2Preview mCamera2Preview;
     private CameraManualFocusView mCameraManualFocusView;
     private OnManualFocusListener mOnManualFocusListener;
+    private float mTouchX, mTouchY;
 
     public SmartCamPreview(@NonNull Context context) {
         super(context);
@@ -77,6 +79,11 @@ public class SmartCamPreview extends FrameLayout {
             @Override
             public void cancelFocus() {
                 hideManualFocusView();
+            }
+
+            @Override
+            public Rect getFocusRegion() {
+                return getFocusRect();
             }
         };
 
@@ -177,12 +184,44 @@ public class SmartCamPreview extends FrameLayout {
             }
 
             if (canShow) {
+                mTouchX = x;
+                mTouchY = y;
                 mCameraManualFocusView.setTouchPoint(x, y);
                 if (mCameraManualFocusView.getVisibility() != View.VISIBLE) {
                     mCameraManualFocusView.setVisibility(View.VISIBLE);
                 }
+            } else {
+                mTouchX = -1;
+                mTouchY = -1;
+                if (mCameraManualFocusView.getVisibility() == View.VISIBLE) {
+                    mCameraManualFocusView.setVisibility(View.GONE);
+                }
             }
         }
+    }
+
+    public Rect getFocusRect() {
+        if (mCameraManualFocusView == null
+                || mCameraManualFocusView.getVisibility() != View.VISIBLE
+                || mCameraManualFocusView.getCameraManualFocusParams() == null) {
+            return null;
+        }
+        CameraManualFocusParams cameraManualFocusParams = mCameraManualFocusView.getCameraManualFocusParams();
+        Rect rect = new Rect();
+        if (cameraManualFocusParams.getShape() == CameraManualFocusParams.CAMERA_MANUAL_FOCUS_SHAPE_CIRCLE) {
+            rect.left = (int) (mTouchX - cameraManualFocusParams.getRadius());
+            rect.top = (int) (mTouchY - cameraManualFocusParams.getRadius());
+            rect.right = (int) (mTouchX + cameraManualFocusParams.getRadius());
+            rect.bottom = (int) (mTouchY + cameraManualFocusParams.getRadius());
+            return rect;
+        } else if (cameraManualFocusParams.getShape() == CameraManualFocusParams.CAMERA_MANUAL_FOCUS_SHAPE_SQUARE) {
+            rect.left = (int) (mTouchX - cameraManualFocusParams.getSize().getWidth() / 2);
+            rect.top = (int) (mTouchY - cameraManualFocusParams.getSize().getHeight() / 2);
+            rect.right = (int) (mTouchX + cameraManualFocusParams.getSize().getWidth() / 2);
+            rect.bottom = (int) (mTouchY + cameraManualFocusParams.getSize().getHeight() / 2);
+            return rect;
+        }
+        return null;
     }
 
     /**
@@ -234,6 +273,8 @@ public class SmartCamPreview extends FrameLayout {
         void requestFocus(float x, float y);
 
         void cancelFocus();
+
+        Rect getFocusRegion();
     }
 }
 

@@ -33,7 +33,9 @@ public interface ICameraPreviewWrapper {
 
     /**
      * callback for manual focus
+     *
      * @param onManualFocusListener
      */
     void setOnManualFocusListener(SmartCamPreview.OnManualFocusListener onManualFocusListener);
+
 }
