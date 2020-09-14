@@ -25,6 +25,8 @@ import com.arjinmc.smartcam.core.wrapper.ICameraPreviewWrapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Preview for camera v1
@@ -143,8 +145,32 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            if (mOnManualFocusListener != null) {
+            if (mOnManualFocusListener != null && SmartCamConfig.getInstance().isUseManualFocus()) {
                 mOnManualFocusListener.requestFocus(event.getX(), event.getY());
+                Camera.Area cameraArea = new Camera.Area(mOnManualFocusListener.getFocusRegion(), 1000);
+                List<Camera.Area> meteringAreas = new ArrayList<>();
+                List<Camera.Area> focusAreas = new ArrayList<>();
+                Camera.Parameters parameters = mCamera.getParameters();
+                if (parameters.getMaxNumMeteringAreas() > 0) {
+                    meteringAreas.add(cameraArea);
+                    focusAreas.add(cameraArea);
+                    try {
+                        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+                        parameters.setFocusAreas(focusAreas);
+                        parameters.setMeteringAreas(meteringAreas);
+                        mCamera.cancelAutoFocus();
+                        mCamera.setParameters(parameters);
+                        mCamera.autoFocus(new Camera.AutoFocusCallback() {
+                            @Override
+                            public void onAutoFocus(boolean b, Camera camera) {
+
+                            }
+                        });
+                    } catch (Exception e) {
+//                        e.printStackTrace();
+                        mOnManualFocusListener.cancelFocus();
+                    }
+                }
             }
         }
         return super.onTouchEvent(event);
@@ -173,7 +199,9 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                 }
                 mCamera.setPreviewDisplay(getHolder());
                 Camera.Parameters parameters = mCamera.getParameters();
-                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+                if (SmartCamUtils.hasAutoFocus(getContext())) {
+                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+                }
                 parameters.setSceneMode(Camera.Parameters.SCENE_MODE_AUTO);
                 parameters.setPreviewSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
                 CameraSize outputSize = mCameraWrapper.getMaxOutputSize();
