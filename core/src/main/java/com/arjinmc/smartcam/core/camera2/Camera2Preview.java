@@ -12,7 +12,10 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.MeteringRectangle;
+import android.hardware.camera2.params.OutputConfiguration;
+import android.hardware.camera2.params.SessionConfiguration;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
@@ -45,7 +48,11 @@ import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
 import com.arjinmc.smartcam.core.wrapper.ICameraPreviewWrapper;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * Preview for camera2
@@ -63,6 +70,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
     private CameraCaptureSession mCaptureSession;
     private CaptureRequest mPreviewRequest;
     private ImageReader mImageReader;
+    private Executor mExecutor;
     private Camera2Wrapper.OnFlashChangeListener mOnFlashChangeListener;
     private AbsCameraWrapper.OnClickCaptureListener mOnClickCaptureListener;
     private SmartCamOrientationEventListener mOrientationEventListener;
@@ -91,6 +99,34 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                     dispatchError(new SmartCamCaptureError());
                 }
             }
+        }
+
+        @Override
+        public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
+            if (mCamera2Wrapper.canManualFocus() && SmartCamConfig.getInstance().isUseManualFocus()
+                    && mPreviewRequestBuilder != null
+                    && mPreviewRequestBuilder.get(CaptureRequest.CONTROL_AF_TRIGGER) != null) {
+                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, null);
+                doPreView(mWidth, mHeight);
+            }
+            super.onCaptureCompleted(session, request, result);
+        }
+    };
+
+    private CameraCaptureSession.StateCallback mCaptureSessionStateCallback = new CameraCaptureSession.StateCallback() {
+
+        @Override
+        public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
+            if (mCamera == null || cameraCaptureSession == null) {
+                return;
+            }
+            mCaptureSession = cameraCaptureSession;
+            doPreView(mWidth, mHeight);
+        }
+
+        @Override
+        public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
+            dispatchError(new SmartCamPreviewError());
         }
     };
 
@@ -237,7 +273,9 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             if (mOnManualFocusListener != null) {
                 mOnManualFocusListener.requestFocus(event.getX(), event.getY());
-                startPreview(mWidth, mHeight);
+                if (mOnManualFocusListener.getFocusRegion() != null) {
+                    doPreView(mWidth, mHeight);
+                }
             }
         }
         return super.onTouchEvent(event);
@@ -280,28 +318,23 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 
             mImageReader.setOnImageAvailableListener(mOnImageAvailableListener, mCamera2Wrapper.getHandler());
 
-            //api >=28  30 时废弃
-//            SessionConfiguration sessionConfiguration = new SessionConfiguration();
-//            mCamera.createCaptureSession();
-            mCamera.createCaptureSession(Arrays.asList(surface, mImageReader.getSurface()),
-                    new CameraCaptureSession.StateCallback() {
-
-                        @Override
-                        public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
-                            if (mCamera == null || cameraCaptureSession == null) {
-                                return;
-                            }
-
-                            mCaptureSession = cameraCaptureSession;
-
-                            doPreView(width, height);
-                        }
-
-                        @Override
-                        public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
-                            dispatchError(new SmartCamPreviewError());
-                        }
-                    }, mCamera2Wrapper.getHandler());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                if (mWidth == 0 || mHeight == 0) {
+                    return;
+                }
+                List<OutputConfiguration> outputConfigurationList = new ArrayList<>();
+                outputConfigurationList.add(new OutputConfiguration(surface));
+                outputConfigurationList.add(new OutputConfiguration(mImageReader.getSurface()));
+                if (mExecutor == null) {
+                    mExecutor = Executors.newSingleThreadExecutor();
+                }
+                SessionConfiguration sessionConfiguration = new SessionConfiguration(
+                        SessionConfiguration.SESSION_REGULAR, outputConfigurationList, mExecutor, mCaptureSessionStateCallback);
+                mCamera.createCaptureSession(sessionConfiguration);
+            } else {
+                mCamera.createCaptureSession(Arrays.asList(surface, mImageReader.getSurface()),
+                        mCaptureSessionStateCallback, mCamera2Wrapper.getHandler());
+            }
 
         } catch (CameraAccessException e) {
             e.printStackTrace();
@@ -317,25 +350,38 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             return;
         }
         try {
+
+            mCaptureSession.stopRepeating();
+            if (mCamera2Wrapper.canManualFocus()) {
+                //cancel any existing AF trigger (repeated touches, etc.)
+                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, null);
+                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_OFF);
+            }
+            mCaptureSession.capture(mPreviewRequestBuilder.build(), null, null);
+
             //if use manual focus
-            if (SmartCamConfig.getInstance().isUseManualFocus() && mOnManualFocusListener != null
-                    && mOnManualFocusListener.getFocusRegion() != null) {
+            if (mCamera2Wrapper.canManualFocus() && SmartCamConfig.getInstance().isUseManualFocus()
+                    && mOnManualFocusListener != null && mOnManualFocusListener.getFocusRegion() != null) {
                 MeteringRectangle meteringRectangle = new MeteringRectangle(
-                        mOnManualFocusListener.getFocusRegion(), MeteringRectangle.METERING_WEIGHT_MAX);
+                        mOnManualFocusListener.getFocusRegion(), MeteringRectangle.METERING_WEIGHT_MAX - 1);
                 MeteringRectangle[] regions = new MeteringRectangle[]{meteringRectangle};
                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_REGIONS, regions);
-                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_REGIONS, regions);
-
                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_AUTO);
                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_START);
+
             } else {
-                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_REGIONS, null);
-                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_REGIONS, null);
-                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_IDLE);
-                // Auto focus should be continuous for camera preview.
-                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
-                        CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+                if (mOnManualFocusListener.getFocusRegion() == null) {
+                    mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_REGIONS, null);
+                }
+                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, null);
+
+                if (mCamera2Wrapper.canFocusAuto()) {
+                    // Auto focus should be continuous for camera preview.
+                    mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
+                            CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+                }
             }
+
             mPreviewRequestBuilder.set(CaptureRequest.JPEG_QUALITY
                     , (byte) SmartCamConfig.getInstance().getCaptureQuality());
 
@@ -344,7 +390,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             mPreviewRequest = mPreviewRequestBuilder.build();
             mCaptureSession.setRepeatingRequest(mPreviewRequest,
                     mCaptureCallback, mCamera2Wrapper.getHandler());
-            mCaptureSession.capture(mPreviewRequestBuilder.build(), null, null);
+            mCaptureSession.capture(mPreviewRequest, mCaptureCallback, mCamera2Wrapper.getHandler());
 
             mMatrix = SmartCamUtils.getBetterPreviewScaleMatrix(width, height, mPreviewSize);
             if (mMatrix != null) {

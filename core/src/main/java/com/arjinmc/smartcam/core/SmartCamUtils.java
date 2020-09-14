@@ -52,7 +52,7 @@ public final class SmartCamUtils {
     }
 
     /**
-     * 判断是否有闪光灯
+     *  check device if it has flash light
      *
      * @param context
      * @return
@@ -64,6 +64,25 @@ public final class SmartCamUtils {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR
                 && context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * check device if has auto focus feature
+     *
+     * @param context
+     * @return
+     */
+    public static boolean hasAutoFocus(Context context) {
+        if (context == null) {
+            return false;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR
+                && context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS)) {
             return true;
         } else {
             return false;

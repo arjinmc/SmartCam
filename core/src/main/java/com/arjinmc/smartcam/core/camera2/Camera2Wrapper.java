@@ -504,6 +504,42 @@ public class Camera2Wrapper extends AbsCameraWrapper {
         }
     }
 
+    @Override
+    public boolean canFocusAuto() {
+        if (getContext() == null) {
+            return false;
+        }
+        return SmartCamUtils.hasAutoFocus(getContext());
+    }
+
+    @Override
+    public boolean canManualFocus() {
+        if (getContext() == null) {
+            return false;
+        }
+        CameraManager manager = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);
+        try {
+            CameraCharacteristics characteristics = manager.getCameraCharacteristics(mCamera.getId());
+            int[] capabilities = characteristics
+                    .get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES);
+            int manualFocusSensor = CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_MANUAL_SENSOR;
+            if (capabilities == null || capabilities.length <= 0) {
+                return false;
+            }
+
+            for (int capability : capabilities) {
+                if (capability == manualFocusSensor) {
+                    return true;
+                }
+            }
+            return false;
+
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     /**
      * set listener for flash change
      *

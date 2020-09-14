@@ -152,7 +152,7 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     }
 
     @Override
-    public boolean hasFocusAuto() {
+    public boolean canFocusAuto() {
         if (mCamera == null) {
             return false;
         }

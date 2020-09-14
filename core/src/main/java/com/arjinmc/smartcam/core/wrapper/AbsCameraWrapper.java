@@ -239,7 +239,12 @@ public class AbsCameraWrapper implements ICameraWrapper {
 
 
     @Override
-    public boolean hasFocusAuto() {
+    public boolean canFocusAuto() {
+        return false;
+    }
+
+    @Override
+    public boolean canManualFocus() {
         return false;
     }
 

@@ -226,5 +226,17 @@ public interface ICameraWrapper {
      */
     SmartCamCaptureCallback getCaptureCallback();
 
-    boolean hasFocusAuto();
+    /**
+     * check if can use camera auto focus(some devices not support)
+     *
+     * @return
+     */
+    boolean canFocusAuto();
+
+    /**
+     * check if can use camera manual focus(some devices not support)
+     *
+     * @return
+     */
+    boolean canManualFocus();
 }

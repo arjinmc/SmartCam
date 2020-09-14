@@ -41,11 +41,6 @@ public final class SmartCamConfig {
     private int mCaptureQuality = DEFAULT_CAPTURE_QUALITY;
 
     /**
-     * make camera preview as auto-focus
-     */
-    private boolean mIsAutoFocus = true;
-
-    /**
      * make camera use manual focus
      */
     private boolean mUseManualFocus = true;
@@ -134,14 +129,6 @@ public final class SmartCamConfig {
         } else {
             mCaptureQuality = captureQuality;
         }
-    }
-
-    public boolean isIsAutoFocus() {
-        return mIsAutoFocus;
-    }
-
-    public void setAutoFocus(boolean mIsAutoFocus) {
-        this.mIsAutoFocus = mIsAutoFocus;
     }
 
     public boolean isUseManualFocus() {
