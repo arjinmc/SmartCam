@@ -6,6 +6,7 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import com.arjinmc.smartcam.core.SmartCamConfig;
 import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
@@ -78,7 +79,8 @@ public class ImagePathSaver implements Runnable {
             temp = SmartCamUtils.postScaleFroFrontCamera(temp, mOutputOption.getCameraType());
 
             byteArrayOutputStream = new ByteArrayOutputStream();
-            temp.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+            temp.compress(Bitmap.CompressFormat.JPEG, SmartCamConfig.getInstance().getOutputQuality()
+                    , byteArrayOutputStream);
             byte[] data = byteArrayOutputStream.toByteArray();
             output = new FileOutputStream(mOutputOption.getFile());
             output.write(data);

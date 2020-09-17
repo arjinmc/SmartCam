@@ -3,6 +3,7 @@ package com.arjinmc.smartcam.core.file;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.arjinmc.smartcam.core.SmartCamConfig;
 import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
@@ -58,7 +59,8 @@ public class ImageFileSaver implements Runnable {
         temp = SmartCamUtils.rotateBitmap1(temp, mOutputOption.getDegree(), mOutputOption.getCameraType());
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        temp.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        temp.compress(Bitmap.CompressFormat.JPEG, SmartCamConfig.getInstance().getOutputQuality()
+                , byteArrayOutputStream);
         byte[] data = byteArrayOutputStream.toByteArray();
 
         boolean isSave = SmartCamFileUtils.saveFile(data, mOutputOption.getFile());

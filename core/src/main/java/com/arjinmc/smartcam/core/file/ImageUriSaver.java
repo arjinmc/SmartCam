@@ -10,6 +10,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.RequiresApi;
 
+import com.arjinmc.smartcam.core.SmartCamConfig;
 import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
@@ -86,7 +87,7 @@ public class ImageUriSaver implements Runnable {
             temp = SmartCamUtils.postScaleFroFrontCamera(temp, mOutputOption.getCameraType());
 
             byteArrayOutputStream = new ByteArrayOutputStream();
-            temp.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+            temp.compress(Bitmap.CompressFormat.JPEG, SmartCamConfig.getInstance().getOutputQuality(), byteArrayOutputStream);
             byte[] data = byteArrayOutputStream.toByteArray();
 
             ParcelFileDescriptor pfd = mContext.getContentResolver().openFileDescriptor(Uri.parse(mOutputOption.getUri()), "w");

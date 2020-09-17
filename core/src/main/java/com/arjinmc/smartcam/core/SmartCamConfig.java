@@ -17,6 +17,10 @@ public final class SmartCamConfig {
      */
     private final int DEFAULT_CAPTURE_QUALITY = 100;
     /**
+     * Default output quality
+     */
+    private final int DEFAULT_OUTPUT_QUALITY = 100;
+    /**
      * Default auto dismiss manual focus view when camera orientation changed offset
      */
     private final int DEFAULT_MANUAL_FOCUS_DISMISS_DEGREE_OFFSET = 10;
@@ -39,7 +43,10 @@ public final class SmartCamConfig {
      * capture quality
      */
     private int mCaptureQuality = DEFAULT_CAPTURE_QUALITY;
-
+    /**
+     * output image quality
+     */
+    private int mOutputQuality = DEFAULT_OUTPUT_QUALITY;
     /**
      * make camera use manual focus
      */
@@ -128,6 +135,18 @@ public final class SmartCamConfig {
             mCaptureQuality = DEFAULT_CAPTURE_QUALITY;
         } else {
             mCaptureQuality = captureQuality;
+        }
+    }
+
+    public int getOutputQuality() {
+        return mOutputQuality;
+    }
+
+    public void setOutputQuality(int outputQuality) {
+        if (outputQuality < 0 || outputQuality > DEFAULT_OUTPUT_QUALITY) {
+            mOutputQuality = DEFAULT_OUTPUT_QUALITY;
+        } else {
+            mOutputQuality = outputQuality;
         }
     }
 
