@@ -58,6 +58,7 @@ public class SmartCamPreview extends FrameLayout {
         init(smartCam);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void init(SmartCam smartCam) {
 
         if (smartCam == null) {
@@ -87,27 +88,19 @@ public class SmartCamPreview extends FrameLayout {
             }
         };
 
-        if (DebugConfig.useV1) {
-            mCurrentCameraVersion = CameraVersion.VERSION_1;
-            mCamera1Preview = new Camera1Preview(getContext(), (Camera1Wrapper) mSmartCam.getCameraWrapper());
-            addView(mCamera1Preview);
-
-            if (SmartCamConfig.getInstance().isUseManualFocus()) {
-                mCameraManualFocusView = new CameraManualFocusView(getContext());
-                mCameraManualFocusView.setVisibility(View.GONE);
-                addView(mCameraManualFocusView, new FrameLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                mCamera1Preview.setOnManualFocusListener(mOnManualFocusListener);
-            }
-            return;
-        }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mCurrentCameraVersion = CameraVersion.VERSION_2;
-            mCamera2Preview = new Camera2Preview(getContext(), (Camera2Wrapper) mSmartCam.getCameraWrapper());
+        }else{
+            mCurrentCameraVersion = CameraVersion.VERSION_1;
+        }
+        if(DebugConfig.useV1){
+            mCurrentCameraVersion = CameraVersion.VERSION_1;
+        }
+
+        if (mCurrentCameraVersion == CameraVersion.VERSION_2 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mCamera2Preview = new Camera2Preview(getContext(), (Camera2Wrapper) mSmartCam.getCameraWrapper());
             addView(mCamera2Preview);
         } else {
-            mCurrentCameraVersion = CameraVersion.VERSION_1;
             mCamera1Preview = new Camera1Preview(getContext(), (Camera1Wrapper) mSmartCam.getCameraWrapper());
             addView(mCamera1Preview);
         }
@@ -115,10 +108,10 @@ public class SmartCamPreview extends FrameLayout {
         if (SmartCamConfig.getInstance().isUseManualFocus()) {
             mCameraManualFocusView = new CameraManualFocusView(getContext());
             mCameraManualFocusView.setVisibility(View.GONE);
-            addView(mCameraManualFocusView, new FrameLayout.LayoutParams(
+            addView(mCameraManualFocusView, new LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (mCurrentCameraVersion == CameraVersion.VERSION_2) {
                 mCamera2Preview.setOnManualFocusListener(mOnManualFocusListener);
             } else {
                 mCamera1Preview.setOnManualFocusListener(mOnManualFocusListener);
