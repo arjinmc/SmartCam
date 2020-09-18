@@ -58,7 +58,6 @@ public class SmartCamPreview extends FrameLayout {
         init(smartCam);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void init(SmartCam smartCam) {
 
         if (smartCam == null) {
@@ -90,15 +89,15 @@ public class SmartCamPreview extends FrameLayout {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mCurrentCameraVersion = CameraVersion.VERSION_2;
-        }else{
+        } else {
             mCurrentCameraVersion = CameraVersion.VERSION_1;
         }
-        if(DebugConfig.useV1){
+        if (DebugConfig.useV1) {
             mCurrentCameraVersion = CameraVersion.VERSION_1;
         }
 
-        if (mCurrentCameraVersion == CameraVersion.VERSION_2 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mCamera2Preview = new Camera2Preview(getContext(), (Camera2Wrapper) mSmartCam.getCameraWrapper());
+        if (isUsedCamera2()) {
+            mCamera2Preview = new Camera2Preview(getContext(), (Camera2Wrapper) mSmartCam.getCameraWrapper());
             addView(mCamera2Preview);
         } else {
             mCamera1Preview = new Camera1Preview(getContext(), (Camera1Wrapper) mSmartCam.getCameraWrapper());
@@ -111,7 +110,7 @@ public class SmartCamPreview extends FrameLayout {
             addView(mCameraManualFocusView, new LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-            if (mCurrentCameraVersion == CameraVersion.VERSION_2) {
+            if (isUsedCamera2()) {
                 mCamera2Preview.setOnManualFocusListener(mOnManualFocusListener);
             } else {
                 mCamera1Preview.setOnManualFocusListener(mOnManualFocusListener);
@@ -260,6 +259,11 @@ public class SmartCamPreview extends FrameLayout {
         } else if (mCurrentCameraVersion == CameraVersion.VERSION_2 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mCamera2Preview.stopPreview();
         }
+    }
+
+    private boolean isUsedCamera2() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                && mCurrentCameraVersion == CameraVersion.VERSION_2;
     }
 
     public interface OnManualFocusListener {
