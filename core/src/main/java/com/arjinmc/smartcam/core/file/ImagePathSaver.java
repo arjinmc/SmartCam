@@ -39,7 +39,6 @@ public class ImagePathSaver implements Runnable {
     @Override
     public void run() {
 
-//        long startTime = System.currentTimeMillis();
         if (mOutputOption == null) {
             return;
         }
@@ -114,7 +113,6 @@ public class ImagePathSaver implements Runnable {
                     e.printStackTrace();
                 }
             }
-//            SmartCamLog.e("save time", System.currentTimeMillis() - startTime + "");
         }
     }
 
