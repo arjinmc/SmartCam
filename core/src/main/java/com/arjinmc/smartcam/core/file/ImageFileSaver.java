@@ -63,6 +63,10 @@ public class ImageFileSaver implements Runnable {
                 , byteArrayOutputStream);
         byte[] data = byteArrayOutputStream.toByteArray();
 
+        if (mSmartCamCaptureCallback != null) {
+            mSmartCamCaptureCallback.onSuccessData(data);
+        }
+
         boolean isSave = SmartCamFileUtils.saveFile(data, mOutputOption.getFile());
         try {
             byteArrayOutputStream.close();

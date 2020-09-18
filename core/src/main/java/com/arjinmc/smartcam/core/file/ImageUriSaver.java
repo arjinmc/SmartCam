@@ -90,6 +90,10 @@ public class ImageUriSaver implements Runnable {
             temp.compress(Bitmap.CompressFormat.JPEG, SmartCamConfig.getInstance().getOutputQuality(), byteArrayOutputStream);
             byte[] data = byteArrayOutputStream.toByteArray();
 
+            if (mSmartCamCaptureCallback != null) {
+                mSmartCamCaptureCallback.onSuccessData(data);
+            }
+
             ParcelFileDescriptor pfd = mContext.getContentResolver().openFileDescriptor(Uri.parse(mOutputOption.getUri()), "w");
             output = new FileOutputStream(pfd.getFileDescriptor());
             output.write(data);

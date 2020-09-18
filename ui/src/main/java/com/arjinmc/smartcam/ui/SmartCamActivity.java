@@ -118,6 +118,11 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
             }
 
             @Override
+            public void onSuccessData(byte[] data) {
+                SmartCamLog.i(TAG, "CaptureCallback onSuccessData: length:" + data.length);
+            }
+
+            @Override
             public void onError(SmartCamError smartCamError) {
                 SmartCamLog.i(TAG, "CaptureCallback oError:" + smartCamError.toString());
             }

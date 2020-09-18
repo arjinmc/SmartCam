@@ -82,6 +82,11 @@ public class ImagePathSaver implements Runnable {
             temp.compress(Bitmap.CompressFormat.JPEG, SmartCamConfig.getInstance().getOutputQuality()
                     , byteArrayOutputStream);
             byte[] data = byteArrayOutputStream.toByteArray();
+
+            if (mSmartCamCaptureCallback != null) {
+                mSmartCamCaptureCallback.onSuccessData(data);
+            }
+
             output = new FileOutputStream(mOutputOption.getFile());
             output.write(data);
 

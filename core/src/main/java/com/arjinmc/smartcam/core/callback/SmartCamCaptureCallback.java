@@ -25,5 +25,11 @@ public interface SmartCamCaptureCallback {
      */
     void onSuccessUri(String uri);
 
+    /**
+     * return image data
+     * @param data
+     */
+    void onSuccessData(byte[] data);
+
     void onError(SmartCamError smartCamError);
 }

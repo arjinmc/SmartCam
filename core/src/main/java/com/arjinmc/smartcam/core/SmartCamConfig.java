@@ -71,7 +71,6 @@ public final class SmartCamConfig {
         return mSmartCamConfig;
     }
 
-
     /**
      * get dir name for saving files
      *
