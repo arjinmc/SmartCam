@@ -541,6 +541,36 @@ public class Camera2Wrapper extends AbsCameraWrapper {
     }
 
     /**
+     * check if use camera2 will better than camera1
+     * @return true means better
+     */
+    public boolean isUseCamera2Better() {
+        try {
+            CameraManager cameraManager = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);
+            final String[] ids = cameraManager.getCameraIdList();
+            if (ids.length == 0) {
+                throw new RuntimeException("No camera available.");
+            }
+            // Not found
+            String cameraId = ids[0];
+            CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(cameraId);
+            Integer level = characteristics.get(
+                    CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL);
+            if (level == null ||
+                    level == CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY) {
+                return false;
+            }
+            Integer internal = characteristics.get(CameraCharacteristics.LENS_FACING);
+            if (internal == null) {
+                throw new NullPointerException("Unexpected state: LENS_FACING null");
+            }
+            return true;
+        } catch (CameraAccessException e) {
+            throw new RuntimeException("Failed to get a list of camera devices", e);
+        }
+    }
+
+    /**
      * set listener for flash change
      *
      * @param onFlashChangeListener

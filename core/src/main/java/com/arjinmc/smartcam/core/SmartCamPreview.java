@@ -1,7 +1,9 @@
 package com.arjinmc.smartcam.core;
 
+import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -34,11 +36,13 @@ public class SmartCamPreview extends FrameLayout {
     private SmartCam mSmartCam;
     private Camera1Preview mCamera1Preview;
     private Camera2Preview mCamera2Preview;
+    private View mCaptureAnimationView;
     private CameraManualFocusView mCameraManualFocusView;
     private OnManualFocusListener mOnManualFocusListener;
     private OnCaptureAnimationLister mOnCaptureAnimationLister;
     private float mTouchX, mTouchY;
     private ValueAnimator mCaptureAnimation;
+    private boolean isPlayingCaptureAnimation = false;
 
     public SmartCamPreview(@NonNull Context context) {
         super(context);
@@ -102,14 +106,7 @@ public class SmartCamPreview extends FrameLayout {
             }
         };
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mCurrentCameraVersion = CameraVersion.VERSION_2;
-        } else {
-            mCurrentCameraVersion = CameraVersion.VERSION_1;
-        }
-        if (DebugConfig.useV1) {
-            mCurrentCameraVersion = CameraVersion.VERSION_1;
-        }
+        mCurrentCameraVersion = mSmartCam.getCameraVersion();
 
         if (isUsedCamera2()) {
             mCamera2Preview = new Camera2Preview(getContext(), (Camera2Wrapper) mSmartCam.getCameraWrapper());
@@ -142,7 +139,7 @@ public class SmartCamPreview extends FrameLayout {
      * @param height
      */
     public void setFixedSize(int width, int height) {
-        if (mCurrentCameraVersion == CameraVersion.VERSION_1) {
+        if (isUsedCamera1()) {
             mCamera1Preview.getHolder().setFixedSize(width, height);
         }
     }
@@ -178,6 +175,7 @@ public class SmartCamPreview extends FrameLayout {
                         || x + cameraManualFocusParams.getRadius() > getMeasuredWidth()
                         || y - cameraManualFocusParams.getRadius() < 0
                         || y + cameraManualFocusParams.getRadius() > getMeasuredHeight()) {
+
                     canShow = false;
                 }
             } else if (cameraManualFocusParams.getShape() == CameraManualFocusParams.CAMERA_MANUAL_FOCUS_SHAPE_SQUARE) {
@@ -235,6 +233,9 @@ public class SmartCamPreview extends FrameLayout {
 
     private void playCaptureAnimation() {
 
+        if (isPlayingCaptureAnimation) {
+            return;
+        }
         if (mCaptureAnimation == null) {
             mCaptureAnimation = ValueAnimator.ofInt(0, 100).setDuration(
                     SmartCamConfig.getInstance().getCaptureAnimationDuration());
@@ -243,18 +244,47 @@ public class SmartCamPreview extends FrameLayout {
                 public void onAnimationUpdate(ValueAnimator animation) {
                     int value = (int) animation.getAnimatedValue();
                     //set camera preview alpha
-                    getChildAt(0).setAlpha(value / 100f);
+                    mCaptureAnimationView.setAlpha(value / 100f);
                 }
             });
+            mCaptureAnimation.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    removeView(mCaptureAnimationView);
+                    isPlayingCaptureAnimation = false;
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    removeView(mCaptureAnimationView);
+                    isPlayingCaptureAnimation = false;
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+
+            mCaptureAnimationView = new View(getContext());
+            mCaptureAnimationView.setLayoutParams(new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            mCaptureAnimationView.setBackgroundColor(Color.BLACK);
         }
         mCaptureAnimation.start();
+        addView(mCaptureAnimationView);
+        isPlayingCaptureAnimation = true;
+
     }
 
     private void stopCaptureAnimation() {
 
         mCaptureAnimation.cancel();
-        //set camera preview alpha
-        getChildAt(0).setAlpha(1);
     }
 
     /**
@@ -275,9 +305,9 @@ public class SmartCamPreview extends FrameLayout {
     }
 
     public void pause() {
-        if (mCurrentCameraVersion == CameraVersion.VERSION_1) {
+        if (isUsedCamera1()) {
             mCamera1Preview.destroy();
-        } else if (mCurrentCameraVersion == CameraVersion.VERSION_2 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        } else if (isUsedCamera2()) {
             mCamera2Preview.destroy();
         }
     }
@@ -291,24 +321,27 @@ public class SmartCamPreview extends FrameLayout {
     }
 
     public void startPreview() {
-        if (mCurrentCameraVersion == CameraVersion.VERSION_1) {
+        if (isUsedCamera1()) {
             mCamera1Preview.startPreview();
-        } else if (mCurrentCameraVersion == CameraVersion.VERSION_2 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        } else if (isUsedCamera2()) {
             mCamera2Preview.startPreview();
         }
     }
 
     public void stopPreview() {
-        if (mCurrentCameraVersion == CameraVersion.VERSION_1) {
+        if (isUsedCamera1()) {
             mCamera1Preview.stopPreview();
-        } else if (mCurrentCameraVersion == CameraVersion.VERSION_2 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        } else if (isUsedCamera2()) {
             mCamera2Preview.stopPreview();
         }
     }
 
+    private boolean isUsedCamera1() {
+        return mCurrentCameraVersion == CameraVersion.VERSION_1;
+    }
+
     private boolean isUsedCamera2() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-                && mCurrentCameraVersion == CameraVersion.VERSION_2;
+        return mCurrentCameraVersion == CameraVersion.VERSION_2 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
     public interface OnManualFocusListener {

@@ -9,6 +9,7 @@ import com.arjinmc.smartcam.core.callback.SmartCamStateCallback;
 import com.arjinmc.smartcam.core.camera1.Camera1Wrapper;
 import com.arjinmc.smartcam.core.camera2.Camera2Wrapper;
 import com.arjinmc.smartcam.core.model.CameraSize;
+import com.arjinmc.smartcam.core.model.CameraVersion;
 import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
 
 import java.io.File;
@@ -24,18 +25,26 @@ public class SmartCam extends AbsCameraWrapper {
 
     private AbsCameraWrapper mCameraWrapper;
 
+    private int mCameraVersion = CameraVersion.VERSION_2;
+
     public SmartCam(Context context) {
         setContext(context);
 
         if (DebugConfig.useV1) {
             mCameraWrapper = new Camera1Wrapper();
+            mCameraVersion = CameraVersion.VERSION_1;
             return;
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mCameraWrapper = new Camera2Wrapper(getContext());
+            if (!((Camera2Wrapper) mCameraWrapper).isUseCamera2Better()) {
+                mCameraWrapper = new Camera1Wrapper();
+                mCameraVersion = CameraVersion.VERSION_1;
+            }
         } else {
             mCameraWrapper = new Camera1Wrapper();
+            mCameraVersion = CameraVersion.VERSION_1;
         }
     }
 
@@ -177,5 +186,9 @@ public class SmartCam extends AbsCameraWrapper {
     @Override
     public void logFeatures() {
         mCameraWrapper.logFeatures();
+    }
+
+    public int getCameraVersion() {
+        return mCameraVersion;
     }
 }
