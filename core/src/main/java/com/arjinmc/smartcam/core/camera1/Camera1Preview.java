@@ -43,6 +43,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     private AbsCameraWrapper.OnClickCaptureListener mOnClickCaptureListener;
     private SmartCamOrientationEventListener mOrientationEventListener;
     private SmartCamPreview.OnManualFocusListener mOnManualFocusListener;
+    private SmartCamPreview.OnCaptureAnimationLister mOnCaptureAnimationListener;
 
     private int mCameraDegree;
     private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
@@ -77,6 +78,9 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                     return;
                 }
                 try {
+                    if (mOnCaptureAnimationListener != null) {
+                        mOnCaptureAnimationListener.onPlay();
+                    }
                     mCamera.takePicture(new Camera.ShutterCallback() {
                         @Override
                         public void onShutter() {
@@ -95,6 +99,9 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
+                    if (mOnCaptureAnimationListener != null) {
+                        mOnCaptureAnimationListener.onStop();
+                    }
                     dispatchError(new SmartCamCaptureError());
                 }
             }
@@ -257,6 +264,11 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     @Override
     public void setOnManualFocusListener(SmartCamPreview.OnManualFocusListener onManualFocusListener) {
         mOnManualFocusListener = onManualFocusListener;
+    }
+
+    @Override
+    public void setOnCaptureAnimationListener(SmartCamPreview.OnCaptureAnimationLister onCaptureAnimationListener) {
+        mOnCaptureAnimationListener = onCaptureAnimationListener;
     }
 
     private void dispatchError(SmartCamError smartCamError) {

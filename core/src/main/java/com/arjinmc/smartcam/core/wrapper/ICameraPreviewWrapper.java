@@ -38,4 +38,10 @@ public interface ICameraPreviewWrapper {
      */
     void setOnManualFocusListener(SmartCamPreview.OnManualFocusListener onManualFocusListener);
 
+    /**
+     * callback for capture to play animation
+     *
+     * @param onCaptureAnimationListener
+     */
+    void setOnCaptureAnimationListener(SmartCamPreview.OnCaptureAnimationLister onCaptureAnimationListener);
 }

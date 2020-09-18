@@ -21,6 +21,10 @@ public final class SmartCamConfig {
      */
     private final int DEFAULT_OUTPUT_QUALITY = 100;
     /**
+     * Default capture animation duration(unit:ms)
+     */
+    private final int DEFAULT_CAPTURE_ANIMATION_DURATION = 600;
+    /**
      * Default auto dismiss manual focus view when camera orientation changed offset
      */
     private final int DEFAULT_MANUAL_FOCUS_DISMISS_DEGREE_OFFSET = 10;
@@ -47,6 +51,10 @@ public final class SmartCamConfig {
      * output image quality
      */
     private int mOutputQuality = DEFAULT_OUTPUT_QUALITY;
+    /**
+     * capture animation duration
+     */
+    private int mCaptureAnimationDuration = DEFAULT_CAPTURE_ANIMATION_DURATION;
     /**
      * make camera use manual focus
      */
@@ -147,6 +155,17 @@ public final class SmartCamConfig {
         } else {
             mOutputQuality = outputQuality;
         }
+    }
+
+    public int getCaptureAnimationDuration() {
+        return mCaptureAnimationDuration;
+    }
+
+    public void setmCaptureAnimationDuration(int captureAnimationDuration) {
+        if (captureAnimationDuration < 100) {
+            captureAnimationDuration = DEFAULT_CAPTURE_ANIMATION_DURATION;
+        }
+        this.mCaptureAnimationDuration = captureAnimationDuration;
     }
 
     public boolean isUseManualFocus() {

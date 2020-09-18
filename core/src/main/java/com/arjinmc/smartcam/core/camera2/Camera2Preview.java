@@ -8,7 +8,6 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
-import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
@@ -21,7 +20,6 @@ import android.media.ImageReader;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.TextureView;
@@ -75,6 +73,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
     private AbsCameraWrapper.OnClickCaptureListener mOnClickCaptureListener;
     private SmartCamOrientationEventListener mOrientationEventListener;
     private SmartCamPreview.OnManualFocusListener mOnManualFocusListener;
+    private SmartCamPreview.OnCaptureAnimationLister mOnCaptureAnimationListener;
     private int mWidth, mHeight;
     private CameraSize mPreviewSize;
     private int mCameraSaveType;
@@ -428,24 +427,37 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, SmartCamUtils.getShouldRotateDegree(
                     mCamera2Wrapper.getCurrentCameraType(), mDegree));
 
-            Log.e("my1", SmartCamUtils.getShouldRotateDegree(
-                    mCamera2Wrapper.getCurrentCameraType(), mDegree) + "");
-            CameraManager manager = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);
-            CameraCharacteristics characteristics = manager.getCameraCharacteristics(mCamera2Wrapper.getCurrentCameraId());
-            Log.e("my2", getJpegOrientation(characteristics, SmartCamUtils.getWindowDisplayRotation(getContext())) + "");
+//            Log.e("my1", SmartCamUtils.getShouldRotateDegree(
+//                    mCamera2Wrapper.getCurrentCameraType(), mDegree) + "");
+//            CameraManager manager = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);
+//            CameraCharacteristics characteristics = manager.getCameraCharacteristics(mCamera2Wrapper.getCurrentCameraId());
+//            Log.e("my2", getJpegOrientation(characteristics, SmartCamUtils.getWindowDisplayRotation(getContext())) + "");
             captureRequestBuilder.addTarget(mImageReader.getSurface());
             mCaptureSession.stopRepeating();
             mCaptureSession.abortCaptures();
             mCaptureSession.capture(captureRequestBuilder.build(), null, null);
+
+            if (mOnCaptureAnimationListener != null) {
+                mOnCaptureAnimationListener.onPlay();
+            }
         } catch (CameraAccessException e) {
             e.printStackTrace();
+            stopCaptureAnimation();
             dispatchError(new SmartCamOpenError());
         } catch (IllegalStateException e) {
             e.printStackTrace();
+            stopCaptureAnimation();
             dispatchError(new SmartCamOpenError());
         } catch (Exception e) {
             e.printStackTrace();
+            stopCaptureAnimation();
             dispatchError(new SmartCamUnknownError());
+        }
+    }
+
+    private void stopCaptureAnimation() {
+        if (mOnCaptureAnimationListener != null) {
+            mOnCaptureAnimationListener.onStop();
         }
     }
 
@@ -518,6 +530,11 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
     @Override
     public void setOnManualFocusListener(SmartCamPreview.OnManualFocusListener onManualFocusListener) {
         mOnManualFocusListener = onManualFocusListener;
+    }
+
+    @Override
+    public void setOnCaptureAnimationListener(SmartCamPreview.OnCaptureAnimationLister onCaptureAnimationListener) {
+        mOnCaptureAnimationListener = onCaptureAnimationListener;
     }
 
     private void dispatchError(SmartCamError smartCamError) {

@@ -1,5 +1,6 @@
 package com.arjinmc.smartcam.core;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
@@ -35,7 +36,9 @@ public class SmartCamPreview extends FrameLayout {
     private Camera2Preview mCamera2Preview;
     private CameraManualFocusView mCameraManualFocusView;
     private OnManualFocusListener mOnManualFocusListener;
+    private OnCaptureAnimationLister mOnCaptureAnimationLister;
     private float mTouchX, mTouchY;
+    private ValueAnimator mCaptureAnimation;
 
     public SmartCamPreview(@NonNull Context context) {
         super(context);
@@ -87,6 +90,18 @@ public class SmartCamPreview extends FrameLayout {
             }
         };
 
+        mOnCaptureAnimationLister = new OnCaptureAnimationLister() {
+            @Override
+            public void onPlay() {
+                playCaptureAnimation();
+            }
+
+            @Override
+            public void onStop() {
+                stopCaptureAnimation();
+            }
+        };
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mCurrentCameraVersion = CameraVersion.VERSION_2;
         } else {
@@ -98,9 +113,11 @@ public class SmartCamPreview extends FrameLayout {
 
         if (isUsedCamera2()) {
             mCamera2Preview = new Camera2Preview(getContext(), (Camera2Wrapper) mSmartCam.getCameraWrapper());
+            mCamera2Preview.setOnCaptureAnimationListener(mOnCaptureAnimationLister);
             addView(mCamera2Preview);
         } else {
             mCamera1Preview = new Camera1Preview(getContext(), (Camera1Wrapper) mSmartCam.getCameraWrapper());
+            mCamera1Preview.setOnCaptureAnimationListener(mOnCaptureAnimationLister);
             addView(mCamera1Preview);
         }
 
@@ -216,6 +233,30 @@ public class SmartCamPreview extends FrameLayout {
         return null;
     }
 
+    private void playCaptureAnimation() {
+
+        if (mCaptureAnimation == null) {
+            mCaptureAnimation = ValueAnimator.ofInt(0, 100).setDuration(
+                    SmartCamConfig.getInstance().getCaptureAnimationDuration());
+            mCaptureAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    int value = (int) animation.getAnimatedValue();
+                    //set camera preview alpha
+                    getChildAt(0).setAlpha(value / 100f);
+                }
+            });
+        }
+        mCaptureAnimation.start();
+    }
+
+    private void stopCaptureAnimation() {
+
+        mCaptureAnimation.cancel();
+        //set camera preview alpha
+        getChildAt(0).setAlpha(1);
+    }
+
     /**
      * keep screen on
      *
@@ -242,6 +283,10 @@ public class SmartCamPreview extends FrameLayout {
     }
 
     public void release() {
+        if (mCaptureAnimation != null) {
+            mCaptureAnimation.cancel();
+            mCaptureAnimation = null;
+        }
         pause();
     }
 
@@ -272,6 +317,16 @@ public class SmartCamPreview extends FrameLayout {
         void cancelFocus();
 
         Rect getFocusRegion();
+    }
+
+    /**
+     * animation listener
+     */
+    public interface OnCaptureAnimationLister {
+
+        void onPlay();
+
+        void onStop();
     }
 }
 
