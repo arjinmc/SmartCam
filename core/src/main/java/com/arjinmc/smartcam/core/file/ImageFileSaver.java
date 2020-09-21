@@ -2,11 +2,13 @@ package com.arjinmc.smartcam.core.file;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import com.arjinmc.smartcam.core.SmartCamConfig;
 import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
+import com.arjinmc.smartcam.core.model.CameraVersion;
 import com.arjinmc.smartcam.core.model.SmartCamCaptureError;
 import com.arjinmc.smartcam.core.model.SmartCamOutputOption1;
 
@@ -56,7 +58,10 @@ public class ImageFileSaver implements Runnable {
         Bitmap temp = BitmapFactory.decodeByteArray(mOutputOption.getImageData()
                 , 0, mOutputOption.getImageData().length);
         temp = SmartCamUtils.cropBitmap1(temp, mOutputOption.getPreviewWidth(), mOutputOption.getPreviewHeight());
-        temp = SmartCamUtils.rotateBitmap1(temp, mOutputOption.getDegree(), mOutputOption.getCameraType());
+        long time = System.currentTimeMillis();
+        temp = SmartCamUtils.rotateBitmap(CameraVersion.VERSION_1, temp, mOutputOption.getDegree(), mOutputOption.getCameraType());
+        temp = SmartCamUtils.postScaleFroFrontCamera(temp, mOutputOption.getCameraType());
+        Log.e("time", System.currentTimeMillis() - time + "ms");
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         temp.compress(Bitmap.CompressFormat.JPEG, SmartCamConfig.getInstance().getOutputQuality()
