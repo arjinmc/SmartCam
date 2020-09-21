@@ -1,5 +1,6 @@
 package com.arjinmc.smartcam.core.model;
 
+import android.hardware.Camera;
 import android.text.TextUtils;
 
 import java.io.Serializable;
@@ -43,6 +44,25 @@ public final class CameraFlashMode implements Serializable {
                 return MODE_TORCH;
             default:
                 return MODE_UNKNOWN;
+        }
+    }
+
+    /**
+     * get camera1 flash mode
+     *
+     * @param mode
+     * @return
+     */
+    public static final String getModeForCamera1(int mode) {
+        switch (mode) {
+            case MODE_AUTO:
+                return Camera.Parameters.FLASH_MODE_AUTO;
+            case MODE_ON:
+                return Camera.Parameters.FLASH_MODE_ON;
+            case MODE_TORCH:
+                return Camera.Parameters.FLASH_MODE_TORCH;
+            default:
+                return Camera.Parameters.FLASH_MODE_OFF;
         }
     }
 

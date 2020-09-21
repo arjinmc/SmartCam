@@ -215,6 +215,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                 parameters.setPictureSize(outputSize.getWidth(), outputSize.getHeight());
                 parameters.setJpegQuality(SmartCamConfig.getInstance().getCaptureQuality());
                 parameters.setPictureFormat(ImageFormat.JPEG);
+                parameters = mCameraWrapper.resumeFlashMode(parameters);
                 mCamera.setParameters(parameters);
                 mCamera.startPreview();
             }

@@ -26,6 +26,7 @@ public class Camera1Wrapper extends AbsCameraWrapper {
 
     private Camera mCamera;
     private CameraLock mCameraLock;
+    private int mFlashMode = CameraFlashMode.MODE_OFF;
 
     public Camera1Wrapper() {
         mCameraLock = new CameraLock();
@@ -332,6 +333,17 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     }
 
     /**
+     * reumse camera flash mode when start preview
+     */
+    public Camera.Parameters resumeFlashMode(Camera.Parameters parameters) {
+        if (parameters == null) {
+            return parameters;
+        }
+        parameters.setFlashMode(CameraFlashMode.getModeForCamera1(mFlashMode));
+        return parameters;
+    }
+
+    /**
      * switch camera1 flash mode
      *
      * @param mode
@@ -346,6 +358,7 @@ public class Camera1Wrapper extends AbsCameraWrapper {
             parameters.setFlashMode(mode);
             mCamera.setParameters(parameters);
             mCamera.startPreview();
+            mFlashMode = CameraFlashMode.getMode(mode);
         } catch (Exception e) {
             e.printStackTrace();
         }
