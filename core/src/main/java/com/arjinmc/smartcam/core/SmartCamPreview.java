@@ -90,7 +90,10 @@ public class SmartCamPreview extends FrameLayout {
 
             @Override
             public Rect getFocusRegion() {
-                return getFocusRect();
+                if (isUsedCamera2()) {
+                    return getFocusRectForCamera2();
+                }
+                return getFocusRectForCamera1();
             }
         };
 
@@ -207,7 +210,7 @@ public class SmartCamPreview extends FrameLayout {
         }
     }
 
-    public Rect getFocusRect() {
+    public Rect getFocusRectForCamera2() {
         if (mCameraManualFocusView == null
                 || mCameraManualFocusView.getVisibility() != View.VISIBLE
                 || mCameraManualFocusView.getCameraManualFocusParams() == null) {
@@ -220,16 +223,63 @@ public class SmartCamPreview extends FrameLayout {
             rect.top = (int) (mTouchY - cameraManualFocusParams.getRadius());
             rect.right = (int) (mTouchX + cameraManualFocusParams.getRadius());
             rect.bottom = (int) (mTouchY + cameraManualFocusParams.getRadius());
+//            SmartCamLog.e("touch rect", rect.left + "," + rect.top + "," + rect.right + "," + rect.bottom);
             return rect;
         } else if (cameraManualFocusParams.getShape() == CameraManualFocusParams.CAMERA_MANUAL_FOCUS_SHAPE_SQUARE) {
             rect.left = (int) (mTouchX - cameraManualFocusParams.getSize().getWidth() / 2);
             rect.top = (int) (mTouchY - cameraManualFocusParams.getSize().getHeight() / 2);
             rect.right = (int) (mTouchX + cameraManualFocusParams.getSize().getWidth() / 2);
             rect.bottom = (int) (mTouchY + cameraManualFocusParams.getSize().getHeight() / 2);
+//            SmartCamLog.e("touch rect",rect.left+","+rect.top+","+rect.right+","+rect.bottom);
             return rect;
         }
         return null;
     }
+
+    private Rect getFocusRectForCamera1() {
+
+        if (mCameraManualFocusView == null) {
+            return null;
+        }
+        CameraManualFocusParams cameraManualFocusParams = mCameraManualFocusView.getCameraManualFocusParams();
+        int areaWidth = 0, areaHeight = 0;
+        if (cameraManualFocusParams.getShape() == CameraManualFocusParams.CAMERA_MANUAL_FOCUS_SHAPE_CIRCLE) {
+            areaWidth = (int) cameraManualFocusParams.getRadius();
+            areaHeight = areaWidth;
+        } else if (cameraManualFocusParams.getShape() == CameraManualFocusParams.CAMERA_MANUAL_FOCUS_SHAPE_SQUARE) {
+            areaWidth = cameraManualFocusParams.getSize().getWidth();
+            areaHeight = cameraManualFocusParams.getSize().getHeight();
+        }
+        if (areaWidth != 0 && areaHeight != 0) {
+            int left = coverAreaCoordinateForCamera1(mTouchY / getMeasuredHeight(), areaWidth);
+            int top = coverAreaCoordinateForCamera1((getMeasuredWidth() - mTouchX) / getMeasuredWidth(), areaHeight);
+            return new Rect(left, top, left + areaWidth, top + areaHeight);
+        }
+        return null;
+    }
+
+    /**
+     * cover area coordinate for camera1
+     *
+     * @param point
+     * @param focusAreaSize
+     * @return
+     */
+    private static int coverAreaCoordinateForCamera1(float point, int focusAreaSize) {
+        int result;
+        int touchCoordinateInCameraReper = Float.valueOf(point * 2000 - 1000).intValue();
+        if (Math.abs(touchCoordinateInCameraReper) + focusAreaSize > 1000) {
+            if (touchCoordinateInCameraReper > 0) {
+                result = 1000 - focusAreaSize;
+            } else {
+                result = -1000 + focusAreaSize;
+            }
+        } else {
+            result = touchCoordinateInCameraReper - focusAreaSize / 2;
+        }
+        return result;
+    }
+
 
     private void playCaptureAnimation() {
 
