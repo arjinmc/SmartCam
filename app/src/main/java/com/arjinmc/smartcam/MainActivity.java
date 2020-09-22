@@ -18,7 +18,7 @@ import com.arjinmc.expandrecyclerview.adapter.RecyclerViewAdapter;
 import com.arjinmc.expandrecyclerview.adapter.RecyclerViewSingleTypeProcessor;
 import com.arjinmc.expandrecyclerview.adapter.RecyclerViewViewHolder;
 import com.arjinmc.expandrecyclerview.style.RecyclerViewStyleHelper;
-import com.arjinmc.recyclerviewdecoration.RecyclerViewItemDecoration;
+import com.arjinmc.recyclerviewdecoration.RecyclerViewLinearItemDecoration;
 import com.arjinmc.smartcam.core.SmartCamConfig;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.file.SmartCamFileUtils;
@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerViewAdapter mAdapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         SmartCamConfig.getInstance().setDebugLog(true);
 
         mRecyclerView = findViewById(R.id.rv_list);
-        mRecyclerView.addItemDecoration(new RecyclerViewItemDecoration.Builder(this)
+        mRecyclerView.addItemDecoration(new RecyclerViewLinearItemDecoration.Builder(this)
                 .color(ContextCompat.getColor(this, android.R.color.darker_gray))
                 .thickness(2).create());
         RecyclerViewStyleHelper.toLinearLayout(mRecyclerView, RecyclerView.VERTICAL);

@@ -558,6 +558,24 @@ public final class SmartCamUtils {
     }
 
     /**
+     * deal bitmap after capture
+     *
+     * @param captureResult
+     * @return
+     */
+    public static byte[] dealAfterCapture(SmartCamCaptureResult captureResult) {
+        if (captureResult == null) {
+            return null;
+        }
+        Bitmap temp = BitmapFactory.decodeByteArray(captureResult.getData(), 0, captureResult.getData().length);
+        temp = dealAfterCapture(temp, captureResult);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        temp.compress(Bitmap.CompressFormat.JPEG, SmartCamConfig.getInstance().getOutputQuality()
+                , byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    /**
      * deal after capture and save jpeg file
      *
      * @param captureResult
