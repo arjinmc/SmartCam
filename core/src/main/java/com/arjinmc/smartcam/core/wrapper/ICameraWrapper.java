@@ -6,7 +6,6 @@ import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
 import com.arjinmc.smartcam.core.callback.SmartCamStateCallback;
 import com.arjinmc.smartcam.core.model.CameraSize;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -64,17 +63,7 @@ public interface ICameraWrapper {
     /**
      * capture for photo
      */
-    void capture(File file);
-
-    /**
-     * capture for photo
-     */
-    void capturePath(String filePath);
-
-    /**
-     * capture for photo
-     */
-    void captureUri(String fileUri);
+    void capture();
 
     /**
      * close

@@ -23,7 +23,7 @@ public final class SmartCamConfig {
     /**
      * Default capture animation duration(unit:ms)
      */
-    private final int DEFAULT_CAPTURE_ANIMATION_DURATION = 600;
+    private final int DEFAULT_CAPTURE_ANIMATION_DURATION = 280;
     /**
      * Default auto dismiss manual focus view when camera orientation changed offset
      */

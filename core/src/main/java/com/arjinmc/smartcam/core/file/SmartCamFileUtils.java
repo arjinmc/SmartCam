@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
 
 import androidx.annotation.RequiresApi;
@@ -64,6 +65,37 @@ public class SmartCamFileUtils {
             e.printStackTrace();
         }
         return false;
+    }
+
+    /**
+     * save file with uri
+     *
+     * @param context
+     * @param data
+     * @param uri
+     * @return
+     */
+    public static boolean saveFile(Context context, byte[] data, String uri) {
+        if (context == null) {
+            return false;
+        }
+        boolean isSaved = false;
+        FileOutputStream output = null;
+        try {
+            ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(Uri.parse(uri), "w");
+            output = new FileOutputStream(pfd.getFileDescriptor());
+            output.write(data);
+            isSaved = true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                output.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return isSaved;
+        }
     }
 
     /**

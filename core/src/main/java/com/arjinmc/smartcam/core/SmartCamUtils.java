@@ -3,6 +3,7 @@ package com.arjinmc.smartcam.core;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.hardware.Camera;
@@ -15,9 +16,12 @@ import android.view.WindowManager;
 
 import androidx.annotation.RequiresApi;
 
+import com.arjinmc.smartcam.core.file.SmartCamFileUtils;
 import com.arjinmc.smartcam.core.model.CameraSize;
 import com.arjinmc.smartcam.core.model.CameraType;
+import com.arjinmc.smartcam.core.model.SmartCamCaptureResult;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -258,6 +262,127 @@ public final class SmartCamUtils {
     }
 
     /**
+     * check if should reverse photo for capture
+     *
+     * @param cameraType
+     * @return
+     */
+    public static boolean isShouldReverse(int cameraType) {
+        if (cameraType == CameraType.CAMERA_FRONT) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * rotate the bitmap to the right direction (camera1)
+     *
+     * @param degree
+     * @return
+     */
+    public static int getShouldRotateOrientationForCamera1(int degree, @CameraType.Type int type) {
+
+        int resultDegree = 0;
+
+        if (CameraType.CAMERA_BACK == type) {
+
+            if (degree >= 0 && degree <= 44) {
+                resultDegree = 90;
+            }
+
+            if (degree >= 315 && degree <= 360) {
+                resultDegree = 90;
+            }
+
+            if (degree >= 45 && degree <= 135) {
+                resultDegree = 180;
+            }
+            if (degree >= 226 && degree <= 314) {
+                resultDegree = 0;
+            }
+            if (degree >= 136 && degree <= 225) {
+                resultDegree = -90;
+            }
+        } else {
+
+            if (degree >= 0 && degree <= 44) {
+                resultDegree = -90;
+            }
+
+            if (degree >= 315 && degree <= 360) {
+                resultDegree = -90;
+            }
+
+            if (degree >= 45 && degree <= 135) {
+                resultDegree = 180;
+            }
+            if (degree >= 226 && degree <= 314) {
+                resultDegree = 0;
+            }
+            if (degree >= 136 && degree <= 225) {
+                resultDegree = 90;
+            }
+        }
+        return resultDegree;
+    }
+
+
+    /**
+     * rotate the bitmap to the right direction (camera2)
+     *
+     * @param degree
+     * @return
+     */
+    public static int getShouldRotateOrientationForCamera2(int degree, @CameraType.Type int type) {
+
+        int resultDegree = 0;
+
+        if (CameraType.CAMERA_BACK == type) {
+
+            if (degree >= 0 && degree <= 44) {
+                resultDegree = 0;
+            }
+
+            if (degree >= 315 && degree <= 360) {
+                resultDegree = 0;
+            }
+
+            if (degree >= 45 && degree <= 135) {
+                resultDegree = 90;
+            }
+            if (degree >= 226 && degree <= 314) {
+                resultDegree = -90;
+            }
+            if (degree >= 136 && degree <= 225) {
+                resultDegree = 180;
+            }
+
+        } else {
+
+            if (degree >= 0 && degree <= 44) {
+                resultDegree = 180;
+            }
+
+            if (degree >= 315 && degree <= 360) {
+                resultDegree = 180;
+            }
+
+            if (degree >= 45 && degree <= 135) {
+                resultDegree = 90;
+            }
+            if (degree >= 226 && degree <= 314) {
+                resultDegree = -90;
+            }
+            if (degree >= 136 && degree <= 225) {
+                resultDegree = 0;
+            }
+        }
+
+        return resultDegree;
+    }
+
+
+    /**
      * crop bitmap
      *
      * @param bitmap
@@ -345,8 +470,57 @@ public final class SmartCamUtils {
         }
     }
 
+
+    /**
+     * crop bitmap
+     *
+     * @param bitmap
+     * @param previewWidth
+     * @param previewHeight
+     * @return
+     */
+    public static Bitmap cropBitmap(Bitmap bitmap, int previewWidth, int previewHeight) {
+        if (bitmap == null || bitmap.getByteCount() == 0 || previewWidth == 0 || previewHeight == 0) {
+            return bitmap;
+        }
+
+        SmartCamLog.i(TAG, "bitmap:" + bitmap.getWidth() + ",height:" + bitmap.getHeight()
+                + ",previewWidth:" + previewWidth + ",previewHeight:" + previewHeight);
+
+        if (bitmap.getWidth() > bitmap.getHeight()) {
+            int temp = previewWidth;
+            previewWidth = previewHeight;
+            previewHeight = temp;
+        }
+
+        if (previewWidth <= bitmap.getWidth() && previewHeight <= bitmap.getHeight()) {
+
+            float scale = Math.min(
+                    (float) bitmap.getWidth() / previewWidth,
+                    (float) bitmap.getHeight() / previewHeight);
+            previewWidth *= scale;
+            previewHeight *= scale;
+
+            int alterTop = (bitmap.getHeight() - previewHeight) / 2;
+            int alterLeft = (bitmap.getWidth() - previewWidth) / 2;
+            SmartCamLog.i(TAG, "alterTop:" + alterTop + ",alterLeft:" + alterLeft
+                    + ",previewWidth:" + previewWidth + ",previewHeight:" + previewHeight);
+
+            return Bitmap.createBitmap(bitmap, alterLeft, alterTop, previewWidth, previewHeight);
+
+        } else {
+            float scale = Math.max(
+                    (float) previewWidth / bitmap.getWidth(),
+                    (float) previewHeight / bitmap.getHeight());
+            SmartCamLog.i(TAG, "scale:" + scale);
+            bitmap = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() * scale), (int) (bitmap.getHeight() * scale), false);
+            return bitmap;
+        }
+    }
+
     /**
      * reverse image for horizontal orientation for front camerea
+     *
      * @param bitmap
      * @return
      */
@@ -355,13 +529,59 @@ public final class SmartCamUtils {
     /**
      * use native to rotate bitmap
      *
-     * @param cameraVersion
      * @param bitmap
      * @param degree
-     * @param cameraType
      * @return
      */
-    public static native Bitmap rotateBitmap(int cameraVersion, Bitmap bitmap, int degree, int cameraType);
+    public static native Bitmap rotateBitmap(Bitmap bitmap, int degree);
+
+    /**
+     * deal bitmap after capture
+     *
+     * @param bitmap
+     * @param captureResult
+     * @return
+     */
+    public static Bitmap dealAfterCapture(Bitmap bitmap, SmartCamCaptureResult captureResult) {
+        if (bitmap == null || captureResult == null) {
+            return bitmap;
+        }
+        //1. Cut the rest that not preview
+        bitmap = cropBitmap(bitmap, captureResult.getPreviewWidth(), captureResult.getPreviewHeight());
+        //2. Rotate the right orientation if it need
+        bitmap = rotateBitmap(bitmap, captureResult.getOrientation());
+        //3. If need to reverse image
+        if (captureResult.isNeedReverse()) {
+            bitmap = reverseHorizontal(bitmap);
+        }
+        return bitmap;
+    }
+
+    /**
+     * deal after capture and save jpeg file
+     *
+     * @param captureResult
+     * @param file
+     * @return
+     */
+    public static boolean dealAndSaveJpegFile(SmartCamCaptureResult captureResult, File file) {
+        SmartCamLog.i(TAG, "dealAndSaveJpegFile");
+        if (captureResult == null || captureResult.getData() == null || file == null || !file.exists()) {
+            return false;
+        }
+        Bitmap temp = BitmapFactory.decodeByteArray(captureResult.getData(), 0, captureResult.getData().length);
+        temp = dealAfterCapture(temp, captureResult);
+        try {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            temp.compress(Bitmap.CompressFormat.JPEG, SmartCamConfig.getInstance().getOutputQuality()
+                    , byteArrayOutputStream);
+            byte[] data = byteArrayOutputStream.toByteArray();
+            return SmartCamFileUtils.saveFile(data, file);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     /**
      * check if it's a image file

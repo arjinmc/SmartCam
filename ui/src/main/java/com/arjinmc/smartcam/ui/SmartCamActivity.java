@@ -23,6 +23,7 @@ import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
 import com.arjinmc.smartcam.core.callback.SmartCamStateCallback;
 import com.arjinmc.smartcam.core.file.SmartCamFileUtils;
 import com.arjinmc.smartcam.core.model.CameraFlashMode;
+import com.arjinmc.smartcam.core.model.SmartCamCaptureResult;
 import com.arjinmc.smartcam.core.model.SmartCamError;
 import com.arjinmc.smartcam.core.model.SmartCamPreviewError;
 
@@ -51,6 +52,7 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
 
     private boolean hasCamera, hasFlashLight;
     private int mFlashMode;
+    private File mFile;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -107,19 +109,12 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
         });
 
         mSmartCam.setCaptureCallback(new SmartCamCaptureCallback() {
-            @Override
-            public void onSuccessPath(String path) {
-                SmartCamLog.i(TAG, "CaptureCallback onSuccessPath:" + path);
-            }
 
             @Override
-            public void onSuccessUri(String uri) {
-                SmartCamLog.i(TAG, "CaptureCallback onSuccessUri:" + uri);
-            }
+            public void onSuccess(SmartCamCaptureResult smartCamCaptureResult) {
+                SmartCamUtils.dealAndSaveJpegFile(smartCamCaptureResult, mFile);
+                SmartCamLog.i(TAG, "CaptureCallback onSuccessPath:" + mFile.getAbsolutePath());
 
-            @Override
-            public void onSuccessData(byte[] data) {
-                SmartCamLog.i(TAG, "CaptureCallback onSuccessData: length:" + data.length);
             }
 
             @Override
@@ -163,13 +158,17 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
         //capture a photo
         if (viewId == R.id.smartcam_btn_capture) {
 
+            mFile = createNewFile();
+            mSmartCam.capture();
+
 //            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            mSmartCam.capture(createNewFile());
             //or use this method
 //            mSmartCam.capturePath(createNewFile().getAbsolutePath());
 //            } else {
 //                mSmartCam.captureUri(createNewFileUri());
 //            }
+
+
             return;
         }
 

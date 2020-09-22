@@ -10,115 +10,6 @@
 
 #define LOGD(...) __android_log_print(ANDROID_LOG_ERROR,"SmartCam C",__VA_ARGS__)
 
-/**
- * get should rotate degress for camera 1
- * @param cameraType
- * @param degree
- * @return
- */
-int getShouldRotateDegreeForCamera1(int cameraType, int degree) {
-
-    int resultDegree = 0;
-    //back camera
-    if (cameraType == 0) {
-
-        if (degree >= 0 && degree <= 44) {
-            resultDegree = 90;
-        }
-
-        if (degree >= 315 && degree <= 360) {
-            resultDegree = 90;
-        }
-
-        if (degree >= 45 && degree <= 135) {
-            resultDegree = 180;
-        }
-        if (degree >= 226 && degree <= 314) {
-            resultDegree = 0;
-        }
-        if (degree >= 136 && degree <= 225) {
-            resultDegree = -90;
-        }
-        //front camera
-    } else {
-
-        if (degree >= 0 && degree <= 44) {
-            resultDegree = -90;
-        }
-
-        if (degree >= 315 && degree <= 360) {
-            resultDegree = -90;
-        }
-
-        if (degree >= 45 && degree <= 135) {
-            resultDegree = 180;
-        }
-        if (degree >= 226 && degree <= 314) {
-            resultDegree = 0;
-        }
-        if (degree >= 136 && degree <= 225) {
-            resultDegree = 90;
-        }
-    }
-    return resultDegree;
-}
-
-/**
- *
- * get should rotate degress for camera 2
- * @param cameraType
- * @param degree
- * @return
- */
-int getShouldRotateDegreeForCamera2(int cameraType, int degree) {
-
-    int resultDegree = 0;
-
-    //back camera
-    if (cameraType == 0) {
-
-        if (degree >= 0 && degree <= 44) {
-            resultDegree = 0;
-        }
-
-        if (degree >= 315 && degree <= 360) {
-            resultDegree = 0;
-        }
-
-        if (degree >= 45 && degree <= 135) {
-            resultDegree = 90;
-        }
-        if (degree >= 226 && degree <= 314) {
-            resultDegree = -90;
-        }
-        if (degree >= 136 && degree <= 225) {
-            resultDegree = 180;
-        }
-
-    } else {
-
-        if (degree >= 0 && degree <= 44) {
-            resultDegree = 180;
-        }
-
-        if (degree >= 315 && degree <= 360) {
-            resultDegree = 180;
-        }
-
-        if (degree >= 45 && degree <= 135) {
-            resultDegree = 90;
-        }
-        if (degree >= 226 && degree <= 314) {
-            resultDegree = -90;
-        }
-        if (degree >= 136 && degree <= 225) {
-            resultDegree = 0;
-        }
-    }
-
-    return resultDegree;
-}
-
 jobject createBitmap(JNIEnv *env, uint32_t width, uint32_t height) {
 
     jclass bitmapCls = env->FindClass("android/graphics/Bitmap");
@@ -144,17 +35,11 @@ jobject createBitmap(JNIEnv *env, uint32_t width, uint32_t height) {
 extern "C"
 JNIEXPORT jobject JNICALL
 Java_com_arjinmc_smartcam_core_SmartCamUtils_rotateBitmap(JNIEnv *env, jclass clazz,
-                                                          jint cameraVersion, jobject bitmap,
-                                                          jint degree, jint cameraType) {
+                                                          jobject bitmap,
+                                                          jint degree) {
 
-    int shouldRotateDegree;
-    if (cameraVersion == 2) {
-        shouldRotateDegree = getShouldRotateDegreeForCamera2(cameraType, degree);
-    } else {
-        shouldRotateDegree = getShouldRotateDegreeForCamera1(cameraType, degree);
-    }
 //    LOGD("shouldRotateDegree:%d", shouldRotateDegree);
-    if (shouldRotateDegree == 0) {
+    if (degree == 0) {
         return bitmap;
     }
     AndroidBitmapInfo bitmapInfo;
@@ -170,7 +55,7 @@ Java_com_arjinmc_smartcam_core_SmartCamUtils_rotateBitmap(JNIEnv *env, jclass cl
 
     uint32_t *src = (uint32_t *) bitmapPixels;
     uint32_t *tempPixels;
-    if (shouldRotateDegree == 90 || shouldRotateDegree == -90) {
+    if (degree == 90 || degree == -90) {
         tempPixels = new uint32_t[bitmapInfo.height * bitmapInfo.width];
     } else {
         tempPixels = new uint32_t[bitmapInfo.width * bitmapInfo.height];
@@ -188,7 +73,7 @@ Java_com_arjinmc_smartcam_core_SmartCamUtils_rotateBitmap(JNIEnv *env, jclass cl
     env->CallVoidMethod(bitmap, recycleFunction);
 
     jobject newBitmap;
-    if (shouldRotateDegree == 90 || shouldRotateDegree == -90) {
+    if (degree == 90 || degree == -90) {
         newBitmap = createBitmap(env, bitmapInfo.height, bitmapInfo.width);
     } else {
         newBitmap = createBitmap(env, bitmapInfo.width, bitmapInfo.height);
@@ -201,7 +86,7 @@ Java_com_arjinmc_smartcam_core_SmartCamUtils_rotateBitmap(JNIEnv *env, jclass cl
     }
     uint32_t *newBitmapPixels = (uint32_t *) bitmapPixels;
 
-    if (shouldRotateDegree == 90) {
+    if (degree == 90) {
         int whereToPut = 0;
         for (int x = 0; x <= bitmapInfo.width - 1; ++x) {
             for (int y = bitmapInfo.height - 1; y >= 0; --y) {
@@ -209,7 +94,7 @@ Java_com_arjinmc_smartcam_core_SmartCamUtils_rotateBitmap(JNIEnv *env, jclass cl
                 newBitmapPixels[whereToPut++] = pixel;
             }
         }
-    } else if (shouldRotateDegree == 180) {
+    } else if (degree == 180) {
         int whereToPut = 0;
         for (int x = bitmapInfo.height - 1; x >= 0; --x) {
             for (int y = bitmapInfo.width - 1; y >= 0; --y) {
@@ -217,7 +102,7 @@ Java_com_arjinmc_smartcam_core_SmartCamUtils_rotateBitmap(JNIEnv *env, jclass cl
                 newBitmapPixels[whereToPut++] = pixel;
             }
         }
-    } else if (shouldRotateDegree == -90) {
+    } else if (degree == -90) {
         int whereToPut = 0;
         for (int x = bitmapInfo.width - 1; x >= 0; --x) {
             for (int y = 0; y < bitmapInfo.height; ++y) {

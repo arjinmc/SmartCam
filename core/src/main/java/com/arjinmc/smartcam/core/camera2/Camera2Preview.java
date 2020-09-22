@@ -18,7 +18,6 @@ import android.hardware.camera2.params.SessionConfiguration;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -32,20 +31,19 @@ import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamPreview;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamOrientationEventListener;
-import com.arjinmc.smartcam.core.file.ImagePathSaver;
-import com.arjinmc.smartcam.core.file.ImageUriSaver;
-import com.arjinmc.smartcam.core.model.CameraSaveType;
+import com.arjinmc.smartcam.core.file.ImageSaver;
 import com.arjinmc.smartcam.core.model.CameraSize;
+import com.arjinmc.smartcam.core.model.CameraVersion;
 import com.arjinmc.smartcam.core.model.SmartCamCaptureError;
+import com.arjinmc.smartcam.core.model.SmartCamCaptureResult;
 import com.arjinmc.smartcam.core.model.SmartCamError;
 import com.arjinmc.smartcam.core.model.SmartCamOpenError;
-import com.arjinmc.smartcam.core.model.SmartCamOutputOption2;
 import com.arjinmc.smartcam.core.model.SmartCamPreviewError;
 import com.arjinmc.smartcam.core.model.SmartCamUnknownError;
 import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
 import com.arjinmc.smartcam.core.wrapper.ICameraPreviewWrapper;
 
-import java.io.File;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -76,9 +74,6 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
     private SmartCamPreview.OnCaptureAnimationLister mOnCaptureAnimationListener;
     private int mWidth, mHeight;
     private CameraSize mPreviewSize;
-    private int mCameraSaveType;
-    private File mSaveFile;
-    private String mSaveFileUri;
     /**
      * the degreee when capture
      */
@@ -133,26 +128,23 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
         @Override
         public void onImageAvailable(ImageReader reader) {
             Image image = reader.acquireLatestImage();
-            switch (mCameraSaveType) {
-                case CameraSaveType.TYPE_FILE:
-                case CameraSaveType.TYPE_PATH:
-                    SmartCamLog.e("CameraSaveType", "ImagePathSaver");
-                    new ImagePathSaver(
-                            new SmartCamOutputOption2(image, mSaveFile, mDegree
-                                    , mWidth, mHeight, mMatrix, mCamera2Wrapper.getCurrentCameraType())
-                            , mCamera2Wrapper.getCaptureCallback()).run();
-                    break;
-                case CameraSaveType.TYPE_URI:
-                    SmartCamLog.e("CameraSaveType", "ImageUriSaver");
-                    new ImageUriSaver(getContext()
-                            , new SmartCamOutputOption2(image, mSaveFileUri, mDegree
-                            , mWidth, mHeight, mMatrix, mCamera2Wrapper.getCurrentCameraType())
-                            , mCamera2Wrapper.getCaptureCallback()).run();
-                    break;
-                default:
-                    break;
+            ByteBuffer buffer = image.getPlanes()[0].getBuffer();
+            byte[] data = new byte[buffer.remaining()];
+            buffer.get(data);
+            final byte[] imageData = data;
 
+            if (mCamera2Wrapper.getCaptureCallback() != null) {
+                new ImageSaver(new SmartCamCaptureResult(
+                        imageData
+                        , CameraVersion.VERSION_2
+                        //System has auto fix this right orientation, not need to get the right degree to roate
+//            SmartCamUtils.getShouldRotateOrientationForCamera2(mDegree, mCamera2Wrapper.getCurrentCameraType());
+                        , 0
+                        , SmartCamUtils.isShouldReverse(mCamera2Wrapper.getCurrentCameraType())
+                        , mWidth, mHeight),
+                        mCamera2Wrapper.getCaptureCallback()).start();
             }
+
             if (SmartCamConfig.getInstance().isAutoReset()) {
                 startPreview(mWidth, mHeight);
             }
@@ -204,39 +196,13 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
         //init click capture listener
         mOnClickCaptureListener = new AbsCameraWrapper.OnClickCaptureListener() {
             @Override
-            public void onCapture(File file) {
-
+            public void onCapture() {
                 if (mCaptureSession == null) {
                     return;
                 }
-                mCameraSaveType = CameraSaveType.TYPE_FILE;
-                mSaveFile = file;
                 capture();
             }
 
-            @Override
-            public void onCapturePath(String filePath) {
-                if (mCaptureSession == null) {
-                    return;
-                }
-                if (!TextUtils.isEmpty(filePath)) {
-                    mSaveFile = new File(filePath);
-                }
-                mCameraSaveType = CameraSaveType.TYPE_PATH;
-                capture();
-            }
-
-            @Override
-            public void onCaptureUri(String fileUri) {
-
-                if (mCaptureSession == null) {
-                    return;
-                }
-                mSaveFileUri = fileUri;
-                mCameraSaveType = CameraSaveType.TYPE_URI;
-                capture();
-
-            }
         };
         mCamera2Wrapper.setOnClickCaptureListener(mOnClickCaptureListener);
     }

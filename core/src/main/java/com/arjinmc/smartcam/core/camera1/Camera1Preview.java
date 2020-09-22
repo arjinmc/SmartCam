@@ -15,15 +15,15 @@ import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamPreview;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamOrientationEventListener;
-import com.arjinmc.smartcam.core.file.ImageFileSaver;
+import com.arjinmc.smartcam.core.file.ImageSaver;
 import com.arjinmc.smartcam.core.model.CameraSize;
+import com.arjinmc.smartcam.core.model.CameraVersion;
 import com.arjinmc.smartcam.core.model.SmartCamCaptureError;
+import com.arjinmc.smartcam.core.model.SmartCamCaptureResult;
 import com.arjinmc.smartcam.core.model.SmartCamError;
-import com.arjinmc.smartcam.core.model.SmartCamOutputOption1;
 import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
 import com.arjinmc.smartcam.core.wrapper.ICameraPreviewWrapper;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +72,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
 
         mOnClickCaptureListener = new AbsCameraWrapper.OnClickCaptureListener() {
             @Override
-            public void onCapture(final File file) {
+            public void onCapture() {
 
                 if (mCamera == null) {
                     return;
@@ -88,10 +88,15 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                         }
                     }, null, new Camera.PictureCallback() {
                         @Override
-                        public void onPictureTaken(byte[] data, Camera camera) {
-                            new ImageFileSaver(new SmartCamOutputOption1(data, file, mCameraDegree
-                                    , mCameraWrapper.getCurrentCameraType(), getMeasuredHeight(), getMeasuredWidth())
-                                    , mCameraWrapper.getCaptureCallback()).run();
+                        public void onPictureTaken(final byte[] data, Camera camera) {
+                            if (mCameraWrapper.getCaptureCallback() != null) {
+                                new ImageSaver(new SmartCamCaptureResult(data, CameraVersion.VERSION_1
+                                        , SmartCamUtils.getShouldRotateOrientationForCamera1(mCameraDegree
+                                        , mCameraWrapper.getCurrentCameraType())
+                                        , SmartCamUtils.isShouldReverse(mCameraWrapper.getCurrentCameraType())
+                                        , mPreviewSize.getHeight()
+                                        , mPreviewSize.getWidth()), mCameraWrapper.getCaptureCallback()).start();
+                            }
                             if (SmartCamConfig.getInstance().isAutoReset()) {
                                 doPreview();
                             }
@@ -104,16 +109,6 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                     }
                     dispatchError(new SmartCamCaptureError());
                 }
-            }
-
-            @Override
-            public void onCapturePath(String filePath) {
-
-            }
-
-            @Override
-            public void onCaptureUri(String fileUri) {
-
             }
         };
         mCameraWrapper.setOnClickCaptureListener(mOnClickCaptureListener);

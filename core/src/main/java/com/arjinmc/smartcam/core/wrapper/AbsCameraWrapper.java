@@ -8,7 +8,6 @@ import com.arjinmc.smartcam.core.comparator.CompareSizesByArea;
 import com.arjinmc.smartcam.core.model.CameraSize;
 import com.arjinmc.smartcam.core.model.CameraType;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
@@ -74,23 +73,9 @@ public class AbsCameraWrapper implements ICameraWrapper {
     }
 
     @Override
-    public void capture(File file) {
+    public void capture() {
         if (mOnClickCaptureListener != null) {
-            mOnClickCaptureListener.onCapture(file);
-        }
-    }
-
-    @Override
-    public void capturePath(String filePath) {
-        if (mOnClickCaptureListener != null) {
-            mOnClickCaptureListener.onCapturePath(filePath);
-        }
-    }
-
-    @Override
-    public void captureUri(String fileUri) {
-        if (mOnClickCaptureListener != null) {
-            mOnClickCaptureListener.onCaptureUri(fileUri);
+            mOnClickCaptureListener.onCapture();
         }
     }
 
@@ -256,11 +241,7 @@ public class AbsCameraWrapper implements ICameraWrapper {
      * listener for capture photo
      */
     public interface OnClickCaptureListener {
-        void onCapture(File file);
-
-        void onCapturePath(String filePath);
-
-        void onCaptureUri(String fileUri);
+        void onCapture();
     }
 
 }

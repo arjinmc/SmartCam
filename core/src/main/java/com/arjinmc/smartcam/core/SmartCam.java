@@ -12,7 +12,6 @@ import com.arjinmc.smartcam.core.model.CameraSize;
 import com.arjinmc.smartcam.core.model.CameraVersion;
 import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -89,18 +88,8 @@ public class SmartCam extends AbsCameraWrapper {
     }
 
     @Override
-    public void capture(File file) {
-        mCameraWrapper.capture(file);
-    }
-
-    @Override
-    public void capturePath(String filePath) {
-        mCameraWrapper.capturePath(filePath);
-    }
-
-    @Override
-    public void captureUri(String fileUri) {
-        mCameraWrapper.captureUri(fileUri);
+    public void capture() {
+        mCameraWrapper.capture();
     }
 
     @Override
