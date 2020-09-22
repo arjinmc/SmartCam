@@ -275,7 +275,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             surface = new Surface(texture);
 
             mImageReader = ImageReader.newInstance(largestOutputSize.getWidth(), largestOutputSize.getHeight()
-                    , ImageFormat.JPEG, 1);
+                    , ImageFormat.JPEG, 2);
 
             mPreviewRequestBuilder = mCamera.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             mPreviewRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, SmartCamUtils.getWindowDisplayRotation(getContext()));
