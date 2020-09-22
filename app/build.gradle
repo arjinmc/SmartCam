@@ -35,6 +35,7 @@ dependencies {
     implementation project(":face")
     implementation project(":filter")
     implementation project(":transfer")
+    implementation project(":libjpeg")
 
     testImplementation 'junit:junit:' + rootProject.ext.jUnitVersion
     androidTestImplementation 'androidx.test.ext:junit:' + rootProject.ext.extJunitVersion

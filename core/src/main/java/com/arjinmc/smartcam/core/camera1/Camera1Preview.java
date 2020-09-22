@@ -140,7 +140,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                 getHolder().removeCallback(this);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 

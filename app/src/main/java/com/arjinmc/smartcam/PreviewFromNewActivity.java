@@ -1,7 +1,6 @@
 package com.arjinmc.smartcam;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
@@ -44,13 +43,14 @@ public class PreviewFromNewActivity extends AppCompatActivity {
 
             }
         });
-        mSmartCam.open();
-        Log.i("tag", mSmartCam.getCameraCount() + "/" + mSmartCam.getOrientation());
-//        mSmartCam.logFeatures();
 
         FrameLayout preview = findViewById(R.id.camera_preview);
         mSmartCamPreview = new SmartCamPreview(this);
+        mSmartCamPreview.setCamera(mSmartCam);
         preview.addView(mSmartCamPreview);
+
+        mSmartCam.open();
+//        mSmartCam.logFeatures();
     }
 
     @Override
