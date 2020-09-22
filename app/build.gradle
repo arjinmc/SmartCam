@@ -25,8 +25,8 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:' + rootProject.ext.appcompatVersion
     implementation 'androidx.constraintlayout:constraintlayout:' + rootProject.ext.constraintlayoutVersion
 
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'com.arjinmc.android:expandrecyclerview:2.1'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'com.arjinmc.android:expandrecyclerview:3.2'
 
     implementation project(":core")
     implementation project(":ui")
@@ -34,8 +34,6 @@ dependencies {
     implementation project(":waterprint")
     implementation project(":face")
     implementation project(":filter")
-    implementation project(":transfer")
-    implementation project(":libjpeg")
 
     testImplementation 'junit:junit:' + rootProject.ext.jUnitVersion
     androidTestImplementation 'androidx.test.ext:junit:' + rootProject.ext.extJunitVersion
