@@ -346,20 +346,11 @@ public final class SmartCamUtils {
     }
 
     /**
-     * scale
-     *
+     * reverse image for horizontal orientation for front camerea
      * @param bitmap
      * @return
      */
-    public static Bitmap postScaleFroFrontCamera(Bitmap bitmap, @CameraType.Type int type) {
-        if (bitmap == null || type != CameraType.CAMERA_FRONT) {
-            return bitmap;
-        }
-        Matrix matrix = new Matrix();
-        matrix.postScale(-1, 1);
-        return bitmap = Bitmap.createBitmap(bitmap, 0, 0
-                , bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-    }
+    public static native Bitmap reverseHorizontal(Bitmap bitmap);
 
     /**
      * use native to rotate bitmap

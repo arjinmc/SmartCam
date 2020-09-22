@@ -14,6 +14,7 @@ import com.arjinmc.smartcam.core.SmartCamConfig;
 import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
+import com.arjinmc.smartcam.core.model.CameraType;
 import com.arjinmc.smartcam.core.model.SmartCamCaptureError;
 import com.arjinmc.smartcam.core.model.SmartCamOutputOption2;
 
@@ -77,9 +78,9 @@ public class ImageUriSaver implements Runnable {
             if (mOutputOption.getMatrix() != null) {
                 temp = SmartCamUtils.cropBitmap2(temp, mOutputOption.getPreviewWidth(), mOutputOption.getPreviewHeight());
             }
-
-            temp = SmartCamUtils.postScaleFroFrontCamera(temp, mOutputOption.getCameraType());
-
+            if (CameraType.CAMERA_FRONT == mOutputOption.getCameraType()) {
+                temp = SmartCamUtils.reverseHorizontal(temp);
+            }
             byteArrayOutputStream = new ByteArrayOutputStream();
             temp.compress(Bitmap.CompressFormat.JPEG, SmartCamConfig.getInstance().getOutputQuality(), byteArrayOutputStream);
             byte[] data = byteArrayOutputStream.toByteArray();

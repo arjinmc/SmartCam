@@ -8,6 +8,7 @@ import com.arjinmc.smartcam.core.SmartCamConfig;
 import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
+import com.arjinmc.smartcam.core.model.CameraType;
 import com.arjinmc.smartcam.core.model.CameraVersion;
 import com.arjinmc.smartcam.core.model.SmartCamCaptureError;
 import com.arjinmc.smartcam.core.model.SmartCamOutputOption1;
@@ -57,12 +58,14 @@ public class ImageFileSaver implements Runnable {
 
         Bitmap temp = BitmapFactory.decodeByteArray(mOutputOption.getImageData()
                 , 0, mOutputOption.getImageData().length);
-        temp = SmartCamUtils.cropBitmap1(temp, mOutputOption.getPreviewWidth(), mOutputOption.getPreviewHeight());
         long time = System.currentTimeMillis();
-        temp = SmartCamUtils.rotateBitmap(CameraVersion.VERSION_1, temp, mOutputOption.getDegree(), mOutputOption.getCameraType());
-        temp = SmartCamUtils.postScaleFroFrontCamera(temp, mOutputOption.getCameraType());
         Log.e("time", System.currentTimeMillis() - time + "ms");
-
+        temp = SmartCamUtils.cropBitmap1(temp, mOutputOption.getPreviewWidth(), mOutputOption.getPreviewHeight());
+        Log.e("crop", System.currentTimeMillis() - time + "ms");
+        temp = SmartCamUtils.rotateBitmap(CameraVersion.VERSION_1, temp, mOutputOption.getDegree(), mOutputOption.getCameraType());
+        if (CameraType.CAMERA_FRONT == mOutputOption.getCameraType()) {
+            temp = SmartCamUtils.reverseHorizontal(temp);
+        }
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         temp.compress(Bitmap.CompressFormat.JPEG, SmartCamConfig.getInstance().getOutputQuality()
                 , byteArrayOutputStream);
