@@ -1,11 +1,11 @@
-package com.arjinmc.smartcam;
+package com.arjinmc.smartcam.ui;
 
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
-import com.arjinmc.smartcam.ui.SmartCamConplexActivity;
-import com.arjinmc.smartcam.ui.SmartCamSimpleActivity;
+import com.arjinmc.smartcam.ui.activity.SmartCamComplexActivity;
+import com.arjinmc.smartcam.ui.activity.SmartCamSimpleActivity;
 
 /**
  * use manager to switch different ui
@@ -25,7 +25,7 @@ public final class SmartCamUIManager {
      * start camera view with complex ui
      */
     public static void startComplexUI(Context context) {
-        startActivity(context, SmartCamConplexActivity.class);
+        startActivity(context, SmartCamComplexActivity.class);
     }
 
     /**

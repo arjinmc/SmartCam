@@ -1,4 +1,8 @@
 <resources>
 
     <string name="smartcam_no_camera_tips">Your device has no camera.</string>
+
+    <string name="smartcam_ui_setting_setting">Setting</string>
+    <string name="smartcam_ui_setting_ratio">Ratio</string>
+    <string name="smartcam_ui_setting_timer">Timer</string>
 </resources>

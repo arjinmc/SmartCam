@@ -1,11 +1,13 @@
-package com.arjinmc.smartcam.ui;
+package com.arjinmc.smartcam.ui.activity;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -24,6 +26,8 @@ import com.arjinmc.smartcam.core.model.CameraFlashMode;
 import com.arjinmc.smartcam.core.model.SmartCamCaptureResult;
 import com.arjinmc.smartcam.core.model.SmartCamError;
 import com.arjinmc.smartcam.core.model.SmartCamPreviewError;
+import com.arjinmc.smartcam.ui.R;
+import com.arjinmc.smartcam.ui.widget.MenuPopupWindow;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +38,7 @@ import java.util.Date;
  * Created by Eminem Lo on 2019-10-15.
  * email: arjinmc@hotmail.com
  */
-public class SmartCamConplexActivity extends AppCompatActivity implements View.OnClickListener {
+public class SmartCamComplexActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "SmartCamActivity";
 
@@ -47,7 +51,10 @@ public class SmartCamConplexActivity extends AppCompatActivity implements View.O
     private ImageButton mIbCapture;
     private ImageView mIvSwitchCamera;
     private ImageView mIvSwitchFlashLight;
+    private ImageView mIvMenu;
 
+    private RelativeLayout mViewRoot;
+    private MenuPopupWindow mMenuPopupWindow;
     private boolean hasCamera, hasFlashLight;
     private int mFlashMode;
     private File mFile;
@@ -55,7 +62,7 @@ public class SmartCamConplexActivity extends AppCompatActivity implements View.O
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.smartcam_act_conplex);
+        setContentView(R.layout.smartcam_act_complex);
         initView();
         initListener();
         initData();
@@ -68,12 +75,17 @@ public class SmartCamConplexActivity extends AppCompatActivity implements View.O
         mIbCapture = findViewById(R.id.smartcam_btn_capture);
         mIvSwitchCamera = findViewById(R.id.smartcam_iv_switch_camera);
         mIvSwitchFlashLight = findViewById(R.id.smartcam_iv_switch_flash);
+        mIvMenu = findViewById(R.id.smartcam_iv_menu);
+
+        mViewRoot = findViewById(R.id.smartcam_view_root);
+        mMenuPopupWindow = new MenuPopupWindow(this);
     }
 
     private void initListener() {
         mIbCapture.setOnClickListener(this);
         mIvSwitchCamera.setOnClickListener(this);
         mIvSwitchFlashLight.setOnClickListener(this);
+        mIvMenu.setOnClickListener(this);
     }
 
     private void initData() {
@@ -154,15 +166,6 @@ public class SmartCamConplexActivity extends AppCompatActivity implements View.O
 
             mFile = createNewFile();
             mSmartCam.capture();
-
-//            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            //or use this method
-//            mSmartCam.capturePath(createNewFile().getAbsolutePath());
-//            } else {
-//                mSmartCam.captureUri(createNewFileUri());
-//            }
-
-
             return;
         }
 
@@ -185,6 +188,12 @@ public class SmartCamConplexActivity extends AppCompatActivity implements View.O
 
         if (viewId == R.id.smartcam_iv_switch_flash) {
             switchFlashMode();
+            return;
+        }
+
+        if (viewId == R.id.smartcam_iv_menu) {
+//            mMenuPopupWindow.show(mViewRoot);
+            startActivity(new Intent(SmartCamComplexActivity.this, SmartCamSettingActivity.class));
             return;
         }
     }

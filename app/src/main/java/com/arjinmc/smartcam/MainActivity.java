@@ -23,6 +23,7 @@ import com.arjinmc.smartcam.core.SmartCamConfig;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.file.SmartCamFileUtils;
 import com.arjinmc.smartcam.permission.PermissionAssistant;
+import com.arjinmc.smartcam.ui.SmartCamUIManager;
 
 import java.io.File;
 import java.util.Arrays;

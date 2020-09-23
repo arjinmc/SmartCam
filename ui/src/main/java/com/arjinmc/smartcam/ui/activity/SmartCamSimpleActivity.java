@@ -1,4 +1,4 @@
-package com.arjinmc.smartcam.ui;
+package com.arjinmc.smartcam.ui.activity;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -26,6 +26,7 @@ import com.arjinmc.smartcam.core.model.CameraFlashMode;
 import com.arjinmc.smartcam.core.model.SmartCamCaptureResult;
 import com.arjinmc.smartcam.core.model.SmartCamError;
 import com.arjinmc.smartcam.core.model.SmartCamPreviewError;
+import com.arjinmc.smartcam.ui.R;
 
 import java.io.File;
 import java.io.IOException;
@@ -160,15 +161,6 @@ public class SmartCamSimpleActivity extends AppCompatActivity implements View.On
 
             mFile = createNewFile();
             mSmartCam.capture();
-
-//            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            //or use this method
-//            mSmartCam.capturePath(createNewFile().getAbsolutePath());
-//            } else {
-//                mSmartCam.captureUri(createNewFileUri());
-//            }
-
-
             return;
         }
 
