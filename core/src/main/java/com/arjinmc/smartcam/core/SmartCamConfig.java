@@ -1,5 +1,6 @@
 package com.arjinmc.smartcam.core;
 
+import com.arjinmc.smartcam.core.model.CameraAspectRatio;
 import com.arjinmc.smartcam.core.model.CameraManualFocusParams;
 
 /**
@@ -28,6 +29,8 @@ public final class SmartCamConfig {
      * Default auto dismiss manual focus view when camera orientation changed offset
      */
     private final int DEFAULT_MANUAL_FOCUS_DISMISS_DEGREE_OFFSET = 10;
+
+    private final String DEFAULT_PREVIEW_SIZE_RATIO = "4:3";
 
     /**
      * root dir path
@@ -64,6 +67,17 @@ public final class SmartCamConfig {
      * when the camera orientation changed above offset value then auto hide the manual focus view
      */
     private int mDismissManualFocusDegreeOffset = DEFAULT_MANUAL_FOCUS_DISMISS_DEGREE_OFFSET;
+
+    /**
+     * preview size ratio, default is "4:3"
+     */
+    private String mPreviewSizeRatio = DEFAULT_PREVIEW_SIZE_RATIO;
+
+    /**
+     * if you want to use customer preview size ratio set this param to "false"
+     * and change the value of mPreviewSizeRatio like "16:9"
+     */
+    private boolean mUseAutoRatio = true;
 
     /**
      * manual focus params
@@ -193,6 +207,31 @@ public final class SmartCamConfig {
 
     public void setCameraManualFocusParams(CameraManualFocusParams cameraManualFocusParams) {
         this.mCameraManualFocusParams = cameraManualFocusParams;
+    }
+
+    public String getPreviewSizeRatio() {
+        return mPreviewSizeRatio;
+    }
+
+    /**
+     * set preview size ratio
+     *
+     * @param previewSizeRatio like x:y
+     */
+    public void setPreviewSizeRatio(String previewSizeRatio) {
+        CameraAspectRatio cameraAspectRatio = new CameraAspectRatio();
+        cameraAspectRatio.parse(previewSizeRatio);
+        if (cameraAspectRatio.isValid()) {
+            this.mPreviewSizeRatio = previewSizeRatio;
+        }
+    }
+
+    public boolean isUseAutoRatio() {
+        return mUseAutoRatio;
+    }
+
+    public void setUseAutoRatio(boolean useAutoRatio) {
+        this.mUseAutoRatio = useAutoRatio;
     }
 
     public void setDebugLog(boolean visible) {

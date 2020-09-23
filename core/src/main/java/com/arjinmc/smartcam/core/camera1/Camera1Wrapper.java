@@ -233,7 +233,7 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     }
 
     @Override
-    public List<CameraSize> getSupperPreviewSizes() {
+    public List<CameraSize> getSupportPreviewSizes() {
 
         if (mCamera == null) {
             return null;
@@ -382,7 +382,7 @@ public class Camera1Wrapper extends AbsCameraWrapper {
         final double ASPECT_TOLERANCE = 0.1;
         double targetRatio = (double) width / height;
 
-        List<CameraSize> previewSizes = getSupperPreviewSizes();
+        List<CameraSize> previewSizes = getSupportPreviewSizes();
         if (previewSizes == null) {
             return null;
         }

@@ -93,8 +93,8 @@ public class SmartCam extends AbsCameraWrapper {
     }
 
     @Override
-    public List<CameraSize> getSupperPreviewSizes() {
-        return mCameraWrapper.getSupperPreviewSizes();
+    public List<CameraSize> getSupportPreviewSizes() {
+        return mCameraWrapper.getSupportPreviewSizes();
     }
 
     @Override

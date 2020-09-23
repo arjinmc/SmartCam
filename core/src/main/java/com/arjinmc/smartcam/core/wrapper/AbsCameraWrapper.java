@@ -5,11 +5,16 @@ import android.content.Context;
 import com.arjinmc.smartcam.core.callback.SmartCamCaptureCallback;
 import com.arjinmc.smartcam.core.callback.SmartCamStateCallback;
 import com.arjinmc.smartcam.core.comparator.CompareSizesByArea;
+import com.arjinmc.smartcam.core.model.CameraAspectRatio;
 import com.arjinmc.smartcam.core.model.CameraSize;
 import com.arjinmc.smartcam.core.model.CameraType;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Abstact Camera Wrapper
@@ -168,8 +173,75 @@ public class AbsCameraWrapper implements ICameraWrapper {
 
 
     @Override
-    public List<CameraSize> getSupperPreviewSizes() {
+    public List<CameraSize> getSupportPreviewSizes() {
         return null;
+    }
+
+    @Override
+    public Map<String, List<CameraSize>> getSupportPreviewSizeRatioMap() {
+        List<CameraSize> supportPreviewSizeList = getSupportPreviewSizes();
+        if (supportPreviewSizeList == null) {
+            return null;
+        }
+        Map<String, List<CameraSize>> result = new HashMap<>();
+        for (CameraSize previewSize : supportPreviewSizeList) {
+            CameraAspectRatio aspectRatio = new CameraAspectRatio();
+            aspectRatio.toRatio(previewSize.getWidth(), previewSize.getHeight());
+
+            List<CameraSize> cameraSizeList = result.get(aspectRatio.getName());
+            if (cameraSizeList == null) {
+                cameraSizeList = new ArrayList<>();
+            }
+            cameraSizeList.add(previewSize);
+            result.put(aspectRatio.getName(), cameraSizeList);
+        }
+        return result;
+    }
+
+    @Override
+    public List<String> getSupportPreviewSizeRatioList() {
+        Map<String, List<CameraSize>> supportPreviewSizeRatioMap = getSupportPreviewSizeRatioMap();
+        if (supportPreviewSizeRatioMap == null) {
+            return null;
+        }
+        List<String> result = new ArrayList<>();
+        Set<String> keySet = supportPreviewSizeRatioMap.keySet();
+        for (String key : keySet) {
+            result.add(key);
+        }
+        return result;
+    }
+
+    @Override
+    public List<CameraSize> getSupportPreviewSizeListByRatio(String ratio) {
+
+        if (ratio == null) {
+            return null;
+        }
+
+        Map<String, List<CameraSize>> ratioMap = getSupportPreviewSizeRatioMap();
+        if (ratioMap != null && ratioMap.containsKey(ratio)) {
+            return ratioMap.get(ratio);
+        }
+        return null;
+    }
+
+    @Override
+    public CameraSize getCompatPreviewSizeByRatio(String ratio, int width, int height) {
+
+        if (ratio == null) {
+            return null;
+        }
+        List<CameraSize> previewSizeList = getSupportPreviewSizeListByRatio(ratio);
+        if (previewSizeList == null || previewSizeList.isEmpty()) {
+            return null;
+        }
+        for (CameraSize cameraSize : previewSizeList) {
+            if (width <= cameraSize.getWidth() && height <= cameraSize.getHeight()) {
+                return cameraSize;
+            }
+        }
+        return previewSizeList.get(0);
     }
 
     @Override

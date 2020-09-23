@@ -185,7 +185,7 @@ public class Camera2Wrapper extends AbsCameraWrapper {
     }
 
     @Override
-    public List<CameraSize> getSupperPreviewSizes() {
+    public List<CameraSize> getSupportPreviewSizes() {
         if (mCamera == null) {
             return null;
         }
@@ -214,7 +214,7 @@ public class Camera2Wrapper extends AbsCameraWrapper {
 
     @Override
     public CameraSize getCompatPreviewSize(int width, int height) {
-        return chooseOptimalSize(getSupperPreviewSizes(), width, height, getMaxOutputSize());
+        return chooseOptimalSize(getSupportPreviewSizes(), width, height, getMaxOutputSize());
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.arjinmc.smartcam.core.model;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.regex.Pattern;
 
@@ -11,7 +12,7 @@ import java.util.regex.Pattern;
  */
 public class CameraAspectRatio implements Comparable<CameraAspectRatio> {
 
-    private final String PATTERN = "^\\d{1,2}:\\d{1,2}$";
+    private final String PATTERN = "^\\d+:\\d+$";
 
     /**
      * ratio:x
@@ -34,7 +35,30 @@ public class CameraAspectRatio implements Comparable<CameraAspectRatio> {
             int index = aspectRatio.indexOf(":");
             x = Integer.parseInt(aspectRatio.substring(0, index));
             y = Integer.parseInt(aspectRatio.substring(index + 1));
+            Log.e("result", x + ":" + y);
         }
+    }
+
+    public boolean isValid() {
+        if (x > 0 && y > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public void toRatio(int width, int height) {
+        int gcd = gcd(width, height);
+        x = width / gcd;
+        y = height / gcd;
+    }
+
+    private int gcd(int a, int b) {
+        while (b != 0) {
+            int c = b;
+            b = a % b;
+            a = c;
+        }
+        return a;
     }
 
     public float toFloat() {
@@ -53,6 +77,5 @@ public class CameraAspectRatio implements Comparable<CameraAspectRatio> {
         }
         return -1;
     }
-
 
 }

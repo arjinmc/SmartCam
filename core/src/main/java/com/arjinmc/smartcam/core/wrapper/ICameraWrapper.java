@@ -7,6 +7,7 @@ import com.arjinmc.smartcam.core.callback.SmartCamStateCallback;
 import com.arjinmc.smartcam.core.model.CameraSize;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Camera Wrapper for different version camera
@@ -146,7 +147,39 @@ public interface ICameraWrapper {
      *
      * @return
      */
-    List<CameraSize> getSupperPreviewSizes();
+    List<CameraSize> getSupportPreviewSizes();
+
+    /**
+     * get support preview size ratio map
+     *
+     * @return
+     */
+    Map<String, List<CameraSize>> getSupportPreviewSizeRatioMap();
+
+    /**
+     * get support preview size ratio list
+     *
+     * @return
+     */
+    List<String> getSupportPreviewSizeRatioList();
+
+    /**
+     * get support preview size list by ratio;
+     *
+     * @param ratio
+     * @return
+     */
+    List<CameraSize> getSupportPreviewSizeListByRatio(String ratio);
+
+    /**
+     * get best preview size that compat ui view with width and height
+     *
+     * @param ratio
+     * @param width
+     * @param height
+     * @return
+     */
+    CameraSize getCompatPreviewSizeByRatio(String ratio, int width, int height);
 
     /**
      * get the calculate  preview size support destination width and height
@@ -228,4 +261,5 @@ public interface ICameraWrapper {
      * @return
      */
     boolean canManualFocus();
+
 }
