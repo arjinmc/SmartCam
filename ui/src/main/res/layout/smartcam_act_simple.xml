@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.arjinmc.smartcam.core.SmartCamPreview
+        android:id="@+id/smartcam_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/smartcam_iv_switch_flash"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/smartcam_ic_flash_auto"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/smartcam_iv_switch_camera"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="32dp"
+        android:layout_marginRight="16dp"
+        android:src="@drawable/smartcam_ic_switch_front" />
+
+    <ImageButton
+        android:id="@+id/smartcam_btn_capture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/smartcam_btn_capture" />
+
+
+</RelativeLayout>

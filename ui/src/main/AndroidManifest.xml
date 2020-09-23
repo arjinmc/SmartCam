@@ -3,8 +3,12 @@
 
     <application>
         <activity
-            android:name=".SmartCamActivity"
+            android:name=".SmartCamSimpleActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/full_screen_activity" />
+        <activity
+            android:name=".SmartCamConplexActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/full_screen_activity" />
     </application>
 </manifest>

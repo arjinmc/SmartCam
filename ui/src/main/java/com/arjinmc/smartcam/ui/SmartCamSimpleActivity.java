@@ -36,7 +36,7 @@ import java.util.Date;
  * Created by Eminem Lo on 2019-10-15.
  * email: arjinmc@hotmail.com
  */
-public class SmartCamActivity extends AppCompatActivity implements View.OnClickListener {
+public class SmartCamSimpleActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "SmartCamActivity";
 
@@ -61,7 +61,7 @@ public class SmartCamActivity extends AppCompatActivity implements View.OnClickL
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.smartcam_act_main);
+        setContentView(R.layout.smartcam_act_simple);
         initView();
         initListener();
         initData();

@@ -23,7 +23,6 @@ import com.arjinmc.smartcam.core.SmartCamConfig;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.file.SmartCamFileUtils;
 import com.arjinmc.smartcam.permission.PermissionAssistant;
-import com.arjinmc.smartcam.ui.SmartCamActivity;
 
 import java.io.File;
 import java.util.Arrays;
@@ -38,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
     private final int REQUST_CODE_APPLY_STORAGE_PERMISSION = 1;
 
     private Integer[] mTitles = new Integer[]{
-            R.string.default_ui
+            R.string.default_ui_simple
+            , R.string.default_ui_complex
+            , R.string.default_ui_pro
             , R.string.prieview_from_new_object
             , R.string.prieview_from_xml};
 
@@ -72,8 +73,14 @@ public class MainActivity extends AppCompatActivity {
                             return;
                         }
                         switch (integer) {
-                            case R.string.default_ui:
-                                startActivity(SmartCamActivity.class);
+                            case R.string.default_ui_simple:
+                                SmartCamUIManager.startSimpleUI(MainActivity.this);
+                                break;
+                            case R.string.default_ui_complex:
+                                SmartCamUIManager.startComplexUI(MainActivity.this);
+                                break;
+                            case R.string.default_ui_pro:
+                                SmartCamUIManager.startProfessionalUI(MainActivity.this);
                                 break;
                             case R.string.prieview_from_new_object:
                                 startActivity(PreviewFromNewActivity.class);
