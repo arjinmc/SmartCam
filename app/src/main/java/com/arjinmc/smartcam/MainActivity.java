@@ -121,17 +121,17 @@ public class MainActivity extends AppCompatActivity {
     private void initDir() {
 
 //        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            File file = new File(SmartCamFileUtils.getExternalStorageDir() + File.separator + SmartCamConfig.getInstance().getRootDirName());
-            if (!file.exists() || !file.isDirectory()) {
-                boolean mkdirResult = file.mkdir();
-                if (!mkdirResult) {
-                    file = new File(SmartCamFileUtils.getExternalDir(this) + File.separator + SmartCamConfig.getInstance().getRootDirName());
-                    file.mkdir();
-                    SmartCamConfig.getInstance().setRootDirPath(file.getAbsolutePath());
-                }
+        File file = new File(SmartCamFileUtils.getExternalStorageDir() + File.separator + SmartCamConfig.getInstance().getRootDirName());
+        if (!file.exists() || !file.isDirectory()) {
+            boolean mkdirResult = file.mkdir();
+            if (!mkdirResult) {
+                file = new File(SmartCamFileUtils.getExternalDir(this) + File.separator + SmartCamConfig.getInstance().getRootDirName());
+                file.mkdir();
+                SmartCamConfig.getInstance().setRootDirPath(file.getAbsolutePath());
             }
-            SmartCamConfig.getInstance().setRootDirPath(file.getAbsolutePath());
-            Log.e("root path",SmartCamConfig.getInstance().getRootDirPath()+"");
+        }
+        SmartCamConfig.getInstance().setRootDirPath(file.getAbsolutePath());
+        Log.e("root path", SmartCamConfig.getInstance().getRootDirPath() + "");
 //        } else {
 //            if (TextUtils.isEmpty(SmartCamConfig.getInstance().getRootDirPath())) {
 //                SmartCamFileUtils.applyOpenDirPermission(this, REQUST_CODE_APPLY_STORAGE_PERMISSION, null);

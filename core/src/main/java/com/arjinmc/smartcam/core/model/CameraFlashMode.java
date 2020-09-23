@@ -3,16 +3,12 @@ package com.arjinmc.smartcam.core.model;
 import android.hardware.Camera;
 import android.text.TextUtils;
 
-import java.io.Serializable;
-
 /**
  * Camera Flash Mode
  * Created by Eminem Lo on 2019-10-28.
  * email: arjinmc@hotmail.com
  */
-public final class CameraFlashMode implements Serializable {
-
-    private static final long serialVersionUID = 5290608893853987744L;
+public final class CameraFlashMode {
 
     public static final int MODE_UNKNOWN = -1;
     public static final int MODE_OFF = 0;
