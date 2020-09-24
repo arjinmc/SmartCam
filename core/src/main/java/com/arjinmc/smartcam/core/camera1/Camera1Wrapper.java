@@ -371,10 +371,11 @@ public class Camera1Wrapper extends AbsCameraWrapper {
             return;
         }
         Camera.Parameters parameters = mCamera.getParameters();
-        SmartCamLog.i(TAG, "Antibanding:" + parameters.getAntibanding());
-        SmartCamLog.i(TAG, "ColorEffect:" + parameters.getColorEffect());
-        SmartCamLog.i(TAG, "FlashMode:" + parameters.getFlashMode());
-        SmartCamLog.i(TAG, "FocusMode:" + parameters.getFocusMode());
+//        SmartCamLog.i(TAG, "Antibanding:" + parameters.getAntibanding());
+//        SmartCamLog.i(TAG, "ColorEffect:" + parameters.getColorEffect());
+//        SmartCamLog.i(TAG, "FlashMode:" + parameters.getFlashMode());
+//        SmartCamLog.i(TAG, "FocusMode:" + parameters.getFocusMode());
+        SmartCamLog.i(TAG, "flatten:" + parameters.flatten());
     }
 
     @Override

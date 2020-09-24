@@ -1,7 +1,6 @@
 package com.arjinmc.smartcam.core.model;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.util.regex.Pattern;
 
@@ -51,7 +50,6 @@ public class CameraAspectRatio implements Comparable<CameraAspectRatio> {
             int index = aspectRatio.indexOf(":");
             x = Integer.parseInt(aspectRatio.substring(0, index));
             y = Integer.parseInt(aspectRatio.substring(index + 1));
-            Log.e("result", x + ":" + y);
         }
     }
 

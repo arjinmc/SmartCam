@@ -210,7 +210,6 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                 if (SmartCamUtils.hasAutoFocus(getContext())) {
                     parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
                 }
-                parameters.setSceneMode(Camera.Parameters.SCENE_MODE_AUTO);
                 parameters.setPreviewSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
                 CameraSize outputSize = mCameraWrapper.getMaxOutputSize();
                 parameters.setPictureSize(outputSize.getWidth(), outputSize.getHeight());
