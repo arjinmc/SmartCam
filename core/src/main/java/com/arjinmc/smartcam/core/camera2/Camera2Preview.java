@@ -361,9 +361,11 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                     mCaptureCallback, mCamera2Wrapper.getHandler());
             mCaptureSession.capture(mPreviewRequest, mCaptureCallback, mCamera2Wrapper.getHandler());
 
-            mMatrix = SmartCamUtils.getBetterPreviewScaleMatrix(width, height, mPreviewSize);
-            if (mMatrix != null) {
-                setTransform(mMatrix);
+            if (mCamera2Wrapper.getPreviewRatio() == null) {
+                mMatrix = SmartCamUtils.getBetterPreviewScaleMatrix(width, height, mPreviewSize);
+                if (mMatrix != null) {
+                    setTransform(mMatrix);
+                }
             }
         } catch (CameraAccessException e) {
             e.printStackTrace();
