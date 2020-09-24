@@ -208,7 +208,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                 mCamera.setPreviewDisplay(getHolder());
                 Camera.Parameters parameters = mCamera.getParameters();
                 if (SmartCamUtils.hasAutoFocus(getContext())) {
-                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+                    parameters = setAutoFocusMode(parameters, true);
                 }
                 parameters.setPreviewSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
                 CameraSize outputSize = mCameraWrapper.getMaxOutputSize();
@@ -260,6 +260,27 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * set focus mode
+     *
+     * @param parameter
+     * @param autoFocus
+     * @return
+     */
+    private Camera.Parameters setAutoFocusMode(Camera.Parameters parameter, boolean autoFocus) {
+        final List<String> modes = parameter.getSupportedFocusModes();
+        if (autoFocus && modes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+            parameter.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+        } else if (modes.contains(Camera.Parameters.FOCUS_MODE_FIXED)) {
+            parameter.setFocusMode(Camera.Parameters.FOCUS_MODE_FIXED);
+        } else if (modes.contains(Camera.Parameters.FOCUS_MODE_INFINITY)) {
+            parameter.setFocusMode(Camera.Parameters.FOCUS_MODE_INFINITY);
+        } else {
+            parameter.setFocusMode(modes.get(0));
+        }
+        return parameter;
     }
 
     @Override
