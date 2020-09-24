@@ -39,7 +39,7 @@ import java.util.Date;
  */
 public class SmartCamSimpleActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "SmartCamActivity";
+    private static final String TAG = "SmartCamSimpleActivity";
 
     private final int FLASH_MODE_OFF = 0;
     private final int FLASH_MODE_AUTO = 1;
@@ -113,7 +113,9 @@ public class SmartCamSimpleActivity extends AppCompatActivity implements View.On
 
             @Override
             public void onSuccess(SmartCamCaptureResult smartCamCaptureResult) {
+                long time = System.currentTimeMillis();
                 SmartCamUtils.dealAndSaveJpegFile(smartCamCaptureResult, mFile);
+                SmartCamLog.i(TAG, "CaptureCallback time:" + (System.currentTimeMillis() - time) + "ms");
                 SmartCamLog.i(TAG, "CaptureCallback onSuccessPath:" + mFile.getAbsolutePath());
 
             }

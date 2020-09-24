@@ -1,6 +1,5 @@
 package com.arjinmc.smartcam.ui.activity;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Eminem Lo on 2019-10-15.
@@ -40,7 +40,7 @@ import java.util.Date;
  */
 public class SmartCamComplexActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "SmartCamActivity";
+    private static final String TAG = "SmartCamComplexActivity";
 
     private final int FLASH_MODE_OFF = 0;
     private final int FLASH_MODE_AUTO = 1;
@@ -118,7 +118,9 @@ public class SmartCamComplexActivity extends AppCompatActivity implements View.O
 
             @Override
             public void onSuccess(SmartCamCaptureResult smartCamCaptureResult) {
+                long time = System.currentTimeMillis();
                 SmartCamUtils.dealAndSaveJpegFile(smartCamCaptureResult, mFile);
+                SmartCamLog.i(TAG, "CaptureCallback time:" + (System.currentTimeMillis() - time) + "ms");
                 SmartCamLog.i(TAG, "CaptureCallback onSuccessPath:" + mFile.getAbsolutePath());
 
             }
@@ -142,6 +144,19 @@ public class SmartCamComplexActivity extends AppCompatActivity implements View.O
             mIvSwitchCamera.setVisibility(View.VISIBLE);
         } else {
             mIvSwitchCamera.setVisibility(View.GONE);
+        }
+
+        saveCameraInfoIfNeed();
+    }
+
+    /**
+     * save static camera info
+     */
+    private void saveCameraInfoIfNeed() {
+
+        List<String> list = mSmartCam.getSupportPreviewSizeRatioList();
+        for (String li : list) {
+            Log.e("list", li);
         }
     }
 
@@ -193,7 +208,10 @@ public class SmartCamComplexActivity extends AppCompatActivity implements View.O
 
         if (viewId == R.id.smartcam_iv_menu) {
 //            mMenuPopupWindow.show(mViewRoot);
-            startActivity(new Intent(SmartCamComplexActivity.this, SmartCamSettingActivity.class));
+//            startActivity(new Intent(SmartCamComplexActivity.this, SmartCamSettingActivity.class));
+            //test for preview ratio
+            setPreviewRatio("16:9");
+
             return;
         }
     }
@@ -263,6 +281,15 @@ public class SmartCamComplexActivity extends AppCompatActivity implements View.O
 
     private void resetFlashMode() {
         mFlashMode = switchFlashModeUI(CameraFlashMode.MODE_OFF);
+    }
+
+    private void setPreviewRatio(String previewRatio) {
+        if (mSmartCam != null) {
+            mSmartCam.setPreviewRatio(previewRatio);
+            //remember to restart smartcam
+            mSmartCam.restart();
+            mSmartCamPreview.restart();
+        }
     }
 
     private File createNewFile() {

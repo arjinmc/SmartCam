@@ -267,7 +267,11 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             SmartCamLog.i(TAG, "photo size:"
                     + largestOutputSize.getWidth() + "/" + largestOutputSize.getHeight());
 
-            mPreviewSize = mCamera2Wrapper.getCompatPreviewSize(height, width);
+            if (mCamera2Wrapper.getPreviewRatio() == null) {
+                mPreviewSize = mCamera2Wrapper.getCompatPreviewSize(height, width);
+            } else {
+                mPreviewSize = mCamera2Wrapper.getCompatPreviewSizeByRatio(mCamera2Wrapper.getPreviewRatio(), height, width);
+            }
             SmartCamLog.i(TAG, "preview size:"
                     + mPreviewSize.getWidth() + "/" + mPreviewSize.getHeight());
 

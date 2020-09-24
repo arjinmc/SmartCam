@@ -13,6 +13,7 @@ import com.arjinmc.smartcam.core.model.CameraVersion;
 import com.arjinmc.smartcam.core.wrapper.AbsCameraWrapper;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * SmartCam
@@ -58,6 +59,11 @@ public class SmartCam extends AbsCameraWrapper {
     }
 
     @Override
+    public boolean isOpen() {
+        return mCameraWrapper.isOpen();
+    }
+
+    @Override
     public void close() {
         mCameraWrapper.close();
     }
@@ -65,6 +71,11 @@ public class SmartCam extends AbsCameraWrapper {
     @Override
     public void release() {
         mCameraWrapper.release();
+    }
+
+    public void restart() {
+        release();
+        open();
     }
 
     @Override
@@ -95,6 +106,31 @@ public class SmartCam extends AbsCameraWrapper {
     @Override
     public List<CameraSize> getSupportPreviewSizes() {
         return mCameraWrapper.getSupportPreviewSizes();
+    }
+
+    @Override
+    public Map<String, List<CameraSize>> getSupportPreviewSizeRatioMap() {
+        return mCameraWrapper.getSupportPreviewSizeRatioMap();
+    }
+
+    @Override
+    public List<String> getSupportPreviewSizeRatioList() {
+        return mCameraWrapper.getSupportPreviewSizeRatioList();
+    }
+
+    @Override
+    public List<CameraSize> getSupportPreviewSizeListByRatio(String ratio) {
+        return mCameraWrapper.getSupportPreviewSizeListByRatio(ratio);
+    }
+
+    @Override
+    public CameraSize getCompatPreviewSizeByRatio(String ratio, int width, int height) {
+        return mCameraWrapper.getCompatPreviewSizeByRatio(ratio, width, height);
+    }
+
+    @Override
+    public CameraSize getCompatPreviewSize(int width, int height) {
+        return mCameraWrapper.getCompatPreviewSize(width, height);
     }
 
     @Override
@@ -175,6 +211,16 @@ public class SmartCam extends AbsCameraWrapper {
     @Override
     public SmartCamCaptureCallback getCaptureCallback() {
         return mCameraWrapper.getCaptureCallback();
+    }
+
+    @Override
+    public void setPreviewRatio(String previewRatio) {
+        mCameraWrapper.setPreviewRatio(previewRatio);
+    }
+
+    @Override
+    public String getPreviewRatio() {
+        return mCameraWrapper.getPreviewRatio();
     }
 
     @Override

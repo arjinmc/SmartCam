@@ -134,6 +134,14 @@ public class Camera2Wrapper extends AbsCameraWrapper {
         }
     }
 
+    @Override
+    public boolean isOpen() {
+        if (mCamera == null) {
+            return false;
+        }
+        return true;
+    }
+
     @SuppressLint("MissingPermission")
     @Override
     public boolean resumeOpen() {
@@ -542,6 +550,7 @@ public class Camera2Wrapper extends AbsCameraWrapper {
 
     /**
      * check if use camera2 will better than camera1
+     *
      * @return true means better
      */
     public boolean isUseCamera2Better() {

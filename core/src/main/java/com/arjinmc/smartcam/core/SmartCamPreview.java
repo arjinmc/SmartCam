@@ -19,6 +19,7 @@ import com.arjinmc.smartcam.core.camera1.Camera1Preview;
 import com.arjinmc.smartcam.core.camera1.Camera1Wrapper;
 import com.arjinmc.smartcam.core.camera2.Camera2Preview;
 import com.arjinmc.smartcam.core.camera2.Camera2Wrapper;
+import com.arjinmc.smartcam.core.model.CameraAspectRatio;
 import com.arjinmc.smartcam.core.model.CameraManualFocusParams;
 import com.arjinmc.smartcam.core.model.CameraSize;
 import com.arjinmc.smartcam.core.model.CameraVersion;
@@ -133,17 +134,14 @@ public class SmartCamPreview extends FrameLayout {
                 mCamera1Preview.setOnManualFocusListener(mOnManualFocusListener);
             }
         }
-    }
 
-    /**
-     * set fixed size for preview
-     *
-     * @param width
-     * @param height
-     */
-    public void setFixedSize(int width, int height) {
-        if (isUsedCamera1()) {
-            mCamera1Preview.getHolder().setFixedSize(width, height);
+        if (mSmartCam.getPreviewRatio() != null) {
+            int width = getMeasuredWidth();
+            CameraAspectRatio ratio = new CameraAspectRatio();
+            ratio.parse(mSmartCam.getPreviewRatio());
+            if (ratio.isValid()) {
+                getPreview().setLayoutParams(new FrameLayout.LayoutParams(width, width * ratio.getX() / ratio.getY()));
+            }
         }
     }
 
@@ -370,6 +368,11 @@ public class SmartCamPreview extends FrameLayout {
         pause();
     }
 
+    public void restart() {
+        pause();
+        resume();
+    }
+
     public void startPreview() {
         if (isUsedCamera1()) {
             mCamera1Preview.startPreview();
@@ -384,6 +387,13 @@ public class SmartCamPreview extends FrameLayout {
         } else if (isUsedCamera2()) {
             mCamera2Preview.stopPreview();
         }
+    }
+
+    private View getPreview() {
+        if (isUsedCamera2()) {
+            return mCamera2Preview;
+        }
+        return mCamera1Preview;
     }
 
     private boolean isUsedCamera1() {

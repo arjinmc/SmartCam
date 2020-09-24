@@ -31,6 +31,7 @@ public class AbsCameraWrapper implements ICameraWrapper {
      */
     protected int mCurrentCameraType = CameraType.CAMERA_NULL;
     protected String mCurrentCameraId = "-1";
+    protected String mPreviewRatio;
 
     protected SmartCamStateCallback mSmartCamStateCallback;
     protected SmartCamCaptureCallback mSmartCamCaptureCallback;
@@ -303,6 +304,18 @@ public class AbsCameraWrapper implements ICameraWrapper {
     @Override
     public boolean canManualFocus() {
         return false;
+    }
+
+    public String getPreviewRatio() {
+        return mPreviewRatio;
+    }
+
+    public void setPreviewRatio(String previewRatio) {
+        CameraAspectRatio cameraAspectRatio = new CameraAspectRatio();
+        cameraAspectRatio.parse(previewRatio);
+        if (cameraAspectRatio.isValid()) {
+            mPreviewRatio = previewRatio;
+        }
     }
 
     public void setOnClickCaptureListener(OnClickCaptureListener onClickCaptureListener) {

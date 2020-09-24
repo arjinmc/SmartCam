@@ -191,8 +191,14 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                         , mCameraWrapper.getCurrentCameraId()
                         , mOrientation));
 
-                mPreviewSize = mCameraWrapper.getCompatPreviewSize(
-                        getMeasuredHeight(), getMeasuredWidth());
+                if (mCameraWrapper.getPreviewRatio() == null) {
+                    mPreviewSize = mCameraWrapper.getCompatPreviewSize(
+                            getMeasuredHeight(), getMeasuredWidth());
+                } else {
+                    mPreviewSize = mCameraWrapper.getCompatPreviewSizeByRatio(
+                            mCameraWrapper.getPreviewRatio()
+                            , getMeasuredHeight(), getMeasuredWidth());
+                }
 
                 if (mPreviewSize != null) {
                     SmartCamLog.e(TAG, "final preview size:"
