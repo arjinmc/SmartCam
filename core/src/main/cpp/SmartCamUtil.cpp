@@ -55,7 +55,7 @@ Java_com_arjinmc_smartcam_core_SmartCamUtils_rotateBitmap(JNIEnv *env, jclass cl
 
     uint32_t *src = (uint32_t *) bitmapPixels;
     uint32_t *tempPixels;
-    if (degree == 90 || degree == -90) {
+    if (degree == 90 || degree == 270) {
         tempPixels = new uint32_t[bitmapInfo.height * bitmapInfo.width];
     } else {
         tempPixels = new uint32_t[bitmapInfo.width * bitmapInfo.height];
@@ -73,7 +73,7 @@ Java_com_arjinmc_smartcam_core_SmartCamUtils_rotateBitmap(JNIEnv *env, jclass cl
     env->CallVoidMethod(bitmap, recycleFunction);
 
     jobject newBitmap;
-    if (degree == 90 || degree == -90) {
+    if (degree == 90 || degree == 270) {
         newBitmap = createBitmap(env, bitmapInfo.height, bitmapInfo.width);
     } else {
         newBitmap = createBitmap(env, bitmapInfo.width, bitmapInfo.height);
@@ -102,7 +102,7 @@ Java_com_arjinmc_smartcam_core_SmartCamUtils_rotateBitmap(JNIEnv *env, jclass cl
                 newBitmapPixels[whereToPut++] = pixel;
             }
         }
-    } else if (degree == -90) {
+    } else if (degree == 270) {
         int whereToPut = 0;
         for (int x = bitmapInfo.width - 1; x >= 0; --x) {
             for (int y = 0; y < bitmapInfo.height; ++y) {

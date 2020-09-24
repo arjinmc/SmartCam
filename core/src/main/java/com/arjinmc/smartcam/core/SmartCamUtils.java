@@ -301,16 +301,16 @@ public final class SmartCamUtils {
                 resultDegree = 0;
             }
             if (degree >= 136 && degree <= 225) {
-                resultDegree = -90;
+                resultDegree = 270;
             }
         } else {
 
             if (degree >= 0 && degree <= 44) {
-                resultDegree = -90;
+                resultDegree = 270;
             }
 
             if (degree >= 315 && degree <= 360) {
-                resultDegree = -90;
+                resultDegree = 270;
             }
 
             if (degree >= 45 && degree <= 135) {
@@ -351,7 +351,7 @@ public final class SmartCamUtils {
                 resultDegree = 90;
             }
             if (degree >= 226 && degree <= 314) {
-                resultDegree = -90;
+                resultDegree = 270;
             }
             if (degree >= 136 && degree <= 225) {
                 resultDegree = 180;
@@ -371,7 +371,7 @@ public final class SmartCamUtils {
                 resultDegree = 90;
             }
             if (degree >= 226 && degree <= 314) {
-                resultDegree = -90;
+                resultDegree = 270;
             }
             if (degree >= 136 && degree <= 225) {
                 resultDegree = 0;
