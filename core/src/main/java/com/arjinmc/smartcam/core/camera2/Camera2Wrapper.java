@@ -354,16 +354,15 @@ public class Camera2Wrapper extends AbsCameraWrapper {
     public void openFlashMode() {
 
         dispatchFlashChange(CameraFlashMode.MODE_ON);
-        removeCameraParam(CaptureRequest.CONTROL_AE_MODE);
-        addCameraParam(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_SINGLE);
+        removeCameraParam(CaptureRequest.FLASH_MODE);
+        addCameraParam(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_ON);
     }
 
     @Override
     public void closeFlashMode() {
-
         dispatchFlashChange(CameraFlashMode.MODE_OFF);
-        addCameraParam(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_OFF);
         removeCameraParam(CaptureRequest.FLASH_MODE);
+        addCameraParam(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_OFF);
 
     }
 
@@ -371,8 +370,8 @@ public class Camera2Wrapper extends AbsCameraWrapper {
     public void autoFlashMode() {
 
         dispatchFlashChange(CameraFlashMode.MODE_AUTO);
-        addCameraParam(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_ON_AUTO_FLASH);
         removeCameraParam(CaptureRequest.FLASH_MODE);
+        addCameraParam(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_ON_AUTO_FLASH);
 
     }
 
@@ -382,7 +381,6 @@ public class Camera2Wrapper extends AbsCameraWrapper {
         dispatchFlashChange(CameraFlashMode.MODE_TORCH);
         removeCameraParam(CaptureRequest.CONTROL_AE_MODE);
         addCameraParam(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_TORCH);
-
     }
 
     @Override
