@@ -71,7 +71,8 @@ public class CameraManualFocusView extends View {
         mCameraManualFocusParams = SmartCamConfig.getInstance().getCameraManualFocusParams();
         if (mCameraManualFocusParams == null) {
             mCameraManualFocusParams = new CameraManualFocusParams();
-        } else if (mCameraManualFocusParams.getSize() == null) {
+        } else if (mCameraManualFocusParams.getShape() == CameraManualFocusParams.CAMERA_MANUAL_FOCUS_SHAPE_SQUARE
+                && mCameraManualFocusParams.getSize() == null) {
             throw new IllegalArgumentException("CameraManualFocusParams size must not be null！");
         }
 
