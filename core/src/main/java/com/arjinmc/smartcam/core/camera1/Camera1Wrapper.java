@@ -168,14 +168,6 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     }
 
     @Override
-    public boolean canManualFocus() {
-        if (mCamera == null) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public int getCurrentCameraType() {
         if (mCamera == null) {
             return CameraType.CAMERA_NULL;

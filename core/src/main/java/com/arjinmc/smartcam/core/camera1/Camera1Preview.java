@@ -91,6 +91,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                         public void onPictureTaken(final byte[] data, Camera camera) {
                             if (mCameraWrapper.getCaptureCallback() != null) {
                                 new ImageSaver(new SmartCamCaptureResult(data, CameraVersion.VERSION_1
+                                        //no need to return orientation because it has auto fix the right orientation
                                         , 0
                                         , SmartCamUtils.isShouldReverse(mCameraWrapper.getCurrentCameraType())
                                         , mPreviewSize.getHeight()

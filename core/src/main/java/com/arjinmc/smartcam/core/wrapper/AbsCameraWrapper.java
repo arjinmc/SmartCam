@@ -301,11 +301,6 @@ public class AbsCameraWrapper implements ICameraWrapper {
         return false;
     }
 
-    @Override
-    public boolean canManualFocus() {
-        return false;
-    }
-
     public String getPreviewRatio() {
         return mPreviewRatio;
     }

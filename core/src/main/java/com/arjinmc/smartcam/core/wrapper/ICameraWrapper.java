@@ -255,11 +255,4 @@ public interface ICameraWrapper {
      */
     boolean canFocusAuto();
 
-    /**
-     * check if can use camera manual focus(some devices not support)
-     *
-     * @return
-     */
-    boolean canManualFocus();
-
 }

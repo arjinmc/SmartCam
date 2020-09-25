@@ -11,7 +11,6 @@ import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
-import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.MeteringRectangle;
 import android.hardware.camera2.params.OutputConfiguration;
 import android.hardware.camera2.params.SessionConfiguration;
@@ -95,16 +94,6 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             }
         }
 
-        @Override
-        public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
-            if (mCamera2Wrapper.canManualFocus() && SmartCamConfig.getInstance().isUseManualFocus()
-                    && mPreviewRequestBuilder != null
-                    && mPreviewRequestBuilder.get(CaptureRequest.CONTROL_AF_TRIGGER) != null) {
-                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, null);
-                doPreView(mWidth, mHeight);
-            }
-            super.onCaptureCompleted(session, request, result);
-        }
     };
 
     private CameraCaptureSession.StateCallback mCaptureSessionStateCallback = new CameraCaptureSession.StateCallback() {
@@ -321,15 +310,15 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
         try {
 
             mCaptureSession.stopRepeating();
-            if (mCamera2Wrapper.canManualFocus()) {
+            if (SmartCamConfig.getInstance().isUseManualFocus()) {
                 //cancel any existing AF trigger (repeated touches, etc.)
-                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, null);
-                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_OFF);
+                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,null);
+                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_AUTO);
             }
             mCaptureSession.capture(mPreviewRequestBuilder.build(), null, null);
 
             //if use manual focus
-            if (mCamera2Wrapper.canManualFocus() && SmartCamConfig.getInstance().isUseManualFocus()
+            if (SmartCamConfig.getInstance().isUseManualFocus()
                     && mOnManualFocusListener != null && mOnManualFocusListener.getFocusRegion() != null) {
                 MeteringRectangle meteringRectangle = new MeteringRectangle(
                         mOnManualFocusListener.getFocusRegion(), MeteringRectangle.METERING_WEIGHT_MAX - 1);
