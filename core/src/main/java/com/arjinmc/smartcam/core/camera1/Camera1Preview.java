@@ -91,8 +91,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                         public void onPictureTaken(final byte[] data, Camera camera) {
                             if (mCameraWrapper.getCaptureCallback() != null) {
                                 new ImageSaver(new SmartCamCaptureResult(data, CameraVersion.VERSION_1
-                                        , SmartCamUtils.getShouldRotateOrientationForCamera1(mCameraDegree
-                                        , mCameraWrapper.getCurrentCameraType())
+                                        , 0
                                         , SmartCamUtils.isShouldReverse(mCameraWrapper.getCurrentCameraType())
                                         , mPreviewSize.getHeight()
                                         , mPreviewSize.getWidth()), mCameraWrapper.getCaptureCallback()).start();
@@ -215,6 +214,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                 parameters.setPictureSize(outputSize.getWidth(), outputSize.getHeight());
                 parameters.setJpegQuality(SmartCamConfig.getInstance().getCaptureQuality());
                 parameters.setPictureFormat(ImageFormat.JPEG);
+                parameters.setRotation(SmartCamUtils.getShouldRotateOrientationForCamera1(mCameraDegree, mCameraWrapper.getCurrentCameraType()));
                 parameters = mCameraWrapper.resumeFlashMode(parameters);
                 mCamera.setParameters(parameters);
                 mCamera.startPreview();
@@ -233,7 +233,29 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                 mOnManualFocusListener.cancelFocus();
             }
         }
+
+        int oldCameraDegree = mCameraDegree;
         mCameraDegree = degree;
+        if (mCamera == null) {
+            return;
+        }
+
+        //if should rotate degree is the same,no need to change preview orientation
+        if (SmartCamUtils.getShouldRotateOrientationForCamera1(oldCameraDegree, mCameraWrapper.getCurrentCameraType())
+                == SmartCamUtils.getShouldRotateOrientationForCamera1(mCameraDegree, mCameraWrapper.getCurrentCameraType())) {
+            return;
+        }
+
+        try {
+            Camera.Parameters parameters = mCamera.getParameters();
+            parameters.setRotation(SmartCamUtils.getShouldRotateOrientationForCamera1(
+                    mCameraDegree, mCameraWrapper.getCurrentCameraType()));
+            mCamera.setParameters(parameters);
+
+        } catch (Exception e) {
+//            e.printStackTrace();
+        }
+
     }
 
     @Override

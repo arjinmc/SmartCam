@@ -10,6 +10,7 @@ import android.hardware.Camera;
 import android.media.ExifInterface;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 import android.view.WindowManager;
@@ -458,9 +459,7 @@ public final class SmartCamUtils {
         }
         //1. Cut the rest that not preview
         bitmap = cropBitmap(bitmap, captureResult.getPreviewWidth(), captureResult.getPreviewHeight());
-        //2. Rotate the right orientation if it need
-        bitmap = rotateBitmap(bitmap, captureResult.getOrientation());
-        //3. If need to reverse image
+        //2. If need to reverse image
         if (captureResult.isNeedReverse()) {
             bitmap = reverseHorizontal(bitmap);
         }
@@ -497,7 +496,9 @@ public final class SmartCamUtils {
         if (captureResult == null || captureResult.getData() == null || file == null || !file.exists()) {
             return false;
         }
+        long time = System.currentTimeMillis();
         Bitmap temp = BitmapFactory.decodeByteArray(captureResult.getData(), 0, captureResult.getData().length);
+        Log.e("get bitmap", System.currentTimeMillis() - time + "ms");
         temp = dealAfterCapture(temp, captureResult);
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
