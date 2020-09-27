@@ -32,7 +32,6 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Eminem Lo on 2019-10-15.
@@ -146,6 +145,7 @@ public class SmartCamComplexActivity extends AppCompatActivity implements View.O
             mIvSwitchCamera.setVisibility(View.GONE);
         }
 
+        mSmartCam.logFeatures();
         saveCameraInfoIfNeed();
     }
 
@@ -154,10 +154,10 @@ public class SmartCamComplexActivity extends AppCompatActivity implements View.O
      */
     private void saveCameraInfoIfNeed() {
 
-        List<String> list = mSmartCam.getSupportPreviewSizeRatioList();
-        for (String li : list) {
-            Log.e("list", li);
-        }
+//        List<String> list = mSmartCam.getSupportPreviewSizeRatioList();
+//        for (String li : list) {
+//            Log.e("list", li);
+//        }
     }
 
     private void unconnected() {

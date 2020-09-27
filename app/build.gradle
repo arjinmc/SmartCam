@@ -31,7 +31,6 @@ dependencies {
     implementation project(":core")
     implementation project(":ui")
     implementation project(":compress")
-    implementation project(":waterprint")
     implementation project(":face")
     implementation project(":filter")
 
