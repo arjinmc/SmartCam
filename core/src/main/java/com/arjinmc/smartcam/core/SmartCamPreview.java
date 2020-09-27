@@ -24,6 +24,7 @@ import com.arjinmc.smartcam.core.model.CameraManualFocusParams;
 import com.arjinmc.smartcam.core.model.CameraSize;
 import com.arjinmc.smartcam.core.model.CameraVersion;
 import com.arjinmc.smartcam.core.view.CameraManualFocusView;
+import com.arjinmc.smartcam.core.wrapper.ICameraPreviewWrapper;
 
 /**
  * SmartCamPreview
@@ -87,6 +88,7 @@ public class SmartCamPreview extends FrameLayout {
             @Override
             public void cancelFocus() {
                 hideManualFocusView();
+                getPreviewWrapper().resumeAutoFocus();
             }
 
             @Override
@@ -387,6 +389,13 @@ public class SmartCamPreview extends FrameLayout {
         } else if (isUsedCamera2()) {
             mCamera2Preview.stopPreview();
         }
+    }
+
+    private ICameraPreviewWrapper getPreviewWrapper() {
+        if (isUsedCamera2()) {
+            return mCamera2Preview;
+        }
+        return mCamera1Preview;
     }
 
     private View getPreview() {

@@ -285,6 +285,20 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
         }
     }
 
+    @Override
+    public void resumeAutoFocus() {
+        if (mCamera == null) {
+            return;
+        }
+        if (!SmartCamUtils.hasAutoFocus(getContext())) {
+            return;
+        }
+
+        Camera.Parameters parameters = mCamera.getParameters();
+        parameters = setAutoFocusMode(parameters, true);
+        mCamera.setParameters(parameters);
+    }
+
     /**
      * set focus mode
      *

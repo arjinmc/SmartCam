@@ -32,6 +32,11 @@ public interface ICameraPreviewWrapper {
     void destroy();
 
     /**
+     * resume auto focus (when manual focus is not used)
+     */
+    void resumeAutoFocus();
+
+    /**
      * callback for manual focus
      *
      * @param onManualFocusListener

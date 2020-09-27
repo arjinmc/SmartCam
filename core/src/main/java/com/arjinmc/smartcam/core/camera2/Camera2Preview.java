@@ -6,7 +6,6 @@ import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
-import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureFailure;
@@ -312,7 +311,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             mCaptureSession.stopRepeating();
             if (SmartCamConfig.getInstance().isUseManualFocus()) {
                 //cancel any existing AF trigger (repeated touches, etc.)
-                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,null);
+                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, null);
                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_AUTO);
             }
             mCaptureSession.capture(mPreviewRequestBuilder.build(), null, null);
@@ -380,19 +379,8 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             CaptureRequest.Builder captureRequestBuilder = mCamera.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             captureRequestBuilder = mCamera2Wrapper.resumeParams(captureRequestBuilder);
             captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-//            captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, SmartCamUtils.getShouldRotateDegree(
-//                    getContext()
-//                    , mCamera2Wrapper.getCurrentCameraType()
-//                    , mCamera2Wrapper.getCurrentCameraId()
-//                    , SmartCamUtils.getCaptureOrientation(mDegree)));
             captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, SmartCamUtils.getShouldRotateDegree(
                     mCamera2Wrapper.getCurrentCameraType(), mDegree));
-
-//            Log.e("my1", SmartCamUtils.getShouldRotateDegree(
-//                    mCamera2Wrapper.getCurrentCameraType(), mDegree) + "");
-//            CameraManager manager = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);
-//            CameraCharacteristics characteristics = manager.getCameraCharacteristics(mCamera2Wrapper.getCurrentCameraId());
-//            Log.e("my2", getJpegOrientation(characteristics, SmartCamUtils.getWindowDisplayRotation(getContext())) + "");
             captureRequestBuilder.addTarget(mImageReader.getSurface());
             mCaptureSession.stopRepeating();
             mCaptureSession.abortCaptures();
@@ -420,26 +408,6 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
         if (mOnCaptureAnimationListener != null) {
             mOnCaptureAnimationListener.onStop();
         }
-    }
-
-    private int getJpegOrientation(CameraCharacteristics c, int deviceOrientation) {
-        if (deviceOrientation == android.view.OrientationEventListener.ORIENTATION_UNKNOWN) {
-            return 0;
-        }
-        int sensorOrientation = c.get(CameraCharacteristics.SENSOR_ORIENTATION);
-
-        // Round device orientation to a multiple of 90
-        deviceOrientation = (deviceOrientation + 45) / 90 * 90;
-
-        // Reverse device orientation for front-facing cameras
-        boolean facingFront = c.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_FRONT;
-        if (facingFront) deviceOrientation = -deviceOrientation;
-
-        // Calculate desired JPEG orientation relative to camera orientation to make
-        // the image upright relative to the device orientation
-        int jpegOrientation = (sensorOrientation + deviceOrientation + 360) % 360;
-
-        return jpegOrientation;
     }
 
     @Override
@@ -486,6 +454,18 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void resumeAutoFocus() {
+
+        if (mCamera == null) {
+            return;
+        }
+        if (!SmartCamUtils.hasAutoFocus(getContext())) {
+            return;
+        }
+        doPreView(mWidth, mHeight);
     }
 
     @Override
