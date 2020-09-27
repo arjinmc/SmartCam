@@ -75,7 +75,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
     /**
      * the degreee when capture
      */
-    private Integer mDegree;
+    private int mDegree;
     private Matrix mMatrix;
 
     private CameraCaptureSession.CaptureCallback mCaptureCallback = new CameraCaptureSession.CaptureCallback() {
@@ -412,8 +412,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 
     @Override
     public void onOrientationChange(int degree) {
-        if (mDegree != null
-                && Math.abs(degree - mDegree) > SmartCamConfig.getInstance().getDismissManualFocusDegreeOffset()) {
+        if (Math.abs(degree - mDegree) > SmartCamConfig.getInstance().getDismissManualFocusDegreeOffset()) {
             if (mOnManualFocusListener != null) {
                 mOnManualFocusListener.cancelFocus();
             }
