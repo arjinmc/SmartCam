@@ -334,7 +334,9 @@ public class SmartCamPreview extends FrameLayout {
 
     private void stopCaptureAnimation() {
 
-        mCaptureAnimation.cancel();
+        if (mCaptureAnimation != null) {
+            mCaptureAnimation.cancel();
+        }
     }
 
     /**
