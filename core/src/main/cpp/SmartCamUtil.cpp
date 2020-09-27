@@ -32,6 +32,20 @@ jobject createBitmap(JNIEnv *env, uint32_t width, uint32_t height) {
     return newBitmap;
 }
 
+jobject createBitmap(JNIEnv *env, jbyte imageData[]) {
+
+    jclass bitmapCls = env->FindClass("android/graphics/Bitmap");
+    jclass bitmapFactoryCls = env->FindClass("android/graphics/BitmapFactory");
+    jmethodID createBitmapFunction = env->GetStaticMethodID(bitmapFactoryCls,
+                                                            "decodeByteArray",
+                                                            "(BII;)Landroid/graphics/Bitmap;");
+
+    jobject newBitmap = env->CallStaticObjectMethod(bitmapFactoryCls,
+                                                    createBitmapFunction, imageData, 0,
+                                                    sizeof(imageData));
+    return newBitmap;
+}
+
 extern "C"
 JNIEXPORT jobject JNICALL
 Java_com_arjinmc_smartcam_core_SmartCamUtils_rotateBitmap(JNIEnv *env, jclass clazz,

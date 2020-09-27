@@ -294,9 +294,14 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
             return;
         }
 
-        Camera.Parameters parameters = mCamera.getParameters();
-        parameters = setAutoFocusMode(parameters, true);
-        mCamera.setParameters(parameters);
+        try {
+            Camera.Parameters parameters = mCamera.getParameters();
+            parameters = setAutoFocusMode(parameters, true);
+            mCamera.setParameters(parameters);
+        } catch (Exception e) {
+
+        }
+
     }
 
     /**
