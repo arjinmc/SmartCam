@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/Users/arjinmc/git/SmartCam/compress/.cxx/cmake/release/armeabi-v7a",
+  "command": "/Users/arjinmc/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++ --target=armv7-none-linux-androideabi16 --gcc-toolchain=/Users/arjinmc/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/arjinmc/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot  -Dsmartcam_compress_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security   -Oz -DNDEBUG  -fPIC   -o CMakeFiles/smartcam-compress.dir/native-lib.cpp.o -c /Users/arjinmc/git/SmartCam/compress/src/main/cpp/native-lib.cpp",
+  "file": "/Users/arjinmc/git/SmartCam/compress/src/main/cpp/native-lib.cpp"
+}
+]

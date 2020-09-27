@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/SmartCam.iml" filepath="$PROJECT_DIR$/SmartCam.iml" group="SmartCam" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="SmartCam/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Compress/compress.iml" filepath="$PROJECT_DIR$/.idea/modules/Compress/compress.iml" group="SmartCam/compress" />
+      <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" group="SmartCam/core" />
+      <module fileurl="file://$PROJECT_DIR$/face/face.iml" filepath="$PROJECT_DIR$/face/face.iml" group="SmartCam/face" />
+      <module fileurl="file://$PROJECT_DIR$/filter/filter.iml" filepath="$PROJECT_DIR$/filter/filter.iml" group="SmartCam/filter" />
+      <module fileurl="file://$PROJECT_DIR$/ui/ui.iml" filepath="$PROJECT_DIR$/ui/ui.iml" group="SmartCam/ui" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/watermark/watermark.iml" filepath="$PROJECT_DIR$/.idea/modules/watermark/watermark.iml" group="SmartCam/watermark" />
+    </modules>
+  </component>
+</project>

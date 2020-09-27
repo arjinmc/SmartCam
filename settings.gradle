@@ -1,3 +1,4 @@
+include ':watermark'
 include ':compress'
 include ':app', ':core', ':ui', ':filter', ':face'
 rootProject.name='SmartCam'

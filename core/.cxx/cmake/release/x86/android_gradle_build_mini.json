@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/arjinmc/Library/Android/sdk/ndk/21.0.6113669/build/cmake/platforms.cmake",
+    "/Users/arjinmc/git/SmartCam/core/src/main/cpp/CMakeLists.txt",
+    "/Users/arjinmc/Library/Android/sdk/ndk/21.0.6113669/build/cmake/android.toolchain.cmake"
+  ],
+  "cleanCommands": [
+    "/Users/arjinmc/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/arjinmc/git/SmartCam/core/.cxx/cmake/release/x86\" clean"
+  ],
+  "buildTargetsCommand": "/Users/arjinmc/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja  -C \"/Users/arjinmc/git/SmartCam/core/.cxx/cmake/release/x86\" {LIST_OF_TARGETS_TO_BUILD}",
+  "libraries": {
+    "smartcam-core-Release-x86": {
+      "artifactName": "smartcam-core",
+      "buildCommand": "/Users/arjinmc/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/arjinmc/git/SmartCam/core/.cxx/cmake/release/x86\" smartcam-core",
+      "abi": "x86",
+      "output": "/Users/arjinmc/git/SmartCam/core/build/intermediates/cmake/release/obj/x86/libsmartcam-core.so",
+      "runtimeFiles": []
+    }
+  }
+}

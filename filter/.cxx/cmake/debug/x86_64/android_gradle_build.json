@@ -1,0 +1,43 @@
+{
+  "stringTable": {
+    "0": "/Users/arjinmc/git/SmartCam/filter/.cxx/cmake/debug/x86_64",
+    "1": "--target=x86_64-none-linux-android21 --gcc-toolchain=/Users/arjinmc/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/arjinmc/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dsmartcam_filter_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -O0 -fno-limit-debug-info -fPIC"
+  },
+  "buildFiles": [
+    "/Users/arjinmc/Library/Android/sdk/ndk/21.0.6113669/build/cmake/platforms.cmake",
+    "/Users/arjinmc/git/SmartCam/filter/src/main/cpp/CMakeLists.txt",
+    "/Users/arjinmc/Library/Android/sdk/ndk/21.0.6113669/build/cmake/android.toolchain.cmake"
+  ],
+  "cleanCommands": [
+    "/Users/arjinmc/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/arjinmc/git/SmartCam/filter/.cxx/cmake/debug/x86_64\" clean"
+  ],
+  "buildTargetsCommand": "/Users/arjinmc/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja  -C \"/Users/arjinmc/git/SmartCam/filter/.cxx/cmake/debug/x86_64\" {LIST_OF_TARGETS_TO_BUILD}",
+  "libraries": {
+    "smartcam-filter-Debug-x86_64": {
+      "buildCommand": "/Users/arjinmc/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/arjinmc/git/SmartCam/filter/.cxx/cmake/debug/x86_64\" smartcam-filter",
+      "buildType": "debug",
+      "toolchain": "1556703598",
+      "abi": "x86_64",
+      "artifactName": "smartcam-filter",
+      "files": [
+        {
+          "src": "/Users/arjinmc/git/SmartCam/filter/src/main/cpp/native-lib.cpp",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        }
+      ],
+      "headers": [],
+      "output": "/Users/arjinmc/git/SmartCam/filter/build/intermediates/cmake/debug/obj/x86_64/libsmartcam-filter.so",
+      "runtimeFiles": []
+    }
+  },
+  "toolchains": {
+    "1556703598": {
+      "cppCompilerExecutable": "/Users/arjinmc/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

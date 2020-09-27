@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: com.arjinmc.android:expandrecyclerview:3.2@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2585daaf5cdc6eff02171c5cce6da430/jetified-expandrecyclerview-3.2/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2585daaf5cdc6eff02171c5cce6da430/jetified-expandrecyclerview-3.2/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2585daaf5cdc6eff02171c5cce6da430/jetified-expandrecyclerview-3.2/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.arjinmc.android/expandrecyclerview/3.2/b1a54a87f0c2a70221f2cf58a06ae4bb715e2444/expandrecyclerview-3.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.arjinmc.android/expandrecyclerview/3.2/1545a16c40dc540094c52d1e8c5200f32a39224/expandrecyclerview-3.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,7 @@
+Executable : /Users/arjinmc/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja
+arguments : 
+-C
+/Users/arjinmc/git/SmartCam/core/.cxx/cmake/release/x86
+smartcam-core
+jvmArgs : 
+
