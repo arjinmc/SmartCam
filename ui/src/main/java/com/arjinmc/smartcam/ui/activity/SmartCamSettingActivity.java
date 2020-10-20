@@ -1,5 +1,6 @@
 package com.arjinmc.smartcam.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -10,6 +11,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.arjinmc.smartcam.ui.R;
+import com.arjinmc.smartcam.ui.SmartCamSPManager;
+import com.arjinmc.smartcam.ui.SmartCamUIConstants;
+import com.arjinmc.smartcam.ui.widget.SmartCamRadioDialog;
+
+import java.util.ArrayList;
 
 /**
  * Setting for complex camera view
@@ -21,6 +27,8 @@ public class SmartCamSettingActivity extends AppCompatActivity implements View.O
     private ImageView mIvBack;
     private ConstraintLayout mClRatio;
     private TextView mTvRatio;
+    private ArrayList<String> mRatioList;
+    private SmartCamRadioDialog mRadioDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,22 +39,34 @@ public class SmartCamSettingActivity extends AppCompatActivity implements View.O
         initData();
     }
 
-
     private void initView() {
         mIvBack = findViewById(R.id.smartcam_iv_back);
 
         mClRatio = findViewById(R.id.smartcam_cl_ratio);
         mTvRatio = findViewById(R.id.smartcam_tv_ratio);
 
+        mRadioDialog = new SmartCamRadioDialog();
     }
 
     private void initListener() {
         mIvBack.setOnClickListener(this);
         mClRatio.setOnClickListener(this);
+
+        mRadioDialog.setOnSelectedListener(new SmartCamRadioDialog.OnSelectedListener() {
+            @Override
+            public void onSelected(String ratio) {
+                mTvRatio.setText(ratio);
+            }
+        });
     }
 
     private void initData() {
 
+        Intent intent = getIntent();
+        mRatioList = intent.getStringArrayListExtra(SmartCamUIConstants.BUNDLE_RATIO_LIST);
+        mRadioDialog.setData(mRatioList);
+
+        mTvRatio.setText(SmartCamSPManager.getInstance(this).getRatio());
     }
 
     @Override
@@ -55,7 +75,8 @@ public class SmartCamSettingActivity extends AppCompatActivity implements View.O
             finish();
         }
         if (v.getId() == R.id.smartcam_cl_ratio) {
-            //todo show list of camera support radio
+            mRadioDialog.show(getSupportFragmentManager());
+            return;
         }
     }
 }

@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
     private Integer[] mTitles = new Integer[]{
             R.string.default_ui_simple
             , R.string.default_ui_complex
-            , R.string.default_ui_pro
             , R.string.prieview_from_new_object
             , R.string.prieview_from_xml};
 
@@ -79,9 +78,6 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                             case R.string.default_ui_complex:
                                 SmartCamUIManager.startComplexUI(MainActivity.this);
-                                break;
-                            case R.string.default_ui_pro:
-                                SmartCamUIManager.startProfessionalUI(MainActivity.this);
                                 break;
                             case R.string.prieview_from_new_object:
                                 startActivity(PreviewFromNewActivity.class);

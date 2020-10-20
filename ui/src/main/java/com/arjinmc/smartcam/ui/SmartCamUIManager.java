@@ -2,7 +2,6 @@ package com.arjinmc.smartcam.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
 import com.arjinmc.smartcam.ui.activity.SmartCamComplexActivity;
 import com.arjinmc.smartcam.ui.activity.SmartCamSimpleActivity;
@@ -27,14 +26,6 @@ public final class SmartCamUIManager {
     public static void startComplexUI(Context context) {
         startActivity(context, SmartCamComplexActivity.class);
     }
-
-    /**
-     * start camera view with professional ui
-     */
-    public static void startProfessionalUI(Context context) {
-        Toast.makeText(context, "This part has not done yet!", Toast.LENGTH_SHORT).show();
-    }
-
 
     private static void startActivity(Context context, Class clz) {
         if (context == null || clz == null) {

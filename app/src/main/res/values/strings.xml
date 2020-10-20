@@ -8,7 +8,6 @@
 
     <string name="default_ui_simple">Default UI level: Simple</string>
     <string name="default_ui_complex">Default UI level: Complex</string>
-    <string name="default_ui_pro">Default UI level: Professional</string>
     <string name="prieview_from_new_object">Preview from new object</string>
     <string name="prieview_from_xml">Preview from xml</string>
 </resources>
