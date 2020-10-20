@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -137,12 +138,20 @@ public class SmartCamPreview extends FrameLayout {
             }
         }
 
-        if (mSmartCam.getPreviewRatio() != null) {
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (mSmartCam.getPreviewRatio() != null && getMeasuredWidth() != 0 && getMeasuredHeight() != 0) {
             int width = getMeasuredWidth();
             CameraAspectRatio ratio = new CameraAspectRatio();
             ratio.parse(mSmartCam.getPreviewRatio());
             if (ratio.isValid()) {
-                getPreview().setLayoutParams(new FrameLayout.LayoutParams(width, width * ratio.getX() / ratio.getY()));
+                FrameLayout.LayoutParams previewLayoutParams = new FrameLayout.LayoutParams(
+                        width, width * ratio.getX() / ratio.getY());
+                previewLayoutParams.gravity = Gravity.CENTER;
+                getPreview().setLayoutParams(previewLayoutParams);
             }
         }
     }
