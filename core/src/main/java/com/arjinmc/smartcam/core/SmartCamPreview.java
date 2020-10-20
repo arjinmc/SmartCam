@@ -186,7 +186,7 @@ public class SmartCamPreview extends FrameLayout {
                 if (x - cameraManualFocusParams.getRadius() < 0
                         || x + cameraManualFocusParams.getRadius() > getMeasuredWidth()
                         || y - cameraManualFocusParams.getRadius() < 0
-                        || y + cameraManualFocusParams.getRadius() > getMeasuredHeight()) {
+                        || y + cameraManualFocusParams.getRadius() > getMeasuredHeight() - getTouchMargin() * 2) {
 
                     canShow = false;
                 }
@@ -196,7 +196,7 @@ public class SmartCamPreview extends FrameLayout {
                     if (x - shapeSize.getWidth() / 2 < 0
                             || x + shapeSize.getWidth() / 2 > getMeasuredWidth()
                             || y - shapeSize.getHeight() / 2 < 0
-                            || y + shapeSize.getHeight() / 2 > getMeasuredHeight()) {
+                            || y + shapeSize.getHeight() / 2 > getMeasuredHeight() - getTouchMargin() * 2) {
                         canShow = false;
                     }
                 }
@@ -205,7 +205,7 @@ public class SmartCamPreview extends FrameLayout {
             if (canShow) {
                 mTouchX = x;
                 mTouchY = y;
-                mCameraManualFocusView.setTouchPoint(x, y);
+                mCameraManualFocusView.setTouchPoint(x, y + getTouchMargin());
                 if (mCameraManualFocusView.getVisibility() != View.VISIBLE) {
                     mCameraManualFocusView.setVisibility(View.VISIBLE);
                 }
@@ -217,6 +217,15 @@ public class SmartCamPreview extends FrameLayout {
                 }
             }
         }
+    }
+
+    /**
+     * touch margin between parent view( this view itself) and preview view (camera preview)
+     *
+     * @return
+     */
+    private int getTouchMargin() {
+        return (getMeasuredHeight() - getPreview().getMeasuredHeight()) / 2;
     }
 
     public Rect getFocusRectForCamera2() {

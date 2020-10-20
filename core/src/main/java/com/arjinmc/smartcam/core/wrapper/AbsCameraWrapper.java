@@ -310,6 +310,8 @@ public class AbsCameraWrapper implements ICameraWrapper {
         cameraAspectRatio.parse(previewRatio);
         if (cameraAspectRatio.isValid()) {
             mPreviewRatio = previewRatio;
+        } else {
+            mPreviewRatio = null;
         }
     }
 
