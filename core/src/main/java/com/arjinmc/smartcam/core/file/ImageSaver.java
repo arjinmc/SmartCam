@@ -25,7 +25,9 @@ public class ImageSaver extends Thread {
                     mSmartCamCaptureResult.getData(), mSmartCamCaptureResult.getCameraVersion()
                     , mSmartCamCaptureResult.getOrientation()
                     , mSmartCamCaptureResult.isNeedReverse()
-                    , mSmartCamCaptureResult.getPreviewWidth(), mSmartCamCaptureResult.getPreviewHeight()));
+                    , mSmartCamCaptureResult.getPreviewWidth()
+                    , mSmartCamCaptureResult.getPreviewHeight()
+                    , mSmartCamCaptureResult.getRatio()));
         }
     }
 }

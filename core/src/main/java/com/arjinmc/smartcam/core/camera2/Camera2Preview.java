@@ -129,7 +129,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 //            SmartCamUtils.getShouldRotateOrientationForCamera2(mDegree, mCamera2Wrapper.getCurrentCameraType());
                         , 0
                         , SmartCamUtils.isShouldReverse(mCamera2Wrapper.getCurrentCameraType())
-                        , mWidth, mHeight),
+                        , mWidth, mHeight, mCamera2Wrapper.getPreviewRatio()),
                         mCamera2Wrapper.getCaptureCallback()).start();
             }
 

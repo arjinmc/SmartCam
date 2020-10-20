@@ -95,7 +95,8 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                                         , 0
                                         , SmartCamUtils.isShouldReverse(mCameraWrapper.getCurrentCameraType())
                                         , mPreviewSize.getHeight()
-                                        , mPreviewSize.getWidth()), mCameraWrapper.getCaptureCallback()).start();
+                                        , mPreviewSize.getWidth()
+                                        , mCameraWrapper.getPreviewRatio()), mCameraWrapper.getCaptureCallback()).start();
                             }
                             if (SmartCamConfig.getInstance().isAutoReset()) {
                                 doPreview();

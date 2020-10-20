@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import androidx.annotation.RequiresApi;
 
 import com.arjinmc.smartcam.core.file.SmartCamFileUtils;
+import com.arjinmc.smartcam.core.model.CameraAspectRatio;
 import com.arjinmc.smartcam.core.model.CameraSize;
 import com.arjinmc.smartcam.core.model.CameraType;
 import com.arjinmc.smartcam.core.model.SmartCamCaptureResult;
@@ -456,9 +457,14 @@ public final class SmartCamUtils {
         if (bitmap == null || captureResult == null) {
             return bitmap;
         }
-        //1. Cut the rest that not preview
-        bitmap = cropBitmap(bitmap, captureResult.getPreviewWidth(), captureResult.getPreviewHeight());
-        //2. If need to reverse image
+        CameraAspectRatio cameraAspectRatio = new CameraAspectRatio();
+        cameraAspectRatio.parse(captureResult.getRatio());
+        //if ratio is not valid that means picture use fix window mode
+        if (!cameraAspectRatio.isValid()) {
+            //Cut the rest that not preview
+            bitmap = cropBitmap(bitmap, captureResult.getPreviewWidth(), captureResult.getPreviewHeight());
+        }
+        //If need to reverse image
         if (captureResult.isNeedReverse()) {
             bitmap = reverseHorizontal(bitmap);
         }

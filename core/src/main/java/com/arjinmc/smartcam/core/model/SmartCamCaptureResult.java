@@ -17,6 +17,10 @@ public class SmartCamCaptureResult implements Serializable {
     private int previewWidth;
     private int previewHeight;
     private int cameraVersion;
+    /**
+     * preview ratio
+     */
+    private String ratio;
 
     public byte[] getData() {
         return data;
@@ -66,13 +70,22 @@ public class SmartCamCaptureResult implements Serializable {
         this.cameraVersion = cameraVersion;
     }
 
+    public String getRatio() {
+        return ratio;
+    }
+
+    public void setRatio(String ratio) {
+        this.ratio = ratio;
+    }
+
     public SmartCamCaptureResult(byte[] data, int cameraVersion, int orientation
-            , boolean needReverse, int previewWidth, int previewHeight) {
+            , boolean needReverse, int previewWidth, int previewHeight, String ratio) {
         this.data = data;
         this.cameraVersion = cameraVersion;
         this.orientation = orientation;
         this.needReverse = needReverse;
         this.previewWidth = previewWidth;
         this.previewHeight = previewHeight;
+        this.ratio = ratio;
     }
 }
