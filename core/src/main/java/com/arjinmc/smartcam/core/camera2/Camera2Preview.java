@@ -355,6 +355,8 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             //if has set zoom level
             if (mCamera2Wrapper.getZoom() != 0) {
                 mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, getZoomRect());
+            } else {
+                mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, null);
             }
 
             //resume params has set
