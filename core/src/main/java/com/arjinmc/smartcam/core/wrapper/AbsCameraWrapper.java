@@ -271,6 +271,11 @@ public class AbsCameraWrapper implements ICameraWrapper {
     }
 
     @Override
+    public boolean isZoomAvailable() {
+        return false;
+    }
+
+    @Override
     public int getZoom() {
         return 0;
     }
@@ -278,6 +283,11 @@ public class AbsCameraWrapper implements ICameraWrapper {
     @Override
     public void setZoom(int zoomLevel) {
 
+    }
+
+    @Override
+    public int getMaxZoom() {
+        return 0;
     }
 
     @Override

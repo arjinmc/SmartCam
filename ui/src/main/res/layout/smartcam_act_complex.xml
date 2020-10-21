@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/smartcam_view_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/smartcam_view_root">
+    android:layout_height="match_parent">
 
     <com.arjinmc.smartcam.core.SmartCamPreview
         android:id="@+id/smartcam_preview"
@@ -27,6 +27,17 @@
         android:layout_marginTop="32dp"
         android:layout_marginRight="16dp"
         android:src="@drawable/smartcam_ic_menu" />
+
+    <SeekBar
+        android:id="@+id/smartcam_zoom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="34dp"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@id/smartcam_iv_menu"
+        android:layout_toRightOf="@id/smartcam_iv_switch_flash"
+        android:visibility="gone" />
 
     <ImageButton
         android:id="@+id/smartcam_btn_capture"

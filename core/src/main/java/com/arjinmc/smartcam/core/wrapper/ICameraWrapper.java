@@ -212,6 +212,13 @@ public interface ICameraWrapper {
     int getOrientation();
 
     /**
+     * check if it can zoom
+     *
+     * @return
+     */
+    boolean isZoomAvailable();
+
+    /**
      * get zoom level
      *
      * @return
@@ -224,6 +231,13 @@ public interface ICameraWrapper {
      * @param zoomLevel
      */
     void setZoom(int zoomLevel);
+
+    /**
+     * get max zoom
+     *
+     * @return
+     */
+    int getMaxZoom();
 
     /**
      * set state callback

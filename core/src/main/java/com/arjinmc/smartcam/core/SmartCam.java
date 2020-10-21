@@ -164,6 +164,11 @@ public class SmartCam extends AbsCameraWrapper {
     }
 
     @Override
+    public boolean isZoomAvailable() {
+        return mCameraWrapper.isZoomAvailable();
+    }
+
+    @Override
     public int getZoom() {
         return mCameraWrapper.getZoom();
     }
@@ -171,6 +176,11 @@ public class SmartCam extends AbsCameraWrapper {
     @Override
     public void setZoom(int zoomLevel) {
         mCameraWrapper.setZoom(zoomLevel);
+    }
+
+    @Override
+    public int getMaxZoom() {
+        return mCameraWrapper.getMaxZoom();
     }
 
     @Override

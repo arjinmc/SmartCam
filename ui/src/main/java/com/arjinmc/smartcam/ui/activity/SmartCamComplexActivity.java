@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -54,6 +55,7 @@ public class SmartCamComplexActivity extends AppCompatActivity implements View.O
     private ImageView mIvSwitchCamera;
     private ImageView mIvSwitchFlashLight;
     private ImageView mIvMenu;
+    private SeekBar mSbZoom;
 
     private RelativeLayout mViewRoot;
     private boolean hasCamera, hasFlashLight;
@@ -81,6 +83,7 @@ public class SmartCamComplexActivity extends AppCompatActivity implements View.O
         mIvSwitchCamera = findViewById(R.id.smartcam_iv_switch_camera);
         mIvSwitchFlashLight = findViewById(R.id.smartcam_iv_switch_flash);
         mIvMenu = findViewById(R.id.smartcam_iv_menu);
+        mSbZoom = findViewById(R.id.smartcam_zoom);
 
         mViewRoot = findViewById(R.id.smartcam_view_root);
     }
@@ -90,6 +93,26 @@ public class SmartCamComplexActivity extends AppCompatActivity implements View.O
         mIvSwitchCamera.setOnClickListener(this);
         mIvSwitchFlashLight.setOnClickListener(this);
         mIvMenu.setOnClickListener(this);
+
+        mSbZoom.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (mSmartCam != null) {
+                    Log.e("zoom", progress + "");
+                    mSmartCam.setZoom(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     private void initData() {
@@ -154,6 +177,10 @@ public class SmartCamComplexActivity extends AppCompatActivity implements View.O
 
         mSmartCam.logFeatures();
 
+        if (mSmartCam.isZoomAvailable()) {
+            mSbZoom.setVisibility(View.VISIBLE);
+            mSbZoom.setMax(mSmartCam.getMaxZoom() / 2);
+        }
     }
 
     private void unconnected() {

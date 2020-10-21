@@ -218,6 +218,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                 parameters.setPictureFormat(ImageFormat.JPEG);
                 parameters.setRotation(SmartCamUtils.getShouldRotateOrientationForCamera1(mCameraDegree, mCameraWrapper.getCurrentCameraType()));
                 parameters = mCameraWrapper.resumeFlashMode(parameters);
+                parameters = mCameraWrapper.resumeZoom(parameters);
                 mCamera.setParameters(parameters);
                 mCamera.startPreview();
             }

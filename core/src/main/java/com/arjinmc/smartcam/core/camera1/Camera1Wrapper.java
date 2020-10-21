@@ -27,6 +27,7 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     private Camera mCamera;
     private CameraLock mCameraLock;
     private int mFlashMode = CameraFlashMode.MODE_OFF;
+    private int mZoom = 0;
 
     public Camera1Wrapper() {
         mCameraLock = new CameraLock();
@@ -284,6 +285,15 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     }
 
     @Override
+    public boolean isZoomAvailable() {
+        if (mCamera == null) {
+            return false;
+        }
+        Camera.Parameters parameters = mCamera.getParameters();
+        return parameters.isZoomSupported();
+    }
+
+    @Override
     public int getZoom() {
         if (mCamera != null) {
             return mCamera.getParameters().getZoom();
@@ -293,7 +303,35 @@ public class Camera1Wrapper extends AbsCameraWrapper {
 
     @Override
     public void setZoom(int zoomLevel) {
-        mCamera.getParameters().setZoom(zoomLevel);
+
+        if (mCamera == null) {
+            return;
+        }
+
+        try {
+            Camera.Parameters parameters = mCamera.getParameters();
+            parameters.setZoom(zoomLevel);
+            mZoom = zoomLevel;
+            mCamera.setParameters(parameters);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public int getMaxZoom() {
+        return mCamera.getParameters().getMaxZoom();
+    }
+
+    /**
+     * reumse camera flash mode when start preview
+     */
+    public Camera.Parameters resumeZoom(Camera.Parameters parameters) {
+        if (parameters == null) {
+            return parameters;
+        }
+        parameters.setZoom(mZoom);
+        return parameters;
     }
 
     @Override
