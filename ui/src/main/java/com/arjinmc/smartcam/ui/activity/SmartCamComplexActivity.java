@@ -179,7 +179,7 @@ public class SmartCamComplexActivity extends AppCompatActivity implements View.O
 
         if (mSmartCam.isZoomAvailable()) {
             mSbZoom.setVisibility(View.VISIBLE);
-            mSbZoom.setMax(mSmartCam.getMaxZoom() / 2);
+            mSbZoom.setMax((int) mSmartCam.getMaxZoom());
         }
     }
 

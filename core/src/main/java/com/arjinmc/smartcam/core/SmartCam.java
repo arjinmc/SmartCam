@@ -169,17 +169,17 @@ public class SmartCam extends AbsCameraWrapper {
     }
 
     @Override
-    public int getZoom() {
+    public float getZoom() {
         return mCameraWrapper.getZoom();
     }
 
     @Override
-    public void setZoom(int zoomLevel) {
+    public void setZoom(float zoomLevel) {
         mCameraWrapper.setZoom(zoomLevel);
     }
 
     @Override
-    public int getMaxZoom() {
+    public float getMaxZoom() {
         return mCameraWrapper.getMaxZoom();
     }
 

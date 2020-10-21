@@ -3,6 +3,7 @@ package com.arjinmc.smartcam.core.camera2;
 import android.content.Context;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -66,6 +67,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
     private ImageReader mImageReader;
     private Executor mExecutor;
     private Camera2Wrapper.OnFlashChangeListener mOnFlashChangeListener;
+    private Camera2Wrapper.OnZoomChangeListener mOnZoomChangeListener;
     private AbsCameraWrapper.OnClickCaptureListener mOnClickCaptureListener;
     private SmartCamOrientationEventListener mOrientationEventListener;
     private SmartCamPreview.OnManualFocusListener mOnManualFocusListener;
@@ -180,6 +182,14 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             }
         };
         mCamera2Wrapper.setOnFlashChangeListener(mOnFlashChangeListener);
+
+        mOnZoomChangeListener = new Camera2Wrapper.OnZoomChangeListener() {
+            @Override
+            public void onZoomChange(float zoom) {
+                doPreView(mWidth, mHeight);
+            }
+        };
+        mCamera2Wrapper.setOnZoomChangeListener(mOnZoomChangeListener);
 
         //init click capture listener
         mOnClickCaptureListener = new AbsCameraWrapper.OnClickCaptureListener() {
@@ -342,6 +352,11 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             mPreviewRequestBuilder.set(CaptureRequest.JPEG_QUALITY
                     , (byte) SmartCamConfig.getInstance().getCaptureQuality());
 
+            //if has set zoom level
+            if (mCamera2Wrapper.getZoom() != 0) {
+                mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, getZoomRect());
+            }
+
             //resume params has set
             mPreviewRequestBuilder = mCamera2Wrapper.resumeParams(mPreviewRequestBuilder);
             mPreviewRequest = mPreviewRequestBuilder.build();
@@ -483,5 +498,26 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             return;
         }
         mCamera2Wrapper.getCaptureCallback().onError(smartCamError);
+    }
+
+    /**
+     * get zoom rect
+     *
+     * @return
+     */
+    private Rect getZoomRect() {
+
+        float newZoom = mCamera2Wrapper.getZoom();
+        final int centerX = getMeasuredWidth() / 2;
+        final int centerY = getMeasuredHeight() / 2;
+        final int deltaX = (int) ((0.5f * getMeasuredWidth()) / newZoom);
+        final int deltaY = (int) ((0.5f * getMeasuredHeight()) / newZoom);
+
+        Rect cropRegion = new Rect();
+        cropRegion.set(centerX - deltaX,
+                centerY - deltaY,
+                centerX + deltaX,
+                centerY + deltaY);
+        return cropRegion;
     }
 }

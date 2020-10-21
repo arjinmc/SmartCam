@@ -50,11 +50,13 @@ public class Camera2Wrapper extends AbsCameraWrapper {
     private CameraDevice.StateCallback mStateCallBack;
     private CameraLock mCameraLock;
     private OnFlashChangeListener mOnFlashChangeListener;
+    private OnZoomChangeListener mOnZoomChangeListener;
 
     /**
      * current params of camera
      */
     private ArrayMap<CaptureRequest.Key, Integer> mCameraParams;
+    private float mZoom;
 
     public Camera2Wrapper(Context context) {
         setContext(context);
@@ -389,13 +391,38 @@ public class Camera2Wrapper extends AbsCameraWrapper {
     }
 
     @Override
-    public int getZoom() {
-        return super.getZoom();
+    public boolean isZoomAvailable() {
+        float maxZoom = getMaxZoom();
+        if (maxZoom == 0) {
+            return false;
+        }
+        return true;
     }
 
     @Override
-    public void setZoom(int zoomLevel) {
-        super.setZoom(zoomLevel);
+    public float getZoom() {
+        return mZoom;
+    }
+
+    @Override
+    public void setZoom(float zoomLevel) {
+        mZoom = zoomLevel;
+        if (mOnZoomChangeListener != null) {
+            mOnZoomChangeListener.onZoomChange(mZoom);
+        }
+    }
+
+    @Override
+    public float getMaxZoom() {
+        CameraManager manager = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);
+        CameraCharacteristics characteristics = null;
+        try {
+            characteristics = manager.getCameraCharacteristics(mCamera.getId());
+            return characteristics.get(CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM);
+        } catch (CameraAccessException e) {
+//            e.printStackTrace();
+        }
+        return 0;
     }
 
     @Override
@@ -559,6 +586,15 @@ public class Camera2Wrapper extends AbsCameraWrapper {
     }
 
     /**
+     * set listener for zoom change
+     *
+     * @param onZoomChangeListener
+     */
+    public void setOnZoomChangeListener(OnZoomChangeListener onZoomChangeListener) {
+        mOnZoomChangeListener = onZoomChangeListener;
+    }
+
+    /**
      * dispatch flash change to preview
      *
      * @param flashType {@link CameraFlashMode}
@@ -574,6 +610,13 @@ public class Camera2Wrapper extends AbsCameraWrapper {
      */
     public interface OnFlashChangeListener {
         void onFlashChange();
+    }
+
+    /**
+     * listener for zoom change
+     */
+    public interface OnZoomChangeListener {
+        void onZoomChange(float zoom);
     }
 
 }
