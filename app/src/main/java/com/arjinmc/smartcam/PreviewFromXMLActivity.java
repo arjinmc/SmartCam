@@ -1,7 +1,6 @@
 package com.arjinmc.smartcam;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,7 +46,6 @@ public class PreviewFromXMLActivity extends AppCompatActivity {
         });
 
         mSmartCam.open();
-        Log.i("tag", mSmartCam.getCameraCount() + "/" + mSmartCam.getOrientation());
         mSmartCam.logFeatures();
 
     }

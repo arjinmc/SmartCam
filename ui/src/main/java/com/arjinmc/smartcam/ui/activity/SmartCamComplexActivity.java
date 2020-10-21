@@ -98,7 +98,7 @@ public class SmartCamComplexActivity extends AppCompatActivity implements View.O
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (mSmartCam != null) {
-                    Log.e("zoom", progress + "");
+                    SmartCamLog.i("seekbar zoom", progress + "");
                     mSmartCam.setZoom(progress);
                 }
             }

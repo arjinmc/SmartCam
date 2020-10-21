@@ -117,14 +117,12 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (PermissionAssistant.isGrantedAllPermissions(this, mPermissions)) {
-            //create file dir for test
             initDir();
         }
     }
 
     private void initDir() {
 
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
         File file = new File(SmartCamFileUtils.getExternalStorageDir() + File.separator + SmartCamConfig.getInstance().getRootDirName());
         if (!file.exists() || !file.isDirectory()) {
             boolean mkdirResult = file.mkdir();
@@ -136,11 +134,6 @@ public class MainActivity extends AppCompatActivity {
         }
         SmartCamConfig.getInstance().setRootDirPath(file.getAbsolutePath());
         Log.e("root path", SmartCamConfig.getInstance().getRootDirPath() + "");
-//        } else {
-//            if (TextUtils.isEmpty(SmartCamConfig.getInstance().getRootDirPath())) {
-//                SmartCamFileUtils.applyOpenDirPermission(this, REQUST_CODE_APPLY_STORAGE_PERMISSION, null);
-//            }
-//        }
     }
 
     private void startActivity(Class clz) {
