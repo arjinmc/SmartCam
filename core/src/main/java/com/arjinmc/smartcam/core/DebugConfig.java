@@ -6,5 +6,6 @@ package com.arjinmc.smartcam.core;
  */
 final class DebugConfig {
 
+    //force debug for camera1
     public static final boolean useV1 = false;
 }

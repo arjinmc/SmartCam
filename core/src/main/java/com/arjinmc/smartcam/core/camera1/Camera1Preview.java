@@ -248,6 +248,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
             return;
         }
 
+        //update capture orientation
         try {
             Camera.Parameters parameters = mCamera.getParameters();
             parameters.setRotation(SmartCamUtils.getShouldRotateOrientationForCamera1(

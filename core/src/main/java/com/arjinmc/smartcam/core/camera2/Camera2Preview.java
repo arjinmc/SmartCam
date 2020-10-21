@@ -73,7 +73,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
     private int mWidth, mHeight;
     private CameraSize mPreviewSize;
     /**
-     * the degreee when capture
+     * the degree when capture
      */
     private int mDegree;
     private Matrix mMatrix;
