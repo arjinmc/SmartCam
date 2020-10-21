@@ -1,7 +1,0 @@
-# ninja log v5
-0	371	1600760501	CMakeFiles/smartcam-core.dir/SmartCamUtil.cpp.o	870414030719a8bb
-372	509	1600760501	/Users/arjinmc/git/SmartCam/core/build/intermediates/cmake/release/obj/x86/libsmartcam-core.so	620ad919ee777f1e
-1	576	1600937166	CMakeFiles/smartcam-core.dir/SmartCamUtil.cpp.o	870414030719a8bb
-576	718	1600937166	/Users/arjinmc/git/SmartCam/core/build/intermediates/cmake/release/obj/x86/libsmartcam-core.so	620ad919ee777f1e
-2	799	1600996862	CMakeFiles/smartcam-core.dir/SmartCamUtil.cpp.o	870414030719a8bb
-799	980	1600996862	/Users/arjinmc/git/SmartCam/core/build/intermediates/cmake/release/obj/x86/libsmartcam-core.so	620ad919ee777f1e

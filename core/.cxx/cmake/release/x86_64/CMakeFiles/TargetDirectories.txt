@@ -1,3 +1,0 @@
-/Users/arjinmc/git/SmartCam/core/.cxx/cmake/release/x86_64/CMakeFiles/rebuild_cache.dir
-/Users/arjinmc/git/SmartCam/core/.cxx/cmake/release/x86_64/CMakeFiles/edit_cache.dir
-/Users/arjinmc/git/SmartCam/core/.cxx/cmake/release/x86_64/CMakeFiles/smartcam-core.dir

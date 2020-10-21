@@ -1,2 +1,0 @@
-ninja: Entering directory `/Users/arjinmc/git/SmartCam/filter/.cxx/cmake/debug/x86_64'
-ninja: no work to do.

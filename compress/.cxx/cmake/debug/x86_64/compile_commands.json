@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/Users/arjinmc/git/SmartCam/compress/.cxx/cmake/debug/x86_64",
-  "command": "/Users/arjinmc/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++ --target=x86_64-none-linux-android21 --gcc-toolchain=/Users/arjinmc/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/arjinmc/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot  -Dsmartcam_compress_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles/smartcam-compress.dir/native-lib.cpp.o -c /Users/arjinmc/git/SmartCam/compress/src/main/cpp/native-lib.cpp",
-  "file": "/Users/arjinmc/git/SmartCam/compress/src/main/cpp/native-lib.cpp"
-}
-]
