@@ -294,7 +294,7 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     }
 
     @Override
-    public float getZoom() {
+    public int getZoom() {
         if (mCamera != null) {
             return mCamera.getParameters().getZoom();
         }
@@ -302,7 +302,7 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     }
 
     @Override
-    public void setZoom(float zoomLevel) {
+    public void setZoom(int zoomLevel) {
 
         if (mCamera == null) {
             return;
@@ -310,8 +310,8 @@ public class Camera1Wrapper extends AbsCameraWrapper {
 
         try {
             Camera.Parameters parameters = mCamera.getParameters();
-            parameters.setZoom((int) zoomLevel);
-            mZoom = (int) zoomLevel;
+            parameters.setZoom(zoomLevel);
+            mZoom = zoomLevel;
             mCamera.setParameters(parameters);
         } catch (Exception e) {
             e.printStackTrace();
@@ -319,7 +319,7 @@ public class Camera1Wrapper extends AbsCameraWrapper {
     }
 
     @Override
-    public float getMaxZoom() {
+    public int getMaxZoom() {
         return mCamera.getParameters().getMaxZoom();
     }
 

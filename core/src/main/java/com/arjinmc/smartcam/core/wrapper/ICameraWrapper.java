@@ -223,21 +223,21 @@ public interface ICameraWrapper {
      *
      * @return
      */
-    float getZoom();
+    int getZoom();
 
     /**
      * set zoom level
      *
      * @param zoomLevel
      */
-    void setZoom(float zoomLevel);
+    void setZoom(int zoomLevel);
 
     /**
      * get max zoom
      *
      * @return
      */
-    float getMaxZoom();
+    int getMaxZoom();
 
     /**
      * set state callback

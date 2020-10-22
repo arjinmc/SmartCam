@@ -49,4 +49,11 @@ public interface ICameraPreviewWrapper {
      * @param onCaptureAnimationListener
      */
     void setOnCaptureAnimationListener(SmartCamPreview.OnCaptureAnimationLister onCaptureAnimationListener);
+
+    /**
+     * set OnGestureToZoomListener
+     *
+     * @param onGestureToZoomListener
+     */
+    void setOnGestureToZoomListener(SmartCamPreview.OnGestureToZoomListener onGestureToZoomListener);
 }

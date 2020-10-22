@@ -72,6 +72,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
     private SmartCamOrientationEventListener mOrientationEventListener;
     private SmartCamPreview.OnManualFocusListener mOnManualFocusListener;
     private SmartCamPreview.OnCaptureAnimationLister mOnCaptureAnimationListener;
+    private SmartCamPreview.OnGestureToZoomListener mOnGestureToZoomListener;
     private int mWidth, mHeight;
     private CameraSize mPreviewSize;
     /**
@@ -94,7 +95,6 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                 }
             }
         }
-
     };
 
     private CameraCaptureSession.StateCallback mCaptureSessionStateCallback = new CameraCaptureSession.StateCallback() {
@@ -467,6 +467,10 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                 stopPreview();
                 mCaptureSession = null;
             }
+
+            if (mOnZoomChangeListener != null) {
+                mOnZoomChangeListener = null;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -494,6 +498,11 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
         mOnCaptureAnimationListener = onCaptureAnimationListener;
     }
 
+    @Override
+    public void setOnGestureToZoomListener(SmartCamPreview.OnGestureToZoomListener onGestureToZoomListener) {
+        mOnGestureToZoomListener = onGestureToZoomListener;
+    }
+
     private void dispatchError(SmartCamError smartCamError) {
         if (mCamera2Wrapper == null || mCamera2Wrapper.getCaptureCallback() == null
                 || smartCamError == null) {
@@ -509,7 +518,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
      */
     private Rect getZoomRect() {
 
-        float newZoom = mCamera2Wrapper.getZoom();
+        float newZoom = mCamera2Wrapper.getZoom() / 10f;
         final int centerX = getMeasuredWidth() / 2;
         final int centerY = getMeasuredHeight() / 2;
         final int deltaX = (int) ((0.5f * getMeasuredWidth()) / newZoom);

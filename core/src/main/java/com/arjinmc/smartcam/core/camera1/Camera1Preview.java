@@ -5,6 +5,7 @@ import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
@@ -44,6 +45,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     private SmartCamOrientationEventListener mOrientationEventListener;
     private SmartCamPreview.OnManualFocusListener mOnManualFocusListener;
     private SmartCamPreview.OnCaptureAnimationLister mOnCaptureAnimationListener;
+    private SmartCamPreview.OnGestureToZoomListener mOnGestureToZoomListener;
 
     private int mCameraDegree;
     private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
@@ -51,10 +53,14 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
     private CameraSize mPreviewSize;
+    private float mLastGesturePointDistance;
 
     public Camera1Preview(Context context, Camera1Wrapper camera1Wrapper) {
         super(context);
         mCameraWrapper = camera1Wrapper;
+        if (SmartCamConfig.getInstance().isUseGestureToZoom()) {
+            setClickable(true);
+        }
         init();
     }
 
@@ -147,7 +153,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
             if (mOnManualFocusListener != null && SmartCamConfig.getInstance().isUseManualFocus()) {
                 mOnManualFocusListener.requestFocus(event.getX(), event.getY());
                 Camera.Area cameraArea = new Camera.Area(mOnManualFocusListener.getFocusRegion(), 1000);
@@ -175,9 +181,26 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                     }
                 }
             }
+        } else if (event.getAction() == MotionEvent.ACTION_MOVE && event.getPointerCount() == 2
+                && SmartCamConfig.getInstance().isUseGestureToZoom()) {
+            float gesturePointDistance = getPointsDistance(event.getX(0), event.getY(0)
+                    , event.getX(1), event.getY(1));
+            if (mLastGesturePointDistance != 0) {
+                float changeDistance = mLastGesturePointDistance - gesturePointDistance;
+                if (changeDistance > 0) {
+                    // zoom smaller
+                    dispatchGestureToZoomEvent(true, changeDistance);
+                } else if (changeDistance < 0) {
+                    //zoom bigger
+                    dispatchGestureToZoomEvent(false, Math.abs(changeDistance));
+                }
+            }
+            mLastGesturePointDistance = gesturePointDistance;
+
         }
         return super.onTouchEvent(event);
     }
+
 
     private void doPreview() {
 
@@ -286,6 +309,9 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if (mOnGestureToZoomListener != null) {
+            mOnGestureToZoomListener = null;
+        }
     }
 
     @Override
@@ -338,6 +364,11 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
         mOnCaptureAnimationListener = onCaptureAnimationListener;
     }
 
+    @Override
+    public void setOnGestureToZoomListener(SmartCamPreview.OnGestureToZoomListener onGestureToZoomListener) {
+        mOnGestureToZoomListener = onGestureToZoomListener;
+    }
+
     private void dispatchError(SmartCamError smartCamError) {
         if (mCameraWrapper == null || mCameraWrapper.getCaptureCallback() == null) {
             return;
@@ -345,4 +376,19 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
         mCameraWrapper.getCaptureCallback().onError(smartCamError);
     }
 
+    private void dispatchGestureToZoomEvent(boolean isSmaller, float changeDistance) {
+        if (mOnGestureToZoomListener != null) {
+            if (isSmaller) {
+                mOnGestureToZoomListener.onZoomToSmaller(changeDistance);
+            } else {
+                mOnGestureToZoomListener.onZoomToBigger(changeDistance);
+            }
+        } else {
+            Log.e("dispatchGestureToZoomEvent", "empty");
+        }
+    }
+
+    private float getPointsDistance(float x1, float y1, float x2, float y2) {
+        return (float) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+    }
 }

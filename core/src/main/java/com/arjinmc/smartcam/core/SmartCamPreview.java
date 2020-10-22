@@ -43,6 +43,11 @@ public class SmartCamPreview extends FrameLayout {
     private CameraManualFocusView mCameraManualFocusView;
     private OnManualFocusListener mOnManualFocusListener;
     private OnCaptureAnimationLister mOnCaptureAnimationLister;
+    private OnGestureToZoomListener mOnGestureToZoomListener;
+    /**
+     * Dispatch to ui
+     */
+    private OnGestureToZoomListener mDispatchOnGestureToZoomListener;
     private float mTouchX, mTouchY;
     private ValueAnimator mCaptureAnimation;
     private boolean isPlayingCaptureAnimation = false;
@@ -113,6 +118,24 @@ public class SmartCamPreview extends FrameLayout {
             }
         };
 
+        if (SmartCamConfig.getInstance().isUseGestureToZoom()) {
+            mOnGestureToZoomListener = new OnGestureToZoomListener() {
+                @Override
+                public void onZoomToSmaller(float changeDistance) {
+                    if (mDispatchOnGestureToZoomListener != null) {
+                        mDispatchOnGestureToZoomListener.onZoomToSmaller(changeDistance);
+                    }
+                }
+
+                @Override
+                public void onZoomToBigger(float changeDistance) {
+                    if (mDispatchOnGestureToZoomListener != null) {
+                        mDispatchOnGestureToZoomListener.onZoomToBigger(changeDistance);
+                    }
+                }
+            };
+        }
+
         mCurrentCameraVersion = mSmartCam.getCameraVersion();
 
         if (isUsedCamera2()) {
@@ -122,6 +145,7 @@ public class SmartCamPreview extends FrameLayout {
         } else {
             mCamera1Preview = new Camera1Preview(getContext(), (Camera1Wrapper) mSmartCam.getCameraWrapper());
             mCamera1Preview.setOnCaptureAnimationListener(mOnCaptureAnimationLister);
+            mCamera1Preview.setOnGestureToZoomListener(mOnGestureToZoomListener);
             addView(mCamera1Preview);
         }
 
@@ -298,7 +322,6 @@ public class SmartCamPreview extends FrameLayout {
         return result;
     }
 
-
     private void playCaptureAnimation() {
 
         if (isPlayingCaptureAnimation) {
@@ -433,6 +456,15 @@ public class SmartCamPreview extends FrameLayout {
         return mCurrentCameraVersion == CameraVersion.VERSION_2 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
+    /**
+     * set OnGestureToZoomListener
+     *
+     * @param onGestureToZoomListener
+     */
+    public void setOnGestureToZoomListener(OnGestureToZoomListener onGestureToZoomListener) {
+        mDispatchOnGestureToZoomListener = onGestureToZoomListener;
+    }
+
     public interface OnManualFocusListener {
         void requestFocus(float x, float y);
 
@@ -449,6 +481,15 @@ public class SmartCamPreview extends FrameLayout {
         void onPlay();
 
         void onStop();
+    }
+
+    /**
+     * gesture to zoom listener
+     */
+    public interface OnGestureToZoomListener {
+        void onZoomToSmaller(float changeDistance);
+
+        void onZoomToBigger(float changeDistance);
     }
 }
 

@@ -70,6 +70,11 @@ public final class SmartCamConfig {
      */
     private CameraManualFocusParams mCameraManualFocusParams;
 
+    /**
+     * use gesture to zoom
+     */
+    private boolean mUseGestureToZoom;
+
     private static SmartCamConfig mSmartCamConfig;
 
     public static SmartCamConfig getInstance() {
@@ -193,6 +198,14 @@ public final class SmartCamConfig {
 
     public void setCameraManualFocusParams(CameraManualFocusParams cameraManualFocusParams) {
         this.mCameraManualFocusParams = cameraManualFocusParams;
+    }
+
+    public boolean isUseGestureToZoom() {
+        return mUseGestureToZoom;
+    }
+
+    public void setUseGestureToZoom(boolean useGestureToZoom) {
+        mUseGestureToZoom = useGestureToZoom;
     }
 
     public void setDebugLog(boolean visible) {

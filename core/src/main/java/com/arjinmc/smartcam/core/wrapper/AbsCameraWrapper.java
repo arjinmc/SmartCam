@@ -276,17 +276,17 @@ public class AbsCameraWrapper implements ICameraWrapper {
     }
 
     @Override
-    public float getZoom() {
+    public int getZoom() {
         return 0;
     }
 
     @Override
-    public void setZoom(float zoomLevel) {
+    public void setZoom(int zoomLevel) {
 
     }
 
     @Override
-    public float getMaxZoom() {
+    public int getMaxZoom() {
         return 0;
     }
 

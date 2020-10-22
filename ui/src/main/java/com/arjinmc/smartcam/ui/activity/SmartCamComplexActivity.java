@@ -65,6 +65,7 @@ public class SmartCamComplexActivity extends AppCompatActivity implements View.O
      * mark current ratio
      */
     private String mRatio;
+    private SmartCamPreview.OnGestureToZoomListener mOnGestureToZoomListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -113,11 +114,32 @@ public class SmartCamComplexActivity extends AppCompatActivity implements View.O
 
             }
         });
+
+        mOnGestureToZoomListener = new SmartCamPreview.OnGestureToZoomListener() {
+            @Override
+            public void onZoomToSmaller(float changeDistance) {
+                SmartCamLog.i("onZoomToSmaller", "changeDistance:" + changeDistance);
+                //define your way to change the zoom level
+                mSmartCam.setZoom(mSmartCam.getZoom() - 1);
+            }
+
+            @Override
+            public void onZoomToBigger(float changeDistance) {
+                SmartCamLog.i("onZoomToBigger", "changeDistance:" + changeDistance);
+                //define your way to change the zoom level
+                mSmartCam.setZoom(mSmartCam.getZoom() + 1);
+            }
+        };
     }
 
     private void initData() {
 
-        SmartCamConfig.getInstance().setAutoReset(true);
+        SmartCamConfig smartCamConfig = SmartCamConfig.getInstance();
+        smartCamConfig.setAutoReset(true);
+        //use gesture to zoom,default false
+        //if you set it true, remember to call setOnGestureToZoomListener()
+        //like mSmartCamPreview.setOnGestureToZoomListener,then you get the zoom callback
+        smartCamConfig.setUseGestureToZoom(false);
 
         mSmartCam = new SmartCam(this);
         mRatio = SmartCamSPManager.getInstance(this).getRatio();
@@ -151,7 +173,6 @@ public class SmartCamComplexActivity extends AppCompatActivity implements View.O
                 SmartCamUtils.dealAndSaveJpegFile(smartCamCaptureResult, mFile);
                 SmartCamLog.i(TAG, "CaptureCallback time:" + (System.currentTimeMillis() - time) + "ms");
                 SmartCamLog.i(TAG, "CaptureCallback onSuccessPath:" + mFile.getAbsolutePath());
-
             }
 
             @Override
@@ -167,6 +188,8 @@ public class SmartCamComplexActivity extends AppCompatActivity implements View.O
         hasFlashLight = SmartCamUtils.hasFlashLight(this);
 
         mSmartCamPreview.setCamera(mSmartCam);
+        //if you want to use gesture to zoom, default is false
+        mSmartCamPreview.setOnGestureToZoomListener(mOnGestureToZoomListener);
         switchCamera(mSmartCam.isBackCamera());
 
         if (mSmartCam.getCameraCount() >= 2) {
