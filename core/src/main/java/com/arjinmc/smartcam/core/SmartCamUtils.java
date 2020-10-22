@@ -629,5 +629,18 @@ public final class SmartCamUtils {
         }
         return builder.toString();
     }
+
+    /**
+     * get distance between two points
+     *
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     * @return
+     */
+    public static float getPointsDistance(float x1, float y1, float x2, float y2) {
+        return (float) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+    }
 }
 

@@ -80,6 +80,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
      */
     private int mDegree;
     private Matrix mMatrix;
+    private float mLastGesturePointDistance;
 
     private CameraCaptureSession.CaptureCallback mCaptureCallback = new CameraCaptureSession.CaptureCallback() {
 
@@ -170,6 +171,9 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
     }
 
     private void init() {
+        if (SmartCamConfig.getInstance().isUseGestureToZoom()) {
+            setClickable(true);
+        }
         setSurfaceTextureListener(this);
         mOrientationEventListener = new SmartCamOrientationEventListener(getContext(), this);
         mOrientationEventListener.enable();
@@ -240,6 +244,22 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                     doPreView(mWidth, mHeight);
                 }
             }
+        } else if (event.getAction() == MotionEvent.ACTION_MOVE && event.getPointerCount() == 2
+                && SmartCamConfig.getInstance().isUseGestureToZoom()) {
+            float gesturePointDistance = SmartCamUtils.getPointsDistance(event.getX(0), event.getY(0)
+                    , event.getX(1), event.getY(1));
+            if (mLastGesturePointDistance != 0) {
+                float changeDistance = mLastGesturePointDistance - gesturePointDistance;
+                if (changeDistance > 0) {
+                    // zoom smaller
+                    dispatchGestureToZoomEvent(true, changeDistance);
+                } else if (changeDistance < 0) {
+                    //zoom bigger
+                    dispatchGestureToZoomEvent(false, Math.abs(changeDistance));
+                }
+            }
+            mLastGesturePointDistance = gesturePointDistance;
+
         }
         return super.onTouchEvent(event);
     }
@@ -530,5 +550,15 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                 centerX + deltaX,
                 centerY + deltaY);
         return cropRegion;
+    }
+
+    private void dispatchGestureToZoomEvent(boolean isSmaller, float changeDistance) {
+        if (mOnGestureToZoomListener != null) {
+            if (isSmaller) {
+                mOnGestureToZoomListener.onZoomToSmaller(changeDistance);
+            } else {
+                mOnGestureToZoomListener.onZoomToBigger(changeDistance);
+            }
+        }
     }
 }

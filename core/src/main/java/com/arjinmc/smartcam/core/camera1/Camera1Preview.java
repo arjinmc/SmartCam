@@ -5,7 +5,6 @@ import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
@@ -183,7 +182,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
             }
         } else if (event.getAction() == MotionEvent.ACTION_MOVE && event.getPointerCount() == 2
                 && SmartCamConfig.getInstance().isUseGestureToZoom()) {
-            float gesturePointDistance = getPointsDistance(event.getX(0), event.getY(0)
+            float gesturePointDistance = SmartCamUtils.getPointsDistance(event.getX(0), event.getY(0)
                     , event.getX(1), event.getY(1));
             if (mLastGesturePointDistance != 0) {
                 float changeDistance = mLastGesturePointDistance - gesturePointDistance;
@@ -383,12 +382,6 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
             } else {
                 mOnGestureToZoomListener.onZoomToBigger(changeDistance);
             }
-        } else {
-            Log.e("dispatchGestureToZoomEvent", "empty");
         }
-    }
-
-    private float getPointsDistance(float x1, float y1, float x2, float y2) {
-        return (float) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
     }
 }

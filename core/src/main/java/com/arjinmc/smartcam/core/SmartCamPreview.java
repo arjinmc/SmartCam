@@ -141,6 +141,7 @@ public class SmartCamPreview extends FrameLayout {
         if (isUsedCamera2()) {
             mCamera2Preview = new Camera2Preview(getContext(), (Camera2Wrapper) mSmartCam.getCameraWrapper());
             mCamera2Preview.setOnCaptureAnimationListener(mOnCaptureAnimationLister);
+            mCamera2Preview.setOnGestureToZoomListener(mOnGestureToZoomListener);
             addView(mCamera2Preview);
         } else {
             mCamera1Preview = new Camera1Preview(getContext(), (Camera1Wrapper) mSmartCam.getCameraWrapper());

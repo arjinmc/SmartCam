@@ -139,7 +139,7 @@ public class SmartCamComplexActivity extends AppCompatActivity implements View.O
         //use gesture to zoom,default false
         //if you set it true, remember to call setOnGestureToZoomListener()
         //like mSmartCamPreview.setOnGestureToZoomListener,then you get the zoom callback
-        smartCamConfig.setUseGestureToZoom(false);
+        smartCamConfig.setUseGestureToZoom(true);
 
         mSmartCam = new SmartCam(this);
         mRatio = SmartCamSPManager.getInstance(this).getRatio();
