@@ -81,6 +81,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
     private int mDegree;
     private Matrix mMatrix;
     private float mLastGesturePointDistance;
+    private boolean mIsTwoPointsMoving;
 
     private CameraCaptureSession.CaptureCallback mCaptureCallback = new CameraCaptureSession.CaptureCallback() {
 
@@ -237,7 +238,10 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN && event.getPointerCount() == 1) {
+
+        if (event.getAction() == MotionEvent.ACTION_UP && event.getPointerCount() == 1
+                && mOnManualFocusListener != null
+                && SmartCamConfig.getInstance().isUseManualFocus() && !mIsTwoPointsMoving) {
             if (mOnManualFocusListener != null) {
                 mOnManualFocusListener.requestFocus(event.getX(), event.getY());
                 if (mOnManualFocusListener.getFocusRegion() != null) {
@@ -262,7 +266,10 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             if (mOnManualFocusListener != null) {
                 mOnManualFocusListener.cancelFocus();
             }
+            mIsTwoPointsMoving = true;
 
+        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            mIsTwoPointsMoving = false;
         }
         return super.onTouchEvent(event);
     }

@@ -53,6 +53,7 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
 
     private CameraSize mPreviewSize;
     private float mLastGesturePointDistance;
+    private boolean mIsTwoPointsMoving;
 
     public Camera1Preview(Context context, Camera1Wrapper camera1Wrapper) {
         super(context);
@@ -153,36 +154,38 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        if (event.getAction() == MotionEvent.ACTION_DOWN && event.getPointerCount() == 1) {
-            if (mOnManualFocusListener != null && SmartCamConfig.getInstance().isUseManualFocus()) {
-                mOnManualFocusListener.requestFocus(event.getX(), event.getY());
-                Camera.Area cameraArea = new Camera.Area(mOnManualFocusListener.getFocusRegion(), 1000);
-                List<Camera.Area> meteringAreas = new ArrayList<>();
-                List<Camera.Area> focusAreas = new ArrayList<>();
-                Camera.Parameters parameters = mCamera.getParameters();
-                if (parameters.getMaxNumMeteringAreas() > 0) {
-                    meteringAreas.add(cameraArea);
-                    focusAreas.add(cameraArea);
-                    try {
-                        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-                        parameters.setFocusAreas(focusAreas);
-                        parameters.setMeteringAreas(meteringAreas);
-                        mCamera.cancelAutoFocus();
-                        mCamera.setParameters(parameters);
-                        mCamera.autoFocus(new Camera.AutoFocusCallback() {
-                            @Override
-                            public void onAutoFocus(boolean b, Camera camera) {
+        if (event.getAction() == MotionEvent.ACTION_UP && event.getPointerCount() == 1
+                && mOnManualFocusListener != null
+                && SmartCamConfig.getInstance().isUseManualFocus() && !mIsTwoPointsMoving) {
+            mOnManualFocusListener.requestFocus(event.getX(), event.getY());
+            Camera.Area cameraArea = new Camera.Area(mOnManualFocusListener.getFocusRegion(), 1000);
+            List<Camera.Area> meteringAreas = new ArrayList<>();
+            List<Camera.Area> focusAreas = new ArrayList<>();
+            Camera.Parameters parameters = mCamera.getParameters();
+            if (parameters.getMaxNumMeteringAreas() > 0) {
+                meteringAreas.add(cameraArea);
+                focusAreas.add(cameraArea);
+                try {
+                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+                    parameters.setFocusAreas(focusAreas);
+                    parameters.setMeteringAreas(meteringAreas);
+                    mCamera.cancelAutoFocus();
+                    mCamera.setParameters(parameters);
+                    mCamera.autoFocus(new Camera.AutoFocusCallback() {
+                        @Override
+                        public void onAutoFocus(boolean b, Camera camera) {
 
-                            }
-                        });
-                    } catch (Exception e) {
+                        }
+                    });
+                } catch (Exception e) {
 //                        e.printStackTrace();
-                        mOnManualFocusListener.cancelFocus();
-                    }
+                    mOnManualFocusListener.cancelFocus();
                 }
             }
+
         } else if (event.getAction() == MotionEvent.ACTION_MOVE && event.getPointerCount() == 2
                 && SmartCamConfig.getInstance().isUseGestureToZoom()) {
+            mIsTwoPointsMoving = true;
             float gesturePointDistance = SmartCamUtils.getPointsDistance(event.getX(0), event.getY(0)
                     , event.getX(1), event.getY(1));
             if (mLastGesturePointDistance != 0) {
@@ -199,8 +202,11 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
             if (mOnManualFocusListener != null) {
                 mOnManualFocusListener.cancelFocus();
             }
+        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            mIsTwoPointsMoving = false;
         }
         return super.onTouchEvent(event);
+
     }
 
 
