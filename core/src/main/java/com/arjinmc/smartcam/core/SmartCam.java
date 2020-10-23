@@ -39,14 +39,14 @@ public class SmartCam extends AbsCameraWrapper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mCameraWrapper = new Camera2Wrapper(getContext());
             mCameraVersion = CameraVersion.VERSION_2;
-//            try {
-//                if (!((Camera2Wrapper) mCameraWrapper).isUseCamera2Better()) {
-//                    mCameraWrapper = new Camera1Wrapper();
-//                    mCameraVersion = CameraVersion.VERSION_1;
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
+            try {
+                if (!((Camera2Wrapper) mCameraWrapper).isUseCamera2Better()) {
+                    mCameraWrapper = new Camera1Wrapper();
+                    mCameraVersion = CameraVersion.VERSION_1;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             mCameraWrapper = new Camera1Wrapper();
             mCameraVersion = CameraVersion.VERSION_1;
