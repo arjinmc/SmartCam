@@ -344,7 +344,6 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, null);
                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_AUTO);
             }
-            mCaptureSession.capture(mPreviewRequestBuilder.build(), null, null);
 
             //if use manual focus
             if (SmartCamConfig.getInstance().isUseManualFocus()

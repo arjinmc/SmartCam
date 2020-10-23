@@ -382,11 +382,6 @@ public class SmartCamComplexActivity extends AppCompatActivity implements View.O
     protected void onResume() {
         super.onResume();
 
-        if (mSmartCam != null && !mRatio.equals(SmartCamSPManager.getInstance(this).getRatio())) {
-            mRatio = SmartCamSPManager.getInstance(this).getRatio();
-            setCameraRatio();
-        }
-
         if (mSmartCam != null) {
             mSmartCam.resume();
         }
