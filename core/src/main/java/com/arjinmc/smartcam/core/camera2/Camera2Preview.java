@@ -190,7 +190,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
         mOnZoomChangeListener = new Camera2Wrapper.OnZoomChangeListener() {
             @Override
             public void onZoomChange(float zoom) {
-                doPreView(mWidth, mHeight);
+                changeZoomToPreview();
             }
         };
         mCamera2Wrapper.setOnZoomChangeListener(mOnZoomChangeListener);
@@ -551,6 +551,11 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
         return cropRegion;
     }
 
+    /**
+     * dispatch to ui
+     * @param isSmaller
+     * @param changeDistance
+     */
     private void dispatchGestureToZoomEvent(boolean isSmaller, float changeDistance) {
         if (mOnGestureToZoomListener != null) {
             if (isSmaller) {
@@ -558,6 +563,32 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
             } else {
                 mOnGestureToZoomListener.onZoomToBigger(changeDistance);
             }
+        }
+    }
+
+    /**
+     * change zoom to preview
+     */
+    private void changeZoomToPreview() {
+
+        if (mCaptureSession == null || mPreviewRequest == null) {
+            return;
+        }
+
+        //if has set zoom level
+        if (mCamera2Wrapper.getZoom() != 0) {
+            mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, getZoomRect());
+        } else {
+            mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, null);
+        }
+
+        mPreviewRequest = mPreviewRequestBuilder.build();
+
+        try {
+            mCaptureSession.setRepeatingRequest(mPreviewRequest, mCaptureCallback, mCamera2Wrapper.getHandler());
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+            dispatchError(new SmartCamPreviewError());
         }
     }
 }

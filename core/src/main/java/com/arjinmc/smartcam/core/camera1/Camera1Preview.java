@@ -375,6 +375,12 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
         mCameraWrapper.getCaptureCallback().onError(smartCamError);
     }
 
+    /**
+     * dispatch to ui
+     *
+     * @param isSmaller
+     * @param changeDistance
+     */
     private void dispatchGestureToZoomEvent(boolean isSmaller, float changeDistance) {
         if (mOnGestureToZoomListener != null) {
             if (isSmaller) {
