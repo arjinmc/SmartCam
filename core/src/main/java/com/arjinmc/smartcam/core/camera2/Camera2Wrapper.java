@@ -56,6 +56,7 @@ public class Camera2Wrapper extends AbsCameraWrapper {
      * current params of camera
      */
     private ArrayMap<CaptureRequest.Key, Integer> mCameraParams;
+    private int mMaxZoom = -1;
     private int mZoom;
 
     public Camera2Wrapper(Context context) {
@@ -406,6 +407,9 @@ public class Camera2Wrapper extends AbsCameraWrapper {
 
     @Override
     public void setZoom(int zoomLevel) {
+        if (zoomLevel > getMaxZoom()) {
+            return;
+        }
         mZoom = zoomLevel;
         if (mOnZoomChangeListener != null) {
             mOnZoomChangeListener.onZoomChange(mZoom);
@@ -414,15 +418,19 @@ public class Camera2Wrapper extends AbsCameraWrapper {
 
     @Override
     public int getMaxZoom() {
-        CameraManager manager = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);
-        CameraCharacteristics characteristics = null;
-        try {
-            characteristics = manager.getCameraCharacteristics(mCamera.getId());
-            return (int) (characteristics.get(CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM)*10);
-        } catch (CameraAccessException e) {
+
+        if (mMaxZoom == -1) {
+            CameraManager manager = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);
+            CameraCharacteristics characteristics = null;
+            try {
+                characteristics = manager.getCameraCharacteristics(mCamera.getId());
+                mMaxZoom = (int) (characteristics.get(CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM) * 10);
+            } catch (CameraAccessException e) {
 //            e.printStackTrace();
+                mMaxZoom = 0;
+            }
         }
-        return 0;
+        return mMaxZoom;
     }
 
     @Override
