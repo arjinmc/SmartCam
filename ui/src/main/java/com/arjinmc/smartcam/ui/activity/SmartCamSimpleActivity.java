@@ -85,6 +85,7 @@ public class SmartCamSimpleActivity extends AppCompatActivity implements View.On
 
     private void initData() {
 
+        //auto reset after capture
         SmartCamConfig.getInstance().setAutoReset(true);
 
         mSmartCam = new SmartCam(this);

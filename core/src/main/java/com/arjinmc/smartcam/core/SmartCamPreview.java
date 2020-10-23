@@ -93,8 +93,9 @@ public class SmartCamPreview extends FrameLayout {
 
             @Override
             public void cancelFocus() {
-                hideManualFocusView();
-                getPreviewWrapper().resumeAutoFocus();
+                if (hideManualFocusView()) {
+                    getPreviewWrapper().resumeAutoFocus();
+                }
             }
 
             @Override
@@ -184,10 +185,12 @@ public class SmartCamPreview extends FrameLayout {
     /**
      * hide manual focus view
      */
-    public void hideManualFocusView() {
+    public boolean hideManualFocusView() {
         if (mCameraManualFocusView != null && mCameraManualFocusView.getVisibility() == View.VISIBLE) {
             mCameraManualFocusView.setVisibility(View.GONE);
+            return true;
         }
+        return false;
     }
 
     /**

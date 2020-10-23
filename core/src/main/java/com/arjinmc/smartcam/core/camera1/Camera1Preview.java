@@ -152,7 +152,8 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_UP) {
+
+        if (event.getAction() == MotionEvent.ACTION_DOWN && event.getPointerCount() == 1) {
             if (mOnManualFocusListener != null && SmartCamConfig.getInstance().isUseManualFocus()) {
                 mOnManualFocusListener.requestFocus(event.getX(), event.getY());
                 Camera.Area cameraArea = new Camera.Area(mOnManualFocusListener.getFocusRegion(), 1000);
@@ -195,7 +196,9 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                 }
             }
             mLastGesturePointDistance = gesturePointDistance;
-
+            if (mOnManualFocusListener != null) {
+                mOnManualFocusListener.cancelFocus();
+            }
         }
         return super.onTouchEvent(event);
     }

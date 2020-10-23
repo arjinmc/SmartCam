@@ -135,6 +135,7 @@ public class SmartCamComplexActivity extends AppCompatActivity implements View.O
     private void initData() {
 
         SmartCamConfig smartCamConfig = SmartCamConfig.getInstance();
+        //auto reset after capture
         smartCamConfig.setAutoReset(true);
         //use gesture to zoom,default false
         //if you set it true, remember to call setOnGestureToZoomListener()

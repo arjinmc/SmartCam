@@ -237,7 +237,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN && event.getPointerCount() == 1) {
             if (mOnManualFocusListener != null) {
                 mOnManualFocusListener.requestFocus(event.getX(), event.getY());
                 if (mOnManualFocusListener.getFocusRegion() != null) {
@@ -259,6 +259,9 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
                 }
             }
             mLastGesturePointDistance = gesturePointDistance;
+            if (mOnManualFocusListener != null) {
+                mOnManualFocusListener.cancelFocus();
+            }
 
         }
         return super.onTouchEvent(event);
@@ -553,6 +556,7 @@ public class Camera2Preview extends TextureView implements TextureView.SurfaceTe
 
     /**
      * dispatch to ui
+     *
      * @param isSmaller
      * @param changeDistance
      */
