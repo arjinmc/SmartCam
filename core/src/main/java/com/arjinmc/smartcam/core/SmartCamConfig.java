@@ -28,6 +28,10 @@ public final class SmartCamConfig {
      * Default auto dismiss manual focus view when camera orientation changed offset
      */
     private final int DEFAULT_MANUAL_FOCUS_DISMISS_DEGREE_OFFSET = 10;
+    /**
+     * Default moving factor for gesture to zoom
+     */
+    private final int DEFAULT_GESTURE_MOVING_FACTOR = 2;
 
     /**
      * root dir path
@@ -74,6 +78,12 @@ public final class SmartCamConfig {
      * use gesture to zoom
      */
     private boolean mUseGestureToZoom;
+
+    /**
+     * moving factor for gesture to zoom, avoid zoom too fast that it seems not smooth enough
+     * unit:px
+     */
+    private int mGestureMovingFactor = DEFAULT_GESTURE_MOVING_FACTOR;
 
     private static SmartCamConfig mSmartCamConfig;
 
@@ -206,6 +216,14 @@ public final class SmartCamConfig {
 
     public void setUseGestureToZoom(boolean useGestureToZoom) {
         mUseGestureToZoom = useGestureToZoom;
+    }
+
+    public int getGestureMovingFactor() {
+        return mGestureMovingFactor;
+    }
+
+    public void setGestureMovingFactor(int gestureMovingFactor) {
+        mGestureMovingFactor = gestureMovingFactor;
     }
 
     public void setDebugLog(boolean visible) {

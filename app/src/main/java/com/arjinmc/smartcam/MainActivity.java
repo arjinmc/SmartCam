@@ -3,7 +3,6 @@ package com.arjinmc.smartcam;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +19,7 @@ import com.arjinmc.expandrecyclerview.adapter.RecyclerViewViewHolder;
 import com.arjinmc.expandrecyclerview.style.RecyclerViewStyleHelper;
 import com.arjinmc.recyclerviewdecoration.RecyclerViewLinearItemDecoration;
 import com.arjinmc.smartcam.core.SmartCamConfig;
+import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.file.SmartCamFileUtils;
 import com.arjinmc.smartcam.permission.PermissionAssistant;
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         SmartCamConfig.getInstance().setRootDirPath(file.getAbsolutePath());
-        Log.e("root path", SmartCamConfig.getInstance().getRootDirPath() + "");
+        SmartCamLog.e("root path", SmartCamConfig.getInstance().getRootDirPath() + "");
     }
 
     private void startActivity(Class clz) {

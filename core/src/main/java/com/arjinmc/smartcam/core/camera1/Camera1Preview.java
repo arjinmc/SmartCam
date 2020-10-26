@@ -190,12 +190,14 @@ public class Camera1Preview extends SurfaceView implements SurfaceHolder.Callbac
                     , event.getX(1), event.getY(1));
             if (mLastGesturePointDistance != 0) {
                 float changeDistance = mLastGesturePointDistance - gesturePointDistance;
-                if (changeDistance > 0) {
-                    // zoom smaller
-                    dispatchGestureToZoomEvent(true, changeDistance);
-                } else if (changeDistance < 0) {
-                    //zoom bigger
-                    dispatchGestureToZoomEvent(false, Math.abs(changeDistance));
+                if (Math.abs(changeDistance) > SmartCamConfig.getInstance().getGestureMovingFactor()) {
+                    if (changeDistance > 0) {
+                        // zoom smaller
+                        dispatchGestureToZoomEvent(true, changeDistance);
+                    } else if (changeDistance < 0) {
+                        //zoom bigger
+                        dispatchGestureToZoomEvent(false, Math.abs(changeDistance));
+                    }
                 }
             }
             mLastGesturePointDistance = gesturePointDistance;
