@@ -1,4 +1,4 @@
-package com.arjinmc.smartcam.ui.widget;
+package com.arjinmc.smartcam.wiget;
 
 
 import android.os.Bundle;

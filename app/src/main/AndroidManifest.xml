@@ -9,15 +9,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PreviewFromNewActivity"/>
-        <activity android:name=".PreviewFromXMLActivity"/>
+
+        <activity
+            android:name=".activity.SmartCamSimpleActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/full_screen_activity" />
+        <activity
+            android:name=".activity.SmartCamComplexActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/full_screen_activity" />
+
+        <activity
+            android:name=".activity.SmartCamSettingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/full_screen_activity" />
+
+        <activity android:name=".activity.PreviewFromNewActivity" />
+        <activity android:name=".activity.PreviewFromXMLActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

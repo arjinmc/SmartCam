@@ -1,4 +1,4 @@
-package com.arjinmc.smartcam.ui.activity;
+package com.arjinmc.smartcam.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,10 +10,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.arjinmc.smartcam.ui.R;
-import com.arjinmc.smartcam.ui.SmartCamSPManager;
-import com.arjinmc.smartcam.ui.SmartCamUIConstants;
-import com.arjinmc.smartcam.ui.widget.SmartCamRadioDialog;
+import com.arjinmc.smartcam.R;
+import com.arjinmc.smartcam.SmartCamSPManager;
+import com.arjinmc.smartcam.SmartCamUIConstants;
+import com.arjinmc.smartcam.wiget.SmartCamRadioDialog;
 
 import java.util.ArrayList;
 

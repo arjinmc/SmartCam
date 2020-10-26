@@ -1,4 +1,4 @@
-package com.arjinmc.smartcam.permission;
+package com.arjinmc.smartcam;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -13,8 +13,6 @@ import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
-import com.arjinmc.smartcam.R;
 
 import java.util.ArrayList;
 import java.util.List;

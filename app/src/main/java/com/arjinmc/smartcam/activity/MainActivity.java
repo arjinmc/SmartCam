@@ -1,4 +1,4 @@
-package com.arjinmc.smartcam;
+package com.arjinmc.smartcam.activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -18,12 +18,12 @@ import com.arjinmc.expandrecyclerview.adapter.RecyclerViewSingleTypeProcessor;
 import com.arjinmc.expandrecyclerview.adapter.RecyclerViewViewHolder;
 import com.arjinmc.expandrecyclerview.style.RecyclerViewStyleHelper;
 import com.arjinmc.recyclerviewdecoration.RecyclerViewLinearItemDecoration;
+import com.arjinmc.smartcam.PermissionAssistant;
+import com.arjinmc.smartcam.R;
 import com.arjinmc.smartcam.core.SmartCamConfig;
 import com.arjinmc.smartcam.core.SmartCamLog;
 import com.arjinmc.smartcam.core.SmartCamUtils;
 import com.arjinmc.smartcam.core.file.SmartCamFileUtils;
-import com.arjinmc.smartcam.permission.PermissionAssistant;
-import com.arjinmc.smartcam.ui.SmartCamUIManager;
 
 import java.io.File;
 import java.util.Arrays;
@@ -74,10 +74,10 @@ public class MainActivity extends AppCompatActivity {
                         }
                         switch (integer) {
                             case R.string.default_ui_simple:
-                                SmartCamUIManager.startSimpleUI(MainActivity.this);
+                                startActivity(SmartCamSimpleActivity.class);
                                 break;
                             case R.string.default_ui_complex:
-                                SmartCamUIManager.startComplexUI(MainActivity.this);
+                                startActivity(SmartCamComplexActivity.class);
                                 break;
                             case R.string.prieview_from_new_object:
                                 startActivity(PreviewFromNewActivity.class);

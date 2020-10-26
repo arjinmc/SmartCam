@@ -1,4 +1,4 @@
-package com.arjinmc.smartcam.ui;
+package com.arjinmc.smartcam;
 
 import android.content.Context;
 import android.content.SharedPreferences;

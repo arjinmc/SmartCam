@@ -1,4 +1,4 @@
-package com.arjinmc.smartcam.ui.activity;
+package com.arjinmc.smartcam.activity;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.arjinmc.smartcam.R;
 import com.arjinmc.smartcam.core.SmartCam;
 import com.arjinmc.smartcam.core.SmartCamConfig;
 import com.arjinmc.smartcam.core.SmartCamLog;
@@ -26,7 +27,6 @@ import com.arjinmc.smartcam.core.model.CameraFlashMode;
 import com.arjinmc.smartcam.core.model.SmartCamCaptureResult;
 import com.arjinmc.smartcam.core.model.SmartCamError;
 import com.arjinmc.smartcam.core.model.SmartCamPreviewError;
-import com.arjinmc.smartcam.ui.R;
 
 import java.io.File;
 import java.io.IOException;

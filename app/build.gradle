@@ -29,7 +29,6 @@ dependencies {
     implementation 'com.arjinmc.android:expandrecyclerview:3.2'
 
     implementation project(":core")
-    implementation project(":ui")
     implementation project(":compress")
     implementation project(":watermark")
     implementation project(":face")

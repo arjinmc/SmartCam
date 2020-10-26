@@ -1,4 +1,4 @@
-package com.arjinmc.smartcam.ui;
+package com.arjinmc.smartcam;
 
 /**
  * Constants for smartcam UI

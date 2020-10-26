@@ -1,4 +1,4 @@
-package com.arjinmc.smartcam;
+package com.arjinmc.smartcam.activity;
 
 import android.os.Bundle;
 import android.widget.FrameLayout;
@@ -6,6 +6,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.arjinmc.smartcam.R;
 import com.arjinmc.smartcam.core.SmartCam;
 import com.arjinmc.smartcam.core.SmartCamPreview;
 import com.arjinmc.smartcam.core.callback.SmartCamStateCallback;

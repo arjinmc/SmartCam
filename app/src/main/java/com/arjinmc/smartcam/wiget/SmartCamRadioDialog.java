@@ -1,4 +1,4 @@
-package com.arjinmc.smartcam.ui.widget;
+package com.arjinmc.smartcam.wiget;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,9 +18,9 @@ import com.arjinmc.expandrecyclerview.adapter.RecyclerViewSingleTypeProcessor;
 import com.arjinmc.expandrecyclerview.adapter.RecyclerViewViewHolder;
 import com.arjinmc.expandrecyclerview.style.RecyclerViewStyleHelper;
 import com.arjinmc.recyclerviewdecoration.RecyclerViewLinearItemDecoration;
-import com.arjinmc.smartcam.ui.R;
-import com.arjinmc.smartcam.ui.SmartCamSPManager;
-import com.arjinmc.smartcam.ui.SmartCamUIConstants;
+import com.arjinmc.smartcam.R;
+import com.arjinmc.smartcam.SmartCamSPManager;
+import com.arjinmc.smartcam.SmartCamUIConstants;
 
 import java.util.ArrayList;
 import java.util.List;

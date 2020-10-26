@@ -10,4 +10,11 @@
     <string name="default_ui_complex">Default UI level: Complex</string>
     <string name="prieview_from_new_object">Preview from new object</string>
     <string name="prieview_from_xml">Preview from xml</string>
+
+
+    <string name="smartcam_no_camera_tips">Your device has no camera.</string>
+
+    <string name="smartcam_ui_setting_setting">Setting</string>
+    <string name="smartcam_ui_setting_ratio">Ratio</string>
+    <string name="smartcam_ui_setting_timer">Timer</string>
 </resources>
